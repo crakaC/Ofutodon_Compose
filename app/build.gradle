@@ -75,6 +75,7 @@ dependencies {
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.navigation:navigation-compose:2.4.0-beta02"
     implementation 'androidx.compose.runtime:runtime-livedata:1.1.0-beta04'
 
     // Accompanist
@@ -83,8 +84,8 @@ dependencies {
     implementation "com.google.accompanist:accompanist-pager-indicators:0.19.0"
 
     // Lifecycle
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 
     // Retrofit & OkHttp
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"

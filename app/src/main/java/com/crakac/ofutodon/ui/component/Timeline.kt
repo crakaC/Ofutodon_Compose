@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Dp.Companion.Hairline
@@ -16,9 +17,9 @@ import com.crakac.ofutodon.ui.theme.DarkGray
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 
 @Composable
-fun Timeline(statuses: List<Status>, scrollState: LazyListState = rememberLazyListState()) {
+fun Timeline(statuses: List<Status>, scrollState: LazyListState = rememberLazyListState(), modifier: Modifier = Modifier) {
     val lastIndex = statuses.lastIndex
-    LazyColumn(state = scrollState) {
+    LazyColumn(state = scrollState, modifier = modifier) {
         itemsIndexed(statuses, { _, status -> status.id }) { index, status ->
             StatusContent(status)
             if (index < lastIndex) {
