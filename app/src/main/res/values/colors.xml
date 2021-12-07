@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="mastodon_blue">#2b90d9</color>
+    <color name="mastodon_deep_black">#1a1c23</color>
+    <color name="mastodon_black">#282c37</color>
+    <color name="mastodon_dark_gray">#555d78</color>
+    <color name="mastodon_gray">#9baec8</color>
+    <color name="mastodon_white">#d9e1e8</color>
+
+    <color name="boost_blue">#1e88e5</color>
+    <color name="favourite_yellow">#FFC107</color>
+</resources>
