@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Ofutodon</string>
+    <string name="visibility_public">公開</string>
+    <string name="visibility_unlisted">未収載</string>
+    <string name="visibility_private">フォロワー限定</string>
+    <string name="visibility_direct">ダイレクト</string>
 </resources>
