@@ -7,7 +7,6 @@ import retrofit2.http.*
 import retrofit2.http.Field
 
 interface StatusesResources {
-    @FormUrlEncoded
     @POST("/api/v1/statuses")
     suspend fun postStatus(
         @Body

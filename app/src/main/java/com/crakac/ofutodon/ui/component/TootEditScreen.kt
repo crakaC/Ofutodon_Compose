@@ -1,11 +1,13 @@
 package com.crakac.ofutodon.ui.component
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -14,15 +16,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.crakac.ofutodon.MainViewModel
 import com.crakac.ofutodon.R
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 import com.crakac.ofutodon.util.iconResource
+import kotlinx.coroutines.launch
+import java.io.IOException
 
 @Composable
 fun TootEditForm(
     modifier: Modifier = Modifier,
     state: TootEditState = rememberTootEditState(),
 ) {
+    val viewModel: MainViewModel = hiltViewModel()
     val focusRequester = remember { FocusRequester() }
     Surface(modifier.wrapContentHeight()) {
         Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)) {
@@ -76,10 +83,23 @@ fun TootEditForm(
                     style = MaterialTheme.typography.button
                 )
             }
+            val scope = rememberCoroutineScope()
             Button(
                 modifier = Modifier.align(Alignment.End),
-                enabled = state.isValid(),
-                onClick = {}
+                enabled = state.canSendStatus(),
+                onClick = {
+                    scope.launch {
+                        state.isSending = true
+                        try {
+                            viewModel.toot(state.text)
+                            state.reset()
+                        } catch (e: IOException) {
+                            Log.w("Ofutodon", "${e.message}")
+                        } finally {
+                            state.isSending = false
+                        }
+                    }
+                }
             ) {
                 Icon(painter = painterResource(id = R.drawable.ic_send), "Toot!")
                 Spacer(Modifier.width(4.dp))
