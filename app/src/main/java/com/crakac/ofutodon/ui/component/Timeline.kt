@@ -9,15 +9,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.Dp.Companion.Hairline
-import androidx.compose.ui.unit.dp
 import com.crakac.ofutodon.mastodon.entity.Account
 import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.ui.theme.DarkGray
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 
 @Composable
-fun Timeline(statuses: List<Status>, scrollState: LazyListState = rememberLazyListState(), modifier: Modifier = Modifier) {
+fun Timeline(
+    modifier: Modifier = Modifier,
+    statuses: List<Status>,
+    scrollState: LazyListState = rememberLazyListState()
+) {
     val lastIndex = statuses.lastIndex
     LazyColumn(state = scrollState, modifier = modifier) {
         itemsIndexed(statuses, { _, status -> status.id }) { index, status ->
@@ -48,6 +50,6 @@ private fun TimelinePreview() {
         statuses.add(status.copy(id = it.toLong()))
     }
     OfutodonTheme {
-        Timeline(statuses)
+        Timeline(statuses = statuses)
     }
 }

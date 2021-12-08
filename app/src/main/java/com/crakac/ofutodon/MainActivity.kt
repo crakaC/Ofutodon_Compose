@@ -3,7 +3,6 @@ package com.crakac.ofutodon
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,6 +13,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,28 +32,28 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val viewModel: MainViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             OfutodonTheme {
-                OfutonApp(viewModel)
+                OfutonApp()
+//                Timeline(modifier = Modifier.fillMaxSize(), statuses = DebugStatuses)
             }
         }
     }
 }
 
 @Composable
-fun OfutonApp(viewModel: MainViewModel) {
+fun OfutonApp(viewModel: MainViewModel = viewModel()) {
     val navController = rememberNavController()
-    AppNavHost(navController, viewModel)
+    AppNavHost(navController = navController, viewModel = viewModel)
 }
 
 @Composable
 fun AppNavHost(
+    modifier: Modifier = Modifier,
     navController: NavHostController,
-    viewModel: MainViewModel,
-    modifier: Modifier = Modifier
+    viewModel: MainViewModel = viewModel(),
 ) {
     NavHost(
         navController = navController,
@@ -129,17 +129,17 @@ fun HomeScreenContent(viewModel: MainViewModel, modifier: Modifier = Modifier) {
             when (pages[page]) {
                 TimelineName.Home -> homeTimeline?.let { home ->
                     Timeline(
-                        home,
-                        modifier = modifier
+                        modifier = modifier,
+                        statuses = home
                     )
                 }
                 TimelineName.Local -> localTimeline?.let { local ->
                     Timeline(
-                        local,
-                        modifier = modifier
+                        modifier = modifier,
+                        statuses = local
                     )
                 }
-                TimelineName.Debug -> Timeline(DebugStatuses, modifier = modifier)
+                TimelineName.Debug -> Timeline(modifier = modifier, statuses = DebugStatuses)
             }
         }
     }

@@ -98,5 +98,7 @@ data class Status(
     private val createdAtMillis: Long by lazy { Util.parseCreatedAt(createdAt) }
     fun getRelativeTime() = Util.getRelativeTimeSpanString(createdAtMillis).toString()
 
-    val spannedContent by lazy { HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_COMPACT).trim() }
+    val spannedContent by lazy {
+        HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_COMPACT).trim()
+    }
 }
