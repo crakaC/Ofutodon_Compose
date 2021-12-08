@@ -80,6 +80,7 @@ dependencies {
 
     // Accompanist
     implementation "com.google.accompanist:accompanist-insets:0.20.2"
+    implementation "com.google.accompanist:accompanist-swiperefresh:0.21.4-beta"
     implementation "com.google.accompanist:accompanist-pager:0.19.0"
     implementation "com.google.accompanist:accompanist-pager-indicators:0.19.0"
 

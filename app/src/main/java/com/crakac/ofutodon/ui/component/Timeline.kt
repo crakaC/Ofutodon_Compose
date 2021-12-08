@@ -1,11 +1,12 @@
 package com.crakac.ofutodon.ui.component
 
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Divider
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -13,6 +14,9 @@ import com.crakac.ofutodon.mastodon.entity.Account
 import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.ui.theme.DarkGray
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.launch
 
 enum class TimelineName {
     Home,
@@ -24,14 +28,26 @@ enum class TimelineName {
 fun Timeline(
     modifier: Modifier = Modifier,
     statuses: List<Status>,
-    scrollState: LazyListState = rememberLazyListState()
+    scrollState: LazyListState = rememberLazyListState(),
+    onRefresh: suspend () -> Unit = {}
 ) {
-    val lastIndex = statuses.lastIndex
-    LazyColumn(state = scrollState, modifier = modifier) {
-        itemsIndexed(statuses, { _, status -> status.id }) { index, status ->
-            StatusContent(status)
-            if (index < lastIndex) {
-                Divider(color = DarkGray, thickness = Dp(0.5f))
+    var isRefreshing by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isRefreshing = isRefreshing),
+        onRefresh = {
+            scope.launch {
+                isRefreshing = true
+                onRefresh()
+                isRefreshing = false
+            }
+        }) {
+        LazyColumn(state = scrollState, modifier = modifier.fillMaxHeight()) {
+            itemsIndexed(statuses, { _, status -> status.id }) { index, status ->
+                StatusContent(status)
+                if (index < statuses.lastIndex) {
+                    Divider(color = DarkGray, thickness = Dp(0.5f))
+                }
             }
         }
     }
@@ -50,15 +66,15 @@ val DummyStatus = Status(
 )
 
 @Composable
-fun DummyTimeline(modifier: Modifier = Modifier){
-    val statuses = (1..100).map{ DummyStatus.copy(id = it.toLong())}
+fun DummyTimeline(modifier: Modifier = Modifier) {
+    val statuses = (1..100).map { DummyStatus.copy(id = it.toLong()) }
     Timeline(modifier, statuses = statuses)
 }
 
 @Preview
 @Composable
 private fun TimelinePreview() {
-    val statuses = (1..10).map{ DummyStatus.copy(id = it.toLong())}
+    val statuses = (1..10).map { DummyStatus.copy(id = it.toLong()) }
     OfutodonTheme {
         Timeline(statuses = statuses)
     }

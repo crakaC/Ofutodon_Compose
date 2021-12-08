@@ -84,13 +84,15 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
                 TimelineName.Home -> homeTimeline?.let { home ->
                     Timeline(
                         modifier = modifier,
-                        statuses = home
+                        statuses = home,
+                        onRefresh = { viewModel.refreshHomeTimeline() }
                     )
                 }
                 TimelineName.Local -> localTimeline?.let { local ->
                     Timeline(
                         modifier = modifier,
-                        statuses = local
+                        statuses = local,
+                        onRefresh = { viewModel.refreshLocalTimeline() }
                     )
                 }
                 TimelineName.Debug -> DummyTimeline(modifier = modifier)
