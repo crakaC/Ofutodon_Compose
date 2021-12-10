@@ -1,10 +1,7 @@
 package com.crakac.ofutodon
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.crakac.ofutodon.data.MastodonRepository
 import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.mastodon.params.StatusBody
@@ -33,6 +30,8 @@ class MainViewModel @Inject constructor(private val repo: MastodonRepository) : 
             return _localTimeline
         }
 
+    private val timelines = listOf(_homeTimeline, _localTimeline)
+
     fun refreshHomeTimeline(postExecute: () -> Unit = {}) {
         viewModelScope.launch {
             _homeTimeline.postValue(repo.getHomeTimeline())
@@ -44,6 +43,31 @@ class MainViewModel @Inject constructor(private val repo: MastodonRepository) : 
         viewModelScope.launch {
             _localTimeline.postValue(repo.getPublicTimeline(localOnly = true))
             postExecute()
+        }
+    }
+
+    fun favourite(id: Long) {
+        viewModelScope.launch {
+            val updated = repo.favourite(id)
+            update(id, updated)
+        }
+    }
+
+    fun boost(id: Long) {
+        viewModelScope.launch {
+            val updated = repo.boost(id).reblog!!
+            update(id, updated)
+        }
+    }
+
+    private fun update(id: Long, updated: Status) {
+        timelines.forEach { timeline ->
+            timeline.value?.indexOfFirst { it.id == id }?.let { index ->
+                if (index < 0) return@let
+                val copy = timeline.value!!.toMutableList()
+                copy[index] = updated
+                timeline.postValue(copy)
+            }
         }
     }
 

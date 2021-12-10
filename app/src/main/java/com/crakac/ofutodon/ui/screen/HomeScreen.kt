@@ -1,5 +1,6 @@
 package com.crakac.ofutodon.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
@@ -13,10 +14,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.crakac.ofutodon.MainViewModel
 import com.crakac.ofutodon.R
-import com.crakac.ofutodon.ui.component.DummyTimeline
-import com.crakac.ofutodon.ui.component.Timeline
-import com.crakac.ofutodon.ui.component.TimelineName
-import com.crakac.ofutodon.ui.component.rememberTimelineState
+import com.crakac.ofutodon.mastodon.entity.Status
+import com.crakac.ofutodon.ui.component.*
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
@@ -82,6 +81,30 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
     val pagerState = rememberPagerState()
     val pages = TimelineName.values()
 
+    val onClickStatus = object : StatusCallback {
+        override fun onClickStatus(status: Status) {
+            Log.d("StatusCallback", "onClickStatus")
+        }
+
+        override fun onClickReply(status: Status) {
+            Log.d("StatusCallback", "onClickReply")
+        }
+
+        override fun onClickFavourite(status: Status) {
+            Log.d("StatusCallback", "onClickFavourite")
+            viewModel.favourite(status.id)
+        }
+
+        override fun onClickBoost(status: Status) {
+            Log.d("StatusCallback", "onClickBoost")
+            viewModel.boost(status.id)
+        }
+
+        override fun onClickMore(status: Status) {
+            Log.d("StatusCallback", "onClickMore")
+        }
+    }
+
     Column {
         PagerTab(pagerState, pages)
         HorizontalPager(
@@ -98,7 +121,8 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
                             viewModel.refreshHomeTimeline {
                                 homeTimelineState.isRefreshing = false
                             }
-                        }
+                        },
+                        onClickStatus = onClickStatus
                     )
                 }
                 TimelineName.Local -> {
@@ -110,7 +134,8 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
                             viewModel.refreshLocalTimeline {
                                 localTimelineState.isRefreshing = false
                             }
-                        }
+                        },
+                        onClickStatus = onClickStatus
                     )
                 }
                 TimelineName.Debug -> DummyTimeline(modifier = modifier)

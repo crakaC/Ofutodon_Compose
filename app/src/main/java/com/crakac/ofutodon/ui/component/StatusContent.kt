@@ -24,15 +24,27 @@ import com.crakac.ofutodon.ui.theme.DarkGray
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 import com.crakac.ofutodon.ui.theme.Shapes
 
+interface StatusCallback {
+    fun onClickStatus(status: Status) {}
+    fun onClickReply(status: Status) {}
+    fun onClickFavourite(status: Status) {}
+    fun onClickBoost(status: Status) {}
+    fun onClickMore(status: Status) {}
+
+    companion object {
+        val Default = object : StatusCallback {}
+    }
+}
+
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun StatusContent(status: Status) {
+fun StatusContent(status: Status, callback: StatusCallback) {
     val account = status.account
     Surface {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { }
+                .clickable { callback.onClickStatus(status) }
                 .padding(start = 8.dp, end = 8.dp, top = 12.dp)
         ) {
             Image(
@@ -70,14 +82,14 @@ fun StatusContent(status: Status) {
                 }
                 Spacer(Modifier.height(4.dp))
                 Text(status.spannedContent.toString(), style = MaterialTheme.typography.body1)
-                BottomIcons(status)
+                BottomIcons(status, callback)
             }
         }
     }
 }
 
 @Composable
-fun BottomIcons(status: Status) {
+fun BottomIcons(status: Status, callback: StatusCallback) {
     val textWidth = 48
     val iconButtonSize = 40
     val iconSize = 24
@@ -90,7 +102,7 @@ fun BottomIcons(status: Status) {
         ) {
             IconButton(
                 modifier = Modifier.size(iconButtonSize.dp),
-                onClick = {}
+                onClick = { callback.onClickReply(status) }
             ) {
                 Icon(
                     painterResource(id = R.drawable.ic_reply),
@@ -111,7 +123,7 @@ fun BottomIcons(status: Status) {
             }
             IconButton(
                 modifier = Modifier.size(iconButtonSize.dp),
-                onClick = {}
+                onClick = { callback.onClickBoost(status) }
             ) {
                 Icon(
                     painterResource(id = R.drawable.ic_boost),
@@ -132,7 +144,7 @@ fun BottomIcons(status: Status) {
             }
             IconButton(
                 modifier = Modifier.size(iconButtonSize.dp),
-                onClick = {}
+                onClick = { callback.onClickFavourite(status) }
             ) {
                 Icon(
                     painterResource(id = R.drawable.ic_favourite),
@@ -148,11 +160,12 @@ fun BottomIcons(status: Status) {
                     text = status.favouritesCount.toString(),
                     style = MaterialTheme.typography.body2
                 )
+            } else {
+                Spacer(Modifier.width(spacerWidth.dp))
             }
-            Spacer(Modifier.width(spacerWidth.dp))
             IconButton(
                 modifier = Modifier.size(iconButtonSize.dp),
-                onClick = {}
+                onClick = { callback.onClickMore(status) }
             ) {
                 Icon(
                     painterResource(id = R.drawable.ic_more),
@@ -180,6 +193,6 @@ private fun StatusPreview() {
         repliesCount = 1L, reblogsCount = 1L, favouritesCount = 3L
     )
     OfutodonTheme {
-        StatusContent(status)
+        StatusContent(status, StatusCallback.Default)
     }
 }

@@ -33,7 +33,8 @@ fun Timeline(
     modifier: Modifier = Modifier,
     statuses: List<Status>,
     state: TimelineState = rememberTimelineState(),
-    onRefresh: () -> Unit = {}
+    onRefresh: () -> Unit = {},
+    onClickStatus: StatusCallback = StatusCallback.Default
 ) {
     SwipeRefresh(
         state = state.refreshState,
@@ -41,7 +42,7 @@ fun Timeline(
     ) {
         LazyColumn(state = state.scrollState, modifier = modifier.fillMaxHeight()) {
             itemsIndexed(statuses, { _, status -> status.id }) { index, status ->
-                StatusContent(status)
+                StatusContent(status, onClickStatus)
                 if (index < statuses.lastIndex) {
                     Divider(color = DarkGray, thickness = Dp(0.5f))
                 }

@@ -18,4 +18,8 @@ class MastodonRepository @Inject constructor(
 
     suspend fun postStatus(statusBody: StatusBody) =
         mastodon.postStatus(content = statusBody)
+
+    suspend fun favourite(id: Long) = mastodon.favouriteStatus(id)
+
+    suspend fun boost(id: Long) = mastodon.reblogStatus(id)
 }
