@@ -16,10 +16,8 @@ import com.crakac.ofutodon.R
 import com.crakac.ofutodon.ui.component.DummyTimeline
 import com.crakac.ofutodon.ui.component.Timeline
 import com.crakac.ofutodon.ui.component.TimelineName
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.pagerTabIndicatorOffset
-import com.google.accompanist.pager.rememberPagerState
+import com.crakac.ofutodon.ui.component.rememberTimelineState
+import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
 @Composable
@@ -42,57 +40,77 @@ fun HomeScreen(navController: NavHostController) {
     }
 }
 
+@Composable
+@OptIn(ExperimentalPagerApi::class)
+fun PagerTab(
+    pagerState: PagerState,
+    pages: Array<TimelineName>
+) {
+    val scope = rememberCoroutineScope()
+    TabRow(selectedTabIndex = pagerState.currentPage,
+        indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+            )
+        }
+    ) {
+        pages.forEachIndexed { index, screen ->
+            val selected = pagerState.currentPage == index
+            Tab(
+                text = { Text(text = screen.name) },
+                selected = selected,
+                onClick = {
+                    scope.launch {
+                        pagerState.animateScrollToPage(index)
+                    }
+                }
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun HomeScreenContent(modifier: Modifier = Modifier) {
     val viewModel: MainViewModel = hiltViewModel()
-    val homeTimeline by viewModel.homeTimeline.observeAsState()
-    val localTimeline by viewModel.localTimeline.observeAsState()
+    val homeTimeline by viewModel.homeTimeline.observeAsState(emptyList())
+    val localTimeline by viewModel.localTimeline.observeAsState(emptyList())
+
+    val homeTimelineState = rememberTimelineState()
+    val localTimelineState = rememberTimelineState()
 
     val pagerState = rememberPagerState()
     val pages = TimelineName.values()
 
-    val scope = rememberCoroutineScope()
-
     Column {
-        TabRow(selectedTabIndex = pagerState.currentPage,
-            indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
-                    Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
-                )
-            }
-        ) {
-            pages.forEachIndexed { index, screen ->
-                val selected = pagerState.currentPage == index
-                Tab(
-                    text = { Text(text = screen.name) },
-                    selected = selected,
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    }
-                )
-            }
-        }
-
+        PagerTab(pagerState, pages)
         HorizontalPager(
             count = pages.size,
-            state = pagerState
+            state = pagerState,
         ) { page ->
             when (pages[page]) {
-                TimelineName.Home -> homeTimeline?.let { home ->
+                TimelineName.Home -> {
                     Timeline(
                         modifier = modifier,
-                        statuses = home,
-                        onRefresh = { viewModel.refreshHomeTimeline() }
+                        statuses = homeTimeline,
+                        onRefresh = {
+                            homeTimelineState.isRefreshing = true
+                            viewModel.refreshHomeTimeline {
+                                homeTimelineState.isRefreshing = false
+                            }
+                        }
                     )
                 }
-                TimelineName.Local -> localTimeline?.let { local ->
+                TimelineName.Local -> {
                     Timeline(
                         modifier = modifier,
-                        statuses = local,
-                        onRefresh = { viewModel.refreshLocalTimeline() }
+                        statuses = localTimeline,
+                        onRefresh = {
+                            localTimelineState.isRefreshing = true
+                            viewModel.refreshLocalTimeline {
+                                localTimelineState.isRefreshing = false
+                            }
+                        }
                     )
                 }
                 TimelineName.Debug -> DummyTimeline(modifier = modifier)

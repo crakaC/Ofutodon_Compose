@@ -1,22 +1,26 @@
 package com.crakac.ofutodon.ui.component
 
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.crakac.ofutodon.mastodon.entity.Account
 import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.ui.theme.DarkGray
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import kotlinx.coroutines.launch
 
 enum class TimelineName {
     Home,
@@ -28,28 +32,54 @@ enum class TimelineName {
 fun Timeline(
     modifier: Modifier = Modifier,
     statuses: List<Status>,
-    scrollState: LazyListState = rememberLazyListState(),
-    onRefresh: suspend () -> Unit = {}
+    state: TimelineState = rememberTimelineState(),
+    onRefresh: () -> Unit = {}
 ) {
-    var isRefreshing by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
     SwipeRefresh(
-        state = rememberSwipeRefreshState(isRefreshing = isRefreshing),
-        onRefresh = {
-            scope.launch {
-                isRefreshing = true
-                onRefresh()
-                isRefreshing = false
-            }
-        }) {
-        LazyColumn(state = scrollState, modifier = modifier.fillMaxHeight()) {
+        state = state.refreshState,
+        onRefresh = onRefresh
+    ) {
+        LazyColumn(state = state.scrollState, modifier = modifier.fillMaxHeight()) {
             itemsIndexed(statuses, { _, status -> status.id }) { index, status ->
                 StatusContent(status)
                 if (index < statuses.lastIndex) {
                     Divider(color = DarkGray, thickness = Dp(0.5f))
                 }
             }
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp), contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        Modifier.size(32.dp)
+                    )
+                }
+            }
         }
+    }
+}
+
+class TimelineState(
+    val scrollState: LazyListState,
+    val refreshState: SwipeRefreshState
+) {
+    var isRefreshing: Boolean
+        set(value) {
+            refreshState.isRefreshing = value
+        }
+        get() = refreshState.isRefreshing
+}
+
+@Composable
+fun rememberTimelineState(isRefreshing: Boolean = false): TimelineState {
+    val scrollState = rememberLazyListState()
+    val refreshState = rememberSwipeRefreshState(isRefreshing)
+    return remember {
+        TimelineState(
+            scrollState, refreshState
+        )
     }
 }
 
