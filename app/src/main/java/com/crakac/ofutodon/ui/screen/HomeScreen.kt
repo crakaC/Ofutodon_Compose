@@ -39,8 +39,8 @@ fun HomeScreen(navController: NavHostController) {
     }
 }
 
-@Composable
 @OptIn(ExperimentalPagerApi::class)
+@Composable
 fun PagerTab(
     pagerState: PagerState,
     pages: Array<TimelineName>
@@ -122,7 +122,8 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
                                 homeTimelineState.isRefreshing = false
                             }
                         },
-                        onClickStatus = onClickStatus
+                        onClickStatus = onClickStatus,
+                        state = homeTimelineState
                     )
                 }
                 TimelineName.Local -> {
@@ -135,7 +136,8 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
                                 localTimelineState.isRefreshing = false
                             }
                         },
-                        onClickStatus = onClickStatus
+                        onClickStatus = onClickStatus,
+                        state = localTimelineState
                     )
                 }
                 TimelineName.Debug -> DummyTimeline(modifier = modifier)
