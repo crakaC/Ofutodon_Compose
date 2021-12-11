@@ -102,12 +102,6 @@ fun rememberTimelineState(
     }
 }
 
-@Composable
-fun DummyTimeline(modifier: Modifier = Modifier) {
-    val statuses = (1..100).map { DummyStatus.copy(id = it.toLong()) }
-    Timeline(modifier, statuses = statuses)
-}
-
 @Preview
 @Composable
 private fun TimelinePreview() {

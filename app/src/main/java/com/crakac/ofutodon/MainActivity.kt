@@ -3,13 +3,11 @@ package com.crakac.ofutodon
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.crakac.ofutodon.ui.component.TootEditForm
+import com.crakac.ofutodon.ui.screen.EditScreen
 import com.crakac.ofutodon.ui.screen.HomeScreen
 import com.crakac.ofutodon.ui.screen.Screen
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
@@ -39,7 +37,7 @@ fun OfutonApp() {
             HomeScreen(navController)
         }
         composable(Screen.Edit.name) {
-            TootEditForm(modifier = Modifier.fillMaxSize())
+            EditScreen(navController)
         }
     }
 }

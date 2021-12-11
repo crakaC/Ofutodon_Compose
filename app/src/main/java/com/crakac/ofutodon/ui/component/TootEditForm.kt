@@ -14,18 +14,33 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.crakac.ofutodon.MainViewModel
 import com.crakac.ofutodon.R
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 import com.crakac.ofutodon.util.iconResource
+
+enum class EditType {
+    OneShot,
+    Continuance
+}
+
+interface EditFormCallback {
+    fun onClickAttachment() {}
+    fun onClickPoll() {}
+    fun onClickVisibility() {}
+    fun onClickContentWarning() {}
+    fun onClickToot() {}
+
+    companion object {
+        val Default = object : EditFormCallback {}
+    }
+}
 
 @Composable
 fun TootEditForm(
     modifier: Modifier = Modifier,
     state: TootEditState = rememberTootEditState(),
+    callback: EditFormCallback = EditFormCallback.Default
 ) {
-    val viewModel: MainViewModel = hiltViewModel()
     val focusRequester = remember { FocusRequester() }
     Surface(modifier.wrapContentHeight()) {
         Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)) {
@@ -46,13 +61,13 @@ fun TootEditForm(
             )
             Spacer(Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = {}) {
+                IconButton(onClick = { callback.onClickAttachment() }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_attach_file),
                         contentDescription = "attach file"
                     )
                 }
-                IconButton(onClick = {}) {
+                IconButton(onClick = { callback.onClickPoll() }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_poll),
                         contentDescription = "poll"
@@ -68,7 +83,7 @@ fun TootEditForm(
                     )
                     VisibilityDropDownMenu(state = dropDownState)
                 }
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = { callback.onClickContentWarning() }) {
                     Text("CW")
                 }
                 Spacer(Modifier.weight(1f))
@@ -83,11 +98,7 @@ fun TootEditForm(
                 modifier = Modifier.align(Alignment.End),
                 enabled = state.canSendStatus(),
                 onClick = {
-                    state.isSending = true
-                    viewModel.toot(state.text,
-                        onSuccess = { state.reset() },
-                        finally = { state.isSending = false }
-                    )
+                    callback.onClickToot()
                 }
             ) {
                 Icon(painter = painterResource(id = R.drawable.ic_send), "Toot!")
