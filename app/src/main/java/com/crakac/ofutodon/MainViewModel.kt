@@ -9,6 +9,7 @@ import com.crakac.ofutodon.mastodon.params.StatusBody
 import com.crakac.ofutodon.ui.component.DummyStatus
 import com.crakac.ofutodon.ui.component.TimelineType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
@@ -31,6 +32,7 @@ class MainViewModel @Inject constructor(private val repo: MastodonRepository) : 
     val loadingState = mapOf(
         TimelineType.Home to mutableStateOf(true),
         TimelineType.Local to mutableStateOf(true),
+        TimelineType.Debug to mutableStateOf(false)
     )
 
     fun refresh(type: TimelineType) {
@@ -39,7 +41,7 @@ class MainViewModel @Inject constructor(private val repo: MastodonRepository) : 
             when (type) {
                 TimelineType.Home -> refreshHomeTimeline()
                 TimelineType.Local -> refreshLocalTimeline()
-                TimelineType.Debug -> {}
+                TimelineType.Debug -> {delay(3000)}
             }
             loadingState[type]?.value = false
         }
@@ -97,6 +99,7 @@ class MainViewModel @Inject constructor(private val repo: MastodonRepository) : 
                 TimelineType.Home -> refreshHomeTimeline()
                 TimelineType.Local -> refreshLocalTimeline()
                 TimelineType.Debug -> {
+                    delay(3000)
                     debugTimeline.postValue((1..100).map { DummyStatus.copy(id = it.toLong()) })
                 }
             }
