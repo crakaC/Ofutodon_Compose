@@ -48,7 +48,8 @@ fun HomeScreen(navController: NavHostController) {
 @Composable
 fun PagerTab(
     pagerState: PagerState,
-    pages: Array<TimelineType>
+    pages: Array<TimelineType>,
+    onClickSelectedTab: (page: Int) -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
     TabRow(selectedTabIndex = pagerState.currentPage,
@@ -64,8 +65,12 @@ fun PagerTab(
                 text = { Text(text = screen.name) },
                 selected = selected,
                 onClick = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(index)
+                    if (selected) {
+                        onClickSelectedTab(index)
+                    } else {
+                        scope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
                     }
                 }
             )
@@ -119,9 +124,14 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
     }
 
     val pagerState = rememberPagerState()
-
+    val scope = rememberCoroutineScope()
     Column {
-        PagerTab(pagerState, pages)
+        PagerTab(pagerState, pages, onClickSelectedTab = { page ->
+            scope.launch {
+                // Scroll to top
+                timelineState[page].scrollState.animateScrollToItem(0)
+            }
+        })
         HorizontalPager(
             count = pages.size,
             state = pagerState,
