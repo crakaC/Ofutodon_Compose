@@ -90,87 +90,101 @@ fun StatusContent(status: Status, callback: StatusCallback) {
 
 @Composable
 fun BottomIcons(status: Status, callback: StatusCallback) {
-    val textWidth = 48
-    val iconButtonSize = 40
-    val iconSize = 24
+    val iconButtonSize = 40.dp
+    val iconSize = 24.dp
+    val spanWidth = 88.dp
     val iconPadding = (iconButtonSize - iconSize) / 2
-    val spacerWidth = textWidth - iconPadding
 
     CompositionLocalProvider(LocalContentColor provides DarkGray) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            IconButton(
-                modifier = Modifier.size(iconButtonSize.dp),
-                onClick = { callback.onClickReply(status) }
+            Row(
+                Modifier
+                    .wrapContentHeight()
+                    .width(spanWidth),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(
-                    painterResource(id = R.drawable.ic_reply),
-                    contentDescription = "reply",
-                    modifier = Modifier.size(iconSize.dp)
-                )
+                IconButton(
+                    modifier = Modifier.size(iconButtonSize),
+                    onClick = { callback.onClickReply(status) }
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_reply),
+                        contentDescription = "reply",
+                        modifier = Modifier.size(iconSize)
+                    )
+                }
+                if (status.repliesCount > 0) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .offset(x = -iconPadding),
+                        text = status.repliesCount.toString(),
+                        style = MaterialTheme.typography.body2
+                    )
+                }
             }
-            if (status.repliesCount > 0) {
-                Text(
-                    modifier = Modifier
-                        .width(textWidth.dp)
-                        .offset(x = -iconPadding.dp),
-                    text = status.repliesCount.toString(),
-                    style = MaterialTheme.typography.body2
-                )
-            } else {
-                Spacer(Modifier.width(spacerWidth.dp))
-            }
-            IconButton(
-                modifier = Modifier.size(iconButtonSize.dp),
-                onClick = { callback.onClickBoost(status) }
+            Row(
+                Modifier
+                    .wrapContentHeight()
+                    .width(spanWidth),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(
-                    painterResource(id = R.drawable.ic_boost),
-                    contentDescription = "boost",
-                    modifier = Modifier.size(iconSize.dp)
-                )
+                IconButton(
+                    modifier = Modifier.size(iconButtonSize),
+                    onClick = { callback.onClickBoost(status) }
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_boost),
+                        contentDescription = "boost",
+                        modifier = Modifier.size(iconSize)
+                    )
+                }
+                if (status.reblogsCount > 0) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .offset(x = -iconPadding),
+                        text = status.reblogsCount.toString(),
+                        style = MaterialTheme.typography.body2
+                    )
+                }
             }
-            if (status.reblogsCount > 0) {
-                Text(
-                    modifier = Modifier
-                        .width(textWidth.dp)
-                        .offset(x = -iconPadding.dp),
-                    text = status.reblogsCount.toString(),
-                    style = MaterialTheme.typography.body2
-                )
-            } else {
-                Spacer(modifier = Modifier.width(spacerWidth.dp))
-            }
-            IconButton(
-                modifier = Modifier.size(iconButtonSize.dp),
-                onClick = { callback.onClickFavourite(status) }
+            Row(
+                Modifier
+                    .wrapContentHeight()
+                    .width(spanWidth),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(
-                    painterResource(id = R.drawable.ic_favourite),
-                    contentDescription = "favourite",
-                    modifier = Modifier.size(iconSize.dp)
-                )
-            }
-            if (status.favouritesCount > 0) {
-                Text(
-                    modifier = Modifier
-                        .width(textWidth.dp)
-                        .offset(x = -iconPadding.dp),
-                    text = status.favouritesCount.toString(),
-                    style = MaterialTheme.typography.body2
-                )
-            } else {
-                Spacer(Modifier.width(spacerWidth.dp))
+                IconButton(
+                    modifier = Modifier.size(iconButtonSize),
+                    onClick = { callback.onClickFavourite(status) }
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_favourite),
+                        contentDescription = "favourite",
+                        modifier = Modifier.size(iconSize)
+                    )
+                }
+                if (status.favouritesCount > 0) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .offset(x = -iconPadding),
+                        text = status.favouritesCount.toString(),
+                        style = MaterialTheme.typography.body2
+                    )
+                }
             }
             IconButton(
-                modifier = Modifier.size(iconButtonSize.dp),
+                modifier = Modifier.size(iconButtonSize),
                 onClick = { callback.onClickMore(status) }
             ) {
                 Icon(
                     painterResource(id = R.drawable.ic_more),
                     contentDescription = "more",
-                    modifier = Modifier.size(iconSize.dp)
+                    modifier = Modifier.size(iconSize)
                 )
             }
         }
@@ -202,7 +216,7 @@ private fun StatusPreview() {
         ),
         content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         createdAt = "2021-12-06T09:26:11.384Z",
-        repliesCount = 1L, reblogsCount = 1L, favouritesCount = 3L
+        repliesCount = 123456L, reblogsCount = 1L, favouritesCount = 3L
     )
     OfutodonTheme {
         StatusContent(status, StatusCallback.Default)
