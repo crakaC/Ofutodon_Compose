@@ -211,22 +211,18 @@ val DummyStatus = Status(
     repliesCount = 0L, reblogsCount = 1L, favouritesCount = 3L
 )
 
-@Preview(
-    uiMode = UI_MODE_NIGHT_YES
-)
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun StatusNightPreview() {
+    OfutodonTheme {
+        StatusContent(DummyStatus, StatusCallback.Default)
+    }
+}
+
+@Preview
 @Composable
 private fun StatusPreview() {
-    val status = Status(
-        account = Account(
-            displayName = "Lorem",
-            acct = "longlonglocal.host",
-            avatar = "https://developer.android.com/images/brand/Android_Robot.png"
-        ),
-        content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        createdAt = "2021-12-06T09:26:11.384Z",
-        repliesCount = 123456L, reblogsCount = 1L, favouritesCount = 3L
-    )
     OfutodonTheme {
-        StatusContent(status, StatusCallback.Default)
+        StatusContent(DummyStatus, StatusCallback.Default)
     }
 }
