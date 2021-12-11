@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.crakac.ofutodon.MainViewModel
+import com.crakac.ofutodon.ui.component.DefaultVisibility
 import com.crakac.ofutodon.ui.component.EditFormCallback
 import com.crakac.ofutodon.ui.component.TootEditForm
 import com.crakac.ofutodon.ui.component.rememberTootEditState
@@ -16,11 +17,11 @@ import com.crakac.ofutodon.ui.component.rememberTootEditState
 fun EditScreen(navController: NavHostController) {
     val viewModel: MainViewModel = hiltViewModel()
     val scaffoldState = rememberScaffoldState()
-    val editState = rememberTootEditState()
+    val editState = rememberTootEditState(DefaultVisibility)
     val callback = object : EditFormCallback {
         override fun onClickToot() {
             editState.isSending = true
-            viewModel.toot(editState.text,
+            viewModel.toot(editState.toStatusBody(),
                 onSuccess = { editState.reset() },
                 finally = { editState.isSending = false }
             )

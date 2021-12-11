@@ -1,6 +1,7 @@
 package com.crakac.ofutodon.mastodon.params
 
 import com.crakac.ofutodon.mastodon.entity.Poll
+import com.crakac.ofutodon.mastodon.entity.Status
 import com.google.gson.annotations.SerializedName
 
 class StatusBody(
@@ -17,7 +18,7 @@ class StatusBody(
     @SerializedName("spoiler_text")
     var spoilerText: String? = null,
     @SerializedName("visibility")
-    var visibility: String? = null,
+    var visibility: Status.Visibility? = null,
     @SerializedName("scheduled_at")
     var scheduledAt: String? = null,
     @SerializedName("language")

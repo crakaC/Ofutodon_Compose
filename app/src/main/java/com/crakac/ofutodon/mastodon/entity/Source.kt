@@ -8,7 +8,7 @@ data class Source(
     @SerializedName("fields")
     val fields: List<Field> = emptyList(),
     @SerializedName("privacy")
-    val privacy: String = Status.Visibility.UnListed.value,
+    val privacy: Status.Visibility = Status.Visibility.UnListed,
     @SerializedName("sensitive")
     val sensitive: Boolean = false,
     @SerializedName("language")

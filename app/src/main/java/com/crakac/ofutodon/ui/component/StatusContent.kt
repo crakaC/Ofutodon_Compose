@@ -23,6 +23,7 @@ import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.ui.theme.DarkGray
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 import com.crakac.ofutodon.ui.theme.Shapes
+import com.crakac.ofutodon.util.iconResource
 
 interface StatusCallback {
     fun onClickStatus(status: Status) {}
@@ -71,6 +72,13 @@ fun StatusContent(status: Status, callback: StatusCallback) {
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f),
                         color = DarkGray
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Icon(
+                        painter = painterResource(id = status.visibility.iconResource()),
+                        contentDescription = "visibility",
+                        modifier = Modifier.size(16.dp),
+                        tint = DarkGray,
                     )
                     Spacer(Modifier.width(4.dp))
                     Text(

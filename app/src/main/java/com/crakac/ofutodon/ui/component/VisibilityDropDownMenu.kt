@@ -17,6 +17,7 @@ import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.util.iconResource
 import com.crakac.ofutodon.util.stringResource
 
+val DefaultVisibility = Status.Visibility.Public
 
 class VisibilityDropDownState(initialVisibility: Status.Visibility) {
     var expanded by mutableStateOf(false)

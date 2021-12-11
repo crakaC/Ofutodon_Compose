@@ -80,10 +80,10 @@ class MainViewModel @Inject constructor(private val repo: MastodonRepository) : 
         }
     }
 
-    fun toot(content: String, onSuccess: () -> Unit = {}, finally: () -> Unit = {}) {
+    fun toot(content: StatusBody, onSuccess: () -> Unit = {}, finally: () -> Unit = {}) {
         viewModelScope.launch {
             try {
-                repo.postStatus(StatusBody(content = content))
+                repo.postStatus(content)
                 onSuccess()
             } catch (e: IOException) {
                 Log.w("MainViewModel", "${e.message}")

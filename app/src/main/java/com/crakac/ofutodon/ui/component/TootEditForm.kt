@@ -26,7 +26,6 @@ enum class EditType {
 interface EditFormCallback {
     fun onClickAttachment() {}
     fun onClickPoll() {}
-    fun onClickVisibility() {}
     fun onClickContentWarning() {}
     fun onClickToot() {}
 
@@ -38,7 +37,7 @@ interface EditFormCallback {
 @Composable
 fun TootEditForm(
     modifier: Modifier = Modifier,
-    state: TootEditState = rememberTootEditState(),
+    state: TootEditState = rememberTootEditState(DefaultVisibility),
     callback: EditFormCallback = EditFormCallback.Default
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -73,15 +72,14 @@ fun TootEditForm(
                         contentDescription = "poll"
                     )
                 }
-                val dropDownState = rememberVisibilityDropDownState()
                 IconButton(onClick = {
-                    dropDownState.expanded = true
+                    state.dropDownState.expanded = true
                 }) {
                     Icon(
-                        painter = painterResource(dropDownState.visibility.iconResource()),
+                        painter = painterResource(state.dropDownState.visibility.iconResource()),
                         contentDescription = "visibility"
                     )
-                    VisibilityDropDownMenu(state = dropDownState)
+                    VisibilityDropDownMenu(state = state.dropDownState)
                 }
                 IconButton(onClick = { callback.onClickContentWarning() }) {
                     Text("CW")

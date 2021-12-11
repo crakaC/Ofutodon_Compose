@@ -16,7 +16,7 @@ data class Status(
     @SerializedName("content")
     val content: String = "",
     @SerializedName("visibility")
-    val visibility: String = Visibility.Public.value,
+    val visibility: Visibility = Visibility.Public,
     @SerializedName("sensitive")
     val sensitive: Boolean = false,
     @SerializedName("spoiler_text")
@@ -64,20 +64,27 @@ data class Status(
     @SerializedName("pinned")
     val isPinned: Boolean = false,
 ) {
-    enum class Visibility(val value: String) {
-        Public("public"),
-        UnListed("unlisted"),
-        Private("private"),
-        Direct("direct")
+    enum class Visibility {
+        @SerializedName("public")
+        Public,
+
+        @SerializedName("unlisted")
+        UnListed,
+
+        @SerializedName("private")
+        Private,
+
+        @SerializedName("direct")
+        Direct,
     }
 
     fun isBoostable(): Boolean {
-        return visibility == Visibility.Public.value || visibility == Visibility.UnListed.value
+        return visibility == Visibility.Public || visibility == Visibility.UnListed
     }
 
-    fun isUnlisted() = visibility == Visibility.UnListed.value
-    fun isPrivate() = visibility == Visibility.Private.value
-    fun isDirect() = visibility == Visibility.Direct.value
+    fun isUnlisted() = visibility == Visibility.UnListed
+    fun isPrivate() = visibility == Visibility.Private
+    fun isDirect() = visibility == Visibility.Direct
 
     val originalId: Long
         get() {
