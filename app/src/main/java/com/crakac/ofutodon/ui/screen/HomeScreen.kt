@@ -1,21 +1,26 @@
 package com.crakac.ofutodon.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.crakac.ofutodon.MainViewModel
 import com.crakac.ofutodon.R
 import com.crakac.ofutodon.mastodon.entity.Status
-import com.crakac.ofutodon.ui.component.*
+import com.crakac.ofutodon.ui.component.StatusCallback
+import com.crakac.ofutodon.ui.component.Timeline
+import com.crakac.ofutodon.ui.component.TimelineType
+import com.crakac.ofutodon.ui.component.rememberTimelineState
+import com.crakac.ofutodon.util.showToast
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
@@ -43,7 +48,7 @@ fun HomeScreen(navController: NavHostController) {
 @Composable
 fun PagerTab(
     pagerState: PagerState,
-    pages: Array<TimelineName>
+    pages: Array<TimelineType>
 ) {
     val scope = rememberCoroutineScope()
     TabRow(selectedTabIndex = pagerState.currentPage,
@@ -72,38 +77,48 @@ fun PagerTab(
 @Composable
 fun HomeScreenContent(modifier: Modifier = Modifier) {
     val viewModel: MainViewModel = hiltViewModel()
-    val homeTimeline by viewModel.homeTimeline.observeAsState(emptyList())
-    val localTimeline by viewModel.localTimeline.observeAsState(emptyList())
 
-    val homeTimelineState = rememberTimelineState()
-    val localTimelineState = rememberTimelineState()
+    val pages = TimelineType.values()// + (1..2).map { TimelineType.Debug }.toTypedArray()
 
-    val pagerState = rememberPagerState()
-    val pages = TimelineName.values()
+    LaunchedEffect(Unit) {
+        pages.forEach {
+            viewModel.initTimeline(it)
+        }
+    }
 
+    val timelineState = pages.map { type ->
+        rememberTimelineState(
+            viewModel.loadingState[type] ?: mutableStateOf(false)
+        )
+    }
+    val timelineStatuses = pages.map { type ->
+        viewModel.timelines[type]?.observeAsState(emptyList()) ?: mutableStateOf(emptyList())
+    }
+
+    val context = LocalContext.current
     val onClickStatus = object : StatusCallback {
         override fun onClickStatus(status: Status) {
-            Log.d("StatusCallback", "onClickStatus")
+            context.showToast("onClickStatus")
         }
 
         override fun onClickReply(status: Status) {
-            Log.d("StatusCallback", "onClickReply")
+            context.showToast("onClickReply")
         }
 
         override fun onClickFavourite(status: Status) {
-            Log.d("StatusCallback", "onClickFavourite")
             viewModel.favourite(status.id)
         }
 
         override fun onClickBoost(status: Status) {
-            Log.d("StatusCallback", "onClickBoost")
             viewModel.boost(status.id)
         }
 
         override fun onClickMore(status: Status) {
-            Log.d("StatusCallback", "onClickMore")
+            context.showToast("onClickMore")
         }
     }
+
+    val pagerState = rememberPagerState()
 
     Column {
         PagerTab(pagerState, pages)
@@ -111,37 +126,16 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
             count = pages.size,
             state = pagerState,
         ) { page ->
-            when (pages[page]) {
-                TimelineName.Home -> {
-                    Timeline(
-                        modifier = modifier,
-                        statuses = homeTimeline,
-                        onRefresh = {
-                            homeTimelineState.isRefreshing = true
-                            viewModel.refreshHomeTimeline {
-                                homeTimelineState.isRefreshing = false
-                            }
-                        },
-                        onClickStatus = onClickStatus,
-                        state = homeTimelineState
-                    )
-                }
-                TimelineName.Local -> {
-                    Timeline(
-                        modifier = modifier,
-                        statuses = localTimeline,
-                        onRefresh = {
-                            localTimelineState.isRefreshing = true
-                            viewModel.refreshLocalTimeline {
-                                localTimelineState.isRefreshing = false
-                            }
-                        },
-                        onClickStatus = onClickStatus,
-                        state = localTimelineState
-                    )
-                }
-                TimelineName.Debug -> DummyTimeline(modifier = modifier)
-            }
+            val type = pages[page]
+            Timeline(
+                modifier = modifier,
+                statuses = timelineStatuses[page].value,
+                onRefresh = {
+                    viewModel.refresh(type)
+                },
+                onClickStatus = onClickStatus,
+                state = timelineState[page]
+            )
         }
     }
 }

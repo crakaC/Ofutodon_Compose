@@ -1,10 +1,13 @@
 package com.crakac.ofutodon
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import com.crakac.ofutodon.data.MastodonRepository
 import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.mastodon.params.StatusBody
+import com.crakac.ofutodon.ui.component.DummyStatus
+import com.crakac.ofutodon.ui.component.TimelineType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -13,37 +16,41 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repo: MastodonRepository) : ViewModel() {
     private val _homeTimeline: MutableLiveData<List<Status>> = MutableLiveData()
-    val homeTimeline: LiveData<List<Status>>
-        get() {
-            if (_homeTimeline.value == null) {
-                refreshHomeTimeline()
-            }
-            return _homeTimeline
-        }
-
     private val _localTimeline: MutableLiveData<List<Status>> = MutableLiveData()
-    val localTimeline: LiveData<List<Status>>
-        get() {
-            if (_localTimeline.value == null) {
-                refreshLocalTimeline()
-            }
-            return _localTimeline
-        }
+    private val debugTimeline: MutableLiveData<List<Status>> = MutableLiveData()
 
-    private val timelines = listOf(_homeTimeline, _localTimeline)
+    private val _timelines = mapOf(
+        TimelineType.Home to _homeTimeline,
+        TimelineType.Local to _localTimeline,
+        TimelineType.Debug to debugTimeline
+    )
 
-    fun refreshHomeTimeline(postExecute: () -> Unit = {}) {
+    val timelines: Map<TimelineType, LiveData<List<Status>>>
+        get() = _timelines
+
+    val loadingState = mapOf(
+        TimelineType.Home to mutableStateOf(true),
+        TimelineType.Local to mutableStateOf(true),
+    )
+
+    fun refresh(type: TimelineType) {
         viewModelScope.launch {
-            _homeTimeline.postValue(repo.getHomeTimeline())
-            postExecute()
+            loadingState[type]?.value = true
+            when (type) {
+                TimelineType.Home -> refreshHomeTimeline()
+                TimelineType.Local -> refreshLocalTimeline()
+                TimelineType.Debug -> {}
+            }
+            loadingState[type]?.value = false
         }
     }
 
-    fun refreshLocalTimeline(postExecute: () -> Unit = {}) {
-        viewModelScope.launch {
-            _localTimeline.postValue(repo.getPublicTimeline(localOnly = true))
-            postExecute()
-        }
+    private suspend fun refreshHomeTimeline() {
+        _homeTimeline.postValue(repo.getHomeTimeline())
+    }
+
+    private suspend fun refreshLocalTimeline() {
+        _localTimeline.postValue(repo.getPublicTimeline(localOnly = true))
     }
 
     fun favourite(id: Long) {
@@ -61,7 +68,7 @@ class MainViewModel @Inject constructor(private val repo: MastodonRepository) : 
     }
 
     private fun update(id: Long, updated: Status) {
-        timelines.forEach { timeline ->
+        _timelines.values.forEach { timeline ->
             timeline.value?.indexOfFirst { it.id == id }?.let { index ->
                 if (index < 0) return@let
                 val copy = timeline.value!!.toMutableList()
@@ -81,6 +88,19 @@ class MainViewModel @Inject constructor(private val repo: MastodonRepository) : 
             } finally {
                 finally()
             }
+        }
+    }
+
+    fun initTimeline(type: TimelineType) {
+        viewModelScope.launch {
+            when (type) {
+                TimelineType.Home -> refreshHomeTimeline()
+                TimelineType.Local -> refreshLocalTimeline()
+                TimelineType.Debug -> {
+                    debugTimeline.postValue((1..100).map { DummyStatus.copy(id = it.toLong()) })
+                }
+            }
+            loadingState[type]?.value = false
         }
     }
 }

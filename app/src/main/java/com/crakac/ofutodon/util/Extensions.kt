@@ -1,5 +1,7 @@
 package com.crakac.ofutodon.util
 
+import android.content.Context
+import android.widget.Toast
 import com.crakac.ofutodon.R
 import com.crakac.ofutodon.mastodon.entity.Status
 
@@ -20,4 +22,8 @@ fun Status.Visibility.stringResource(): Int {
         Status.Visibility.Private -> R.string.visibility_private
         Status.Visibility.Direct -> R.string.visibility_direct
     }
+}
+
+fun Context.showToast(msg: String) {
+    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 }
