@@ -9,10 +9,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +37,7 @@ fun Timeline(
     onClickStatus: StatusCallback = StatusCallback.Default
 ) {
     if (statuses.isEmpty()) {
-        if (state.isRefreshing) {
+        if (state.isLoading) {
             CircularProgressIndicator(
                 Modifier.size(48.dp)
             )
@@ -85,14 +82,9 @@ fun Timeline(
 class TimelineState(
     val scrollState: LazyListState,
     val refreshState: SwipeRefreshState,
-    private val loadingState: MutableState<Boolean>,
+    loadingState: MutableState<Boolean>,
 ) {
-    var isRefreshing: Boolean
-        set(value) {
-            loadingState.value = value
-            refreshState.isRefreshing = value
-        }
-        get() = loadingState.value
+    val isLoading by loadingState
 }
 
 @Composable
