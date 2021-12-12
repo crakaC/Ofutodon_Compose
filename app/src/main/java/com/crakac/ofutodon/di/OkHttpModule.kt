@@ -14,14 +14,9 @@ import javax.inject.Singleton
 object OkHttpModule {
     @Provides
     @Singleton
-    fun provideOkHttp() = OkHttpClient.Builder()
-        .addInterceptor(
-            HttpLoggingInterceptor().setLevel(
-                if (BuildConfig.DEBUG)
-                    HttpLoggingInterceptor.Level.BASIC
-                else
-                    HttpLoggingInterceptor.Level.NONE
-            )
-        )
-        .build()
+    fun provideOkHttp() = OkHttpClient.Builder().apply {
+        if (BuildConfig.DEBUG) {
+            addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        }
+    }.build()
 }
