@@ -4,7 +4,7 @@ import com.crakac.ofutodon.mastodon.entity.Poll
 import com.crakac.ofutodon.mastodon.entity.Status
 import com.google.gson.annotations.SerializedName
 
-class StatusBody(
+data class StatusBody(
     @SerializedName("status")
     var content: String? = null,
     @SerializedName("media_ids")

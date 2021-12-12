@@ -1,19 +1,24 @@
 package com.crakac.ofutodon.ui.component
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusOrder
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import com.crakac.ofutodon.R
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 import com.crakac.ofutodon.util.iconResource
@@ -24,6 +29,7 @@ enum class EditType {
 }
 
 interface EditFormCallback {
+    fun onClickCamera() {}
     fun onClickAttachment() {}
     fun onClickPoll() {}
     fun onClickContentWarning() {}
@@ -58,11 +64,37 @@ fun TootEditForm(
                     backgroundColor = Color.Transparent
                 )
             )
+            val hasAttachment by remember {
+                derivedStateOf { state.attachments.any() }
+            }
+            if (hasAttachment) {
+                LazyRow(
+                    modifier = Modifier.wrapContentHeight(),
+                    state = rememberLazyListState(),
+                ) {
+                    items(state.attachments) { uri ->
+                        Image(
+                            painter = rememberImagePainter(uri),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(120.dp)
+                                .clickable { },
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
+                }
+            }
             Spacer(Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = { callback.onClickCamera() }) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_camera),
+                        contentDescription = "camera"
+                    )
+                }
                 IconButton(onClick = { callback.onClickAttachment() }) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_attach_file),
+                        painter = painterResource(R.drawable.ic_photo),
                         contentDescription = "attach file"
                     )
                 }

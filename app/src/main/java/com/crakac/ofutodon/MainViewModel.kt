@@ -2,12 +2,15 @@ package com.crakac.ofutodon
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.crakac.ofutodon.data.MastodonRepository
 import com.crakac.ofutodon.mastodon.entity.Status
-import com.crakac.ofutodon.mastodon.params.StatusBody
 import com.crakac.ofutodon.ui.component.DummyStatus
 import com.crakac.ofutodon.ui.component.TimelineType
+import com.crakac.ofutodon.ui.component.TootEditState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -41,7 +44,9 @@ class MainViewModel @Inject constructor(private val repo: MastodonRepository) : 
             when (type) {
                 TimelineType.Home -> refreshHomeTimeline()
                 TimelineType.Local -> refreshLocalTimeline()
-                TimelineType.Debug -> {delay(3000)}
+                TimelineType.Debug -> {
+                    delay(3000)
+                }
             }
             loadingState[type]?.value = false
         }
@@ -80,15 +85,21 @@ class MainViewModel @Inject constructor(private val repo: MastodonRepository) : 
         }
     }
 
-    fun toot(content: StatusBody, onSuccess: () -> Unit = {}, finally: () -> Unit = {}) {
+    fun toot(state: TootEditState) {
+        state.isSending = true
         viewModelScope.launch {
             try {
-                repo.postStatus(content)
-                onSuccess()
+                val attachmentIds = if (state.attachments.any()) {
+                    repo.uploadMediaAttachments(state.attachments).map { it.id }
+                } else {
+                    null
+                }
+                repo.postStatus(state.toStatusBody().copy(mediaIds = attachmentIds))
+                state.reset()
             } catch (e: IOException) {
                 Log.w("MainViewModel", "${e.message}")
             } finally {
-                finally()
+                state.isSending = false
             }
         }
     }

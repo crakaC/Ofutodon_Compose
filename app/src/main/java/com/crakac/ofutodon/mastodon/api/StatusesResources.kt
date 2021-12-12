@@ -113,9 +113,9 @@ interface StatusesResources {
      * focus: Two floating points (x,y), comma-delimited, ranging from -1.0 to 1.0
      */
     suspend fun createAttachment(
-        @Part("file")
+        @Part
         file: MultipartBody.Part,
-        @Part("thumbnail")
+        @Part
         thumbnail: MultipartBody.Part? = null,
         @Part("description")
         description: String? = null,
@@ -134,9 +134,9 @@ interface StatusesResources {
     suspend fun updateAttachment(
         @Path("id")
         attachmentId: Long,
-        @Part("file")
-        file: MultipartBody.Part,
-        @Part("thumbnail")
+        @Part
+        file: MultipartBody.Part? = null,
+        @Part
         thumbnail: MultipartBody.Part? = null,
         @Part("description")
         description: String? = null,

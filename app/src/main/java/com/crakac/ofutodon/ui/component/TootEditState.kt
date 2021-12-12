@@ -1,5 +1,6 @@
 package com.crakac.ofutodon.ui.component
 
+import android.net.Uri
 import androidx.compose.runtime.*
 import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.mastodon.params.StatusBody
@@ -9,11 +10,11 @@ const val MAX_TOOT_LENGTH = 500
 class TootEditState(val dropDownState: VisibilityDropDownState) {
     var text by mutableStateOf("")
     var isSending by mutableStateOf(false)
-    val attachmentIds = mutableStateListOf<Long>()
+    var attachments by mutableStateOf<List<Uri>>(emptyList())
 
     fun canSendStatus(): Boolean {
         return !isSending && ((text.isNotBlank() && text.length <= MAX_TOOT_LENGTH)
-                || attachmentIds.isNotEmpty())
+                || attachments.isNotEmpty())
     }
 
     val remaining: Int
@@ -24,16 +25,14 @@ class TootEditState(val dropDownState: VisibilityDropDownState) {
 
     fun reset() {
         text = ""
-        attachmentIds.clear()
+        attachments = emptyList()
     }
 
     fun toStatusBody() =
         StatusBody(
             content = text,
-            mediaIds = if (attachmentIds.any()) attachmentIds else null,
             visibility = dropDownState.visibility
         )
-
 }
 
 @Composable
