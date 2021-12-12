@@ -7,6 +7,7 @@ buildscript {
         okhttp_version = '4.9.1'
         coil_version = '1.4.0'
         lifecycle_version = '2.4.0'
+        accompanist_version = '0.21.4-beta'
     }
     repositories {
         google()
