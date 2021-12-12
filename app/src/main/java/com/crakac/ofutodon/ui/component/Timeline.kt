@@ -37,15 +37,15 @@ fun Timeline(
     onClickStatus: StatusCallback = StatusCallback.Default
 ) {
     if (statuses.isEmpty()) {
-        if (state.isLoading) {
-            CircularProgressIndicator(
-                Modifier.size(48.dp)
-            )
-        } else {
-            Box(
-                Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
+        Box(
+            Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    Modifier.size(48.dp)
+                )
+            } else {
                 Button(onClick = onRefresh) {
                     Text("Reload")
                 }
