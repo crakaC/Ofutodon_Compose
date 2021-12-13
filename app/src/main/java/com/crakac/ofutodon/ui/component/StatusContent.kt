@@ -101,7 +101,8 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
     val iconButtonSize = 40.dp
     val iconSize = 24.dp
     val spanWidth = 88.dp
-    val iconPadding = (iconButtonSize - iconSize) / 2
+    val textOffset = 4.dp
+    val textWidth = spanWidth - iconButtonSize + textOffset * 2
 
     CompositionLocalProvider(LocalContentColor provides DarkGray) {
         Row(
@@ -126,8 +127,7 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
                 if (status.repliesCount > 0) {
                     Text(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .offset(x = -iconPadding),
+                            .requiredWidth(textWidth),
                         text = status.repliesCount.toString(),
                         style = MaterialTheme.typography.body2
                     )
@@ -152,8 +152,7 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
                 if (status.reblogsCount > 0) {
                     Text(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .offset(x = -iconPadding),
+                            .requiredWidth(textWidth),
                         text = status.reblogsCount.toString(),
                         style = MaterialTheme.typography.body2
                     )
@@ -178,8 +177,7 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
                 if (status.favouritesCount > 0) {
                     Text(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .offset(x = -iconPadding),
+                            .requiredWidth(textWidth),
                         text = status.favouritesCount.toString(),
                         style = MaterialTheme.typography.body2
                     )
@@ -208,21 +206,31 @@ val DummyStatus = Status(
     ),
     content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     createdAt = "2021-12-06T09:26:11.384Z",
-    repliesCount = 0L, reblogsCount = 1L, favouritesCount = 3L
+    repliesCount = 2L, reblogsCount = 1234567L, favouritesCount = 123L
 )
 
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun StatusNightPreview() {
+    val status = DummyStatus.copy(
+        repliesCount = 1L,
+        reblogsCount = 123L,
+        favouritesCount = 123456L,
+    )
     OfutodonTheme {
-        StatusContent(DummyStatus, StatusCallback.Default)
+        StatusContent(status, StatusCallback.Default)
     }
 }
 
 @Preview
 @Composable
 private fun StatusPreview() {
+    val status = DummyStatus.copy(
+        repliesCount = 1L,
+        reblogsCount = 12L,
+        favouritesCount = 123456L,
+    )
     OfutodonTheme {
-        StatusContent(DummyStatus, StatusCallback.Default)
+        StatusContent(status, StatusCallback.Default)
     }
 }
