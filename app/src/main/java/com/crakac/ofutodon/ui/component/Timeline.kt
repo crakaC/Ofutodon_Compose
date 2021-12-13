@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.ui.theme.DarkGray
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
+import com.crakac.ofutodon.util.OnAppearLastItem
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -33,8 +34,6 @@ fun Timeline(
     modifier: Modifier = Modifier,
     statuses: List<Status>,
     state: TimelineState = rememberTimelineState(),
-    onRefresh: () -> Unit = {},
-    onClickStatus: StatusCallback = StatusCallback.Default
 ) {
     if (statuses.isEmpty()) {
         Box(
@@ -46,7 +45,7 @@ fun Timeline(
                     Modifier.size(48.dp)
                 )
             } else {
-                Button(onClick = onRefresh) {
+                Button(onClick = state.onRefresh) {
                     Text("Reload")
                 }
             }
@@ -54,11 +53,11 @@ fun Timeline(
     } else {
         SwipeRefresh(
             state = state.refreshState,
-            onRefresh = onRefresh
+            onRefresh = state.onRefresh
         ) {
             LazyColumn(state = state.scrollState, modifier = modifier.fillMaxHeight()) {
                 itemsIndexed(statuses, { _, status -> status.id }) { index, status ->
-                    StatusContent(status, onClickStatus)
+                    StatusContent(status, state.onClickStatus)
                     if (index < statuses.lastIndex) {
                         Divider(color = DarkGray, thickness = Dp(0.5f))
                     }
@@ -82,22 +81,30 @@ fun Timeline(
 class TimelineState(
     val scrollState: LazyListState,
     val refreshState: SwipeRefreshState,
+    /* loadingState is shared with ViewModel. It seems bad. */
     loadingState: MutableState<Boolean>,
+    val onRefresh: () -> Unit = {},
+    val onClickStatus: StatusCallback = StatusCallback.Default
 ) {
     val isLoading by loadingState
 }
 
 @Composable
 fun rememberTimelineState(
-    loadingState: MutableState<Boolean> = mutableStateOf(false)
+    loadingState: MutableState<Boolean> = mutableStateOf(false),
+    onRefresh: () -> Unit = {},
+    onLastItemAppeared: () -> Unit = {},
+    onClickStatus: StatusCallback = StatusCallback.Default
 ): TimelineState {
-    val scrollState = rememberLazyListState()
+    val scrollState = rememberLazyListState().apply { OnAppearLastItem(onLastItemAppeared) }
     val refreshState = rememberSwipeRefreshState(loadingState.value)
     return remember {
         TimelineState(
             scrollState = scrollState,
             refreshState = refreshState,
-            loadingState = loadingState
+            loadingState = loadingState,
+            onRefresh = onRefresh,
+            onClickStatus = onClickStatus
         )
     }
 }

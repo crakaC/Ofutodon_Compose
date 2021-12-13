@@ -2,8 +2,12 @@ package com.crakac.ofutodon.util
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.runtime.*
 import com.crakac.ofutodon.R
 import com.crakac.ofutodon.mastodon.entity.Status
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
 
 
 fun Status.Visibility.iconResource(): Int {
@@ -26,4 +30,22 @@ fun Status.Visibility.stringResource(): Int {
 
 fun Context.showToast(msg: String) {
     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+}
+
+@Composable
+fun LazyListState.OnAppearLastItem(onAppearLastItem: () -> Unit) {
+    val isReachedToEnd by remember {
+        derivedStateOf {
+            layoutInfo.visibleItemsInfo.size < layoutInfo.totalItemsCount &&
+                    layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        snapshotFlow { isReachedToEnd }
+            .filter { it }
+            .collect {
+                onAppearLastItem()
+            }
+    }
 }

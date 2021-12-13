@@ -91,15 +91,6 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
         }
     }
 
-    val timelineState = pages.map { type ->
-        rememberTimelineState(
-            viewModel.loadingState[type] ?: mutableStateOf(false)
-        )
-    }
-    val timelineStatuses = pages.map { type ->
-        viewModel.timelines[type]?.observeAsState(emptyList()) ?: mutableStateOf(emptyList())
-    }
-
     val context = LocalContext.current
     val onClickStatus = object : StatusCallback {
         override fun onClickStatus(status: Status) {
@@ -123,6 +114,18 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
         }
     }
 
+    val timelineState = pages.map { type ->
+        rememberTimelineState(
+            loadingState = viewModel.loadingState[type] ?: mutableStateOf(false),
+            onRefresh = { viewModel.refresh(type) },
+            onLastItemAppeared = { context.showToast("last item appeared") },
+            onClickStatus = onClickStatus
+        )
+    }
+    val timelineStatuses = pages.map { type ->
+        viewModel.timelines[type]?.observeAsState(emptyList()) ?: mutableStateOf(emptyList())
+    }
+
     val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
     Column {
@@ -136,14 +139,9 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
             count = pages.size,
             state = pagerState,
         ) { page ->
-            val type = pages[page]
             Timeline(
                 modifier = modifier,
                 statuses = timelineStatuses[page].value,
-                onRefresh = {
-                    viewModel.refresh(type)
-                },
-                onClickStatus = onClickStatus,
                 state = timelineState[page]
             )
         }
