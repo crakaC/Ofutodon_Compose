@@ -9,7 +9,10 @@ import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,7 +23,6 @@ import com.crakac.ofutodon.ui.theme.DarkGray
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 import com.crakac.ofutodon.util.OnAppearLastItem
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 enum class TimelineType {
@@ -33,34 +35,42 @@ enum class TimelineType {
 fun Timeline(
     modifier: Modifier = Modifier,
     statuses: List<Status>,
-    state: TimelineState = rememberTimelineState(),
+    loadingState: MutableState<Boolean> = mutableStateOf(false),
+    scrollState: LazyListState = rememberLazyListState(),
+    onEmpty: () -> Unit = {},
+    onRefresh: () -> Unit = {},
+    onLastItemAppeared: () -> Unit = {},
+    onClickStatus: StatusCallback = StatusCallback.Default
 ) {
+    val isLoading by loadingState
+    val refreshState = rememberSwipeRefreshState(isLoading)
+    scrollState.OnAppearLastItem(onLastItemAppeared)
     if (statuses.isEmpty()) {
         Box(
             Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            if (state.isLoading) {
+            if (isLoading) {
                 CircularProgressIndicator(
                     Modifier.size(48.dp)
                 )
             } else {
-                Button(onClick = state.onEmpty) {
+                Button(onClick = onEmpty) {
                     Text("Reload")
                 }
             }
         }
     } else {
         SwipeRefresh(
-            state = state.refreshState,
-            onRefresh = state.onRefresh
+            state = refreshState,
+            onRefresh = onRefresh
         ) {
-            LazyColumn(state = state.scrollState, modifier = modifier.fillMaxHeight()) {
+            LazyColumn(state = scrollState, modifier = modifier.fillMaxHeight()) {
                 itemsIndexed(
                     items = statuses,
                     key = { _, status -> status.id })
                 { index, status ->
-                    StatusContent(status, state.onClickStatus)
+                    StatusContent(status, onClickStatus)
                     if (index < statuses.lastIndex) {
                         Divider(color = DarkGray, thickness = Dp(0.5f))
                     }
@@ -78,40 +88,6 @@ fun Timeline(
                 }
             }
         }
-    }
-}
-
-class TimelineState(
-    val scrollState: LazyListState,
-    val refreshState: SwipeRefreshState,
-    /* loadingState is shared with ViewModel. It seems bad. */
-    loadingState: MutableState<Boolean>,
-    val onEmpty: () -> Unit = {},
-    val onRefresh: () -> Unit = {},
-    val onClickStatus: StatusCallback = StatusCallback.Default
-) {
-    val isLoading by loadingState
-}
-
-@Composable
-fun rememberTimelineState(
-    loadingState: MutableState<Boolean> = mutableStateOf(false),
-    onEmpty: () -> Unit = {},
-    onRefresh: () -> Unit = {},
-    onLastItemAppeared: () -> Unit = {},
-    onClickStatus: StatusCallback = StatusCallback.Default
-): TimelineState {
-    val scrollState = rememberLazyListState().apply { OnAppearLastItem(onLastItemAppeared) }
-    val refreshState = rememberSwipeRefreshState(loadingState.value)
-    return remember {
-        TimelineState(
-            scrollState = scrollState,
-            refreshState = refreshState,
-            loadingState = loadingState,
-            onEmpty = onEmpty,
-            onRefresh = onRefresh,
-            onClickStatus = onClickStatus
-        )
     }
 }
 

@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             OfutodonTheme {
                 OfutonApp()
-//                Timeline(modifier = Modifier.fillMaxSize(), statuses = DebugStatuses)
+//                Timeline(modifier = Modifier.fillMaxSize(), statuses = (1..100).map { DummyStatus.copy(id = it.toLong()) })
             }
         }
     }

@@ -2,12 +2,10 @@ package com.crakac.ofutodon.ui.screen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -19,7 +17,6 @@ import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.ui.component.StatusCallback
 import com.crakac.ofutodon.ui.component.Timeline
 import com.crakac.ofutodon.ui.component.TimelineType
-import com.crakac.ofutodon.ui.component.rememberTimelineState
 import com.crakac.ofutodon.util.showToast
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
@@ -114,14 +111,8 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
         }
     }
 
-    val timelineState = pages.map { type ->
-        rememberTimelineState(
-            loadingState = viewModel.loadingState[type] ?: mutableStateOf(false),
-            onEmpty = { viewModel.refresh(type) },
-            onRefresh = { viewModel.refresh(type) },
-            onLastItemAppeared = { viewModel.fetchNext(type) },
-            onClickStatus = onClickStatus
-        )
+    val scrollState = pages.map {
+        rememberLazyListState()
     }
     val timelineStatuses = pages.map { type ->
         viewModel.timelines[type]?.observeAsState(emptyList()) ?: mutableStateOf(emptyList())
@@ -133,17 +124,23 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
         PagerTab(pagerState, pages, onClickSelectedTab = { page ->
             scope.launch {
                 // Scroll to top
-                timelineState[page].scrollState.animateScrollToItem(0)
+                scrollState[page].animateScrollToItem(0)
             }
         })
         HorizontalPager(
             count = pages.size,
             state = pagerState,
         ) { page ->
+            val type = pages[page]
             Timeline(
                 modifier = modifier,
                 statuses = timelineStatuses[page].value,
-                state = timelineState[page]
+                loadingState = viewModel.loadingState[type] ?: remember { mutableStateOf(false) },
+                scrollState = scrollState[page],
+                onEmpty = { viewModel.refresh(type) },
+                onRefresh = { viewModel.refresh(type) },
+                onLastItemAppeared = { viewModel.fetchNext(type) },
+                onClickStatus = onClickStatus
             )
         }
     }
