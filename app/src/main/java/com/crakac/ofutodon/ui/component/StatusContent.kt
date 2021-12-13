@@ -1,7 +1,6 @@
 package com.crakac.ofutodon.ui.component
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -105,7 +104,6 @@ fun StatusContent(status: Status, callback: StatusCallback) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Attachments(attachments: List<Attachment>, onClickAttachment: (Attachment) -> Unit = {}) {
     val rows = if (attachments.size >= 3) 2 else 1
