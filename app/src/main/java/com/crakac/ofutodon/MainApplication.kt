@@ -3,7 +3,6 @@ package com.crakac.ofutodon
 import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
-import coil.util.CoilUtils
 import dagger.hilt.android.HiltAndroidApp
 import okhttp3.OkHttpClient
 import javax.inject.Inject
@@ -15,11 +14,7 @@ class MainApplication : Application(), ImageLoaderFactory {
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(applicationContext)
             .crossfade(true)
-            .okHttpClient {
-                okHttpClient.newBuilder()
-                    .cache(CoilUtils.createDefaultCache(applicationContext))
-                    .build()
-            }
+            .okHttpClient(okHttpClient)
             .build()
     }
 }

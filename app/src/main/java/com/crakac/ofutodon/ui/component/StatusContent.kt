@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.crakac.ofutodon.R
 import com.crakac.ofutodon.mastodon.entity.Account
 import com.crakac.ofutodon.mastodon.entity.Attachment
@@ -51,9 +51,7 @@ fun StatusContent(status: Status, callback: StatusCallback) {
                 .padding(start = 8.dp, end = 8.dp, top = 12.dp)
         ) {
             Image(
-                painter = rememberImagePainter(
-                    data = account.avatar,
-                ),
+                painter = rememberAsyncImagePainter(model = account.avatar),
                 contentDescription = "icon",
                 modifier = Modifier
                     .size(48.dp)
@@ -128,7 +126,7 @@ fun Attachments(attachments: List<Attachment>, onClickAttachment: (Attachment) -
                         Spacer(Modifier.height(spacer))
                     }
                     Image(
-                        painter = rememberImagePainter(attachment.previewUrl),
+                        painter = rememberAsyncImagePainter(attachment.previewUrl),
                         contentDescription = attachment.description,
                         modifier = Modifier
                             .fillMaxWidth()

@@ -21,17 +21,12 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.crakac.ofutodon.R
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 import com.crakac.ofutodon.util.iconResource
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
-
-enum class EditType {
-    OneShot,
-    Continuance
-}
 
 interface EditFormCallback {
     fun onClickCamera() {}
@@ -81,7 +76,7 @@ fun TootEditForm(
                 ) {
                     items(state.attachments) { uri ->
                         Image(
-                            painter = rememberImagePainter(uri),
+                            painter = rememberAsyncImagePainter(uri),
                             contentDescription = null,
                             modifier = Modifier
                                 .size(120.dp)
