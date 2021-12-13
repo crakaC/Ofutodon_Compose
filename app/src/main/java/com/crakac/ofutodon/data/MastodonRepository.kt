@@ -5,6 +5,7 @@ import android.net.Uri
 import com.crakac.ofutodon.mastodon.Mastodon
 import com.crakac.ofutodon.mastodon.entity.Attachment
 import com.crakac.ofutodon.mastodon.entity.Status
+import com.crakac.ofutodon.mastodon.params.PageQuery
 import com.crakac.ofutodon.mastodon.params.StatusBody
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ensureActive
@@ -19,12 +20,15 @@ class MastodonRepository @Inject constructor(
     @ApplicationContext context: Context
 ) {
     private val contentResolver = context.contentResolver
-    suspend fun getHomeTimeline(): List<Status> {
-        return mastodon.getHomeTimeline()
+    suspend fun getHomeTimeline(pageQuery: PageQuery = PageQuery()): List<Status> {
+        return mastodon.getHomeTimeline(pageQuery = pageQuery.toMap())
     }
 
-    suspend fun getPublicTimeline(localOnly: Boolean = false): List<Status> {
-        return mastodon.getPublicTimeline(localOnly = localOnly)
+    suspend fun getPublicTimeline(
+        localOnly: Boolean = false,
+        pageQuery: PageQuery = PageQuery()
+    ): List<Status> {
+        return mastodon.getPublicTimeline(localOnly = localOnly, pageQuery = pageQuery.toMap())
     }
 
     suspend fun postStatus(statusBody: StatusBody) =

@@ -1,16 +1,18 @@
 package com.crakac.ofutodon.mastodon.params
 
-import retrofit2.http.Query
-
 data class PageQuery(
-    @Query("max_id")
-    val maxId: Long,
-    @Query("min_id")
-    val minId: Long,
-    @Query("since_id")
-    val sinceId: Long,
-    @Query("limit")
-    val limit: Int,
-    @Query("offset")
-    val offset: Int
-)
+    val maxId: Long? = null,
+    val minId: Long? = null,
+    val sinceId: Long? = null,
+    val limit: Int? = null,
+    val offset: Int? = null
+) {
+    fun toMap() = mapOf(
+        "max_id" to maxId,
+        "min_id" to minId,
+        "since_id" to sinceId,
+        "limit" to limit,
+        "offset" to offset,
+    ).filterValues { it != null }
+        .mapValues { it.value.toString() }
+}

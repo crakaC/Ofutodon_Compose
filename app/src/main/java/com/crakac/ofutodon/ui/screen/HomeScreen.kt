@@ -117,8 +117,9 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
     val timelineState = pages.map { type ->
         rememberTimelineState(
             loadingState = viewModel.loadingState[type] ?: mutableStateOf(false),
+            onEmpty = { viewModel.refresh(type) },
             onRefresh = { viewModel.refresh(type) },
-            onLastItemAppeared = { context.showToast("last item appeared") },
+            onLastItemAppeared = { viewModel.fetchNext(type) },
             onClickStatus = onClickStatus
         )
     }

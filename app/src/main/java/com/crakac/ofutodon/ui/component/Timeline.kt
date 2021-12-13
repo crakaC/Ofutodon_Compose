@@ -45,7 +45,7 @@ fun Timeline(
                     Modifier.size(48.dp)
                 )
             } else {
-                Button(onClick = state.onRefresh) {
+                Button(onClick = state.onEmpty) {
                     Text("Reload")
                 }
             }
@@ -56,7 +56,10 @@ fun Timeline(
             onRefresh = state.onRefresh
         ) {
             LazyColumn(state = state.scrollState, modifier = modifier.fillMaxHeight()) {
-                itemsIndexed(statuses, { _, status -> status.id }) { index, status ->
+                itemsIndexed(
+                    items = statuses,
+                    key = { _, status -> status.id })
+                { index, status ->
                     StatusContent(status, state.onClickStatus)
                     if (index < statuses.lastIndex) {
                         Divider(color = DarkGray, thickness = Dp(0.5f))
@@ -83,6 +86,7 @@ class TimelineState(
     val refreshState: SwipeRefreshState,
     /* loadingState is shared with ViewModel. It seems bad. */
     loadingState: MutableState<Boolean>,
+    val onEmpty: () -> Unit = {},
     val onRefresh: () -> Unit = {},
     val onClickStatus: StatusCallback = StatusCallback.Default
 ) {
@@ -92,6 +96,7 @@ class TimelineState(
 @Composable
 fun rememberTimelineState(
     loadingState: MutableState<Boolean> = mutableStateOf(false),
+    onEmpty: () -> Unit = {},
     onRefresh: () -> Unit = {},
     onLastItemAppeared: () -> Unit = {},
     onClickStatus: StatusCallback = StatusCallback.Default
@@ -103,6 +108,7 @@ fun rememberTimelineState(
             scrollState = scrollState,
             refreshState = refreshState,
             loadingState = loadingState,
+            onEmpty = onEmpty,
             onRefresh = onRefresh,
             onClickStatus = onClickStatus
         )

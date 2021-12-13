@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.crakac.ofutodon.data.MastodonRepository
 import com.crakac.ofutodon.mastodon.entity.Status
+import com.crakac.ofutodon.mastodon.params.PageQuery
 import com.crakac.ofutodon.ui.component.DummyStatus
 import com.crakac.ofutodon.ui.component.TimelineType
 import com.crakac.ofutodon.ui.component.TootEditState
@@ -52,12 +53,42 @@ class MainViewModel @Inject constructor(private val repo: MastodonRepository) : 
         }
     }
 
+    fun fetchNext(type: TimelineType) {
+        viewModelScope.launch {
+            when (type) {
+                TimelineType.Home -> fetchPreviousHomeTimeline()
+                TimelineType.Local -> fetchPreviousLocalTimeline()
+                TimelineType.Debug -> {}
+            }
+        }
+    }
+
     private suspend fun refreshHomeTimeline() {
-        _homeTimeline.postValue(repo.getHomeTimeline())
+        val sinceId = _homeTimeline.value?.first()?.id
+        val next = repo.getHomeTimeline(PageQuery(sinceId = sinceId))
+        val current = _homeTimeline.value ?: emptyList()
+        _homeTimeline.postValue(next + current)
+    }
+
+    private suspend fun fetchPreviousHomeTimeline() {
+        val maxId = _homeTimeline.value?.last()?.id
+        val previous = repo.getHomeTimeline(PageQuery(maxId = maxId))
+        val current = _homeTimeline.value ?: emptyList()
+        _homeTimeline.postValue(current + previous)
     }
 
     private suspend fun refreshLocalTimeline() {
-        _localTimeline.postValue(repo.getPublicTimeline(localOnly = true))
+        val sinceId = _localTimeline.value?.first()?.id
+        val next = repo.getPublicTimeline(localOnly = true, PageQuery(sinceId = sinceId))
+        val current = _localTimeline.value ?: emptyList()
+        _localTimeline.postValue(next + current)
+    }
+
+    private suspend fun fetchPreviousLocalTimeline() {
+        val maxId = _localTimeline.value?.last()?.id
+        val previous = repo.getPublicTimeline(localOnly = true, PageQuery(maxId = maxId))
+        val current = _localTimeline.value ?: emptyList()
+        _localTimeline.postValue(current + previous)
     }
 
     fun favourite(id: Long) {
