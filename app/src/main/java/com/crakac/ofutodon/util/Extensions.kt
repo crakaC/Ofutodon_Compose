@@ -41,11 +41,13 @@ fun LazyListState.OnAppearLastItem(onAppearLastItem: () -> Unit) {
         }
     }
 
+    val currentOnAppearLastItem by rememberUpdatedState(onAppearLastItem)
+
     LaunchedEffect(Unit) {
         snapshotFlow { isReachedToEnd }
             .filter { it }
             .collect {
-                onAppearLastItem()
+                currentOnAppearLastItem()
             }
     }
 }
