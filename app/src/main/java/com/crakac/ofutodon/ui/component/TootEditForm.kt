@@ -17,7 +17,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusOrder
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -161,7 +161,7 @@ fun TootEditForm(
             }
         }
     }
-    val ime = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     LaunchedEffect(Unit) {
         // Request focus to TextField at first time
         focusRequester.requestFocus()
@@ -170,7 +170,7 @@ fun TootEditForm(
         snapshotFlow {
             state.isSending
         }.filter { it }.collect {
-            ime?.hide()
+            focusManager.clearFocus()
         }
     }
 }
