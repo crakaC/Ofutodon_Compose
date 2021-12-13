@@ -27,7 +27,11 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles(
+                    getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard-rules.pro',
+                    'retrofit2.pro'
+            )
         }
         debug {
             applicationIdSuffix '.debug'
@@ -35,6 +39,13 @@ android {
             def host = properties.getProperty("debug_host")
             buildConfigField("String", "DEBUG_TOKEN", "\"$token\"")
             buildConfigField("String", "DEBUG_HOST", "\"$host\"")
+
+            minifyEnabled false
+            proguardFiles(
+                    getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard-rules.pro',
+                    'retrofit2.pro'
+            )
         }
     }
 
