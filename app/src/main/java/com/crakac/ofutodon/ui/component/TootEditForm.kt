@@ -10,11 +10,14 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusOrder
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,6 +25,8 @@ import coil.compose.rememberImagePainter
 import com.crakac.ofutodon.R
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 import com.crakac.ofutodon.util.iconResource
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
 
 enum class EditType {
     OneShot,
@@ -40,6 +45,7 @@ interface EditFormCallback {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TootEditForm(
     modifier: Modifier = Modifier,
@@ -60,6 +66,7 @@ fun TootEditForm(
                 onValueChange = {
                     state.text = it
                 },
+                enabled = !state.isSending,
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.Transparent
                 )
@@ -86,42 +93,59 @@ fun TootEditForm(
             }
             Spacer(Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { callback.onClickCamera() }) {
+                IconButton(
+                    onClick = { callback.onClickCamera() },
+                    enabled = !state.isSending,
+                ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_camera),
-                        contentDescription = "camera"
+                        contentDescription = "camera",
                     )
                 }
-                IconButton(onClick = { callback.onClickAttachment() }) {
+                IconButton(
+                    onClick = { callback.onClickAttachment() },
+                    enabled = !state.isSending,
+                ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_photo),
                         contentDescription = "attach file"
                     )
                 }
-                IconButton(onClick = { callback.onClickPoll() }) {
+                IconButton(
+                    onClick = { callback.onClickPoll() },
+                    enabled = !state.isSending,
+                ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_poll),
                         contentDescription = "poll"
                     )
                 }
-                IconButton(onClick = {
-                    state.dropDownState.expanded = true
-                }) {
+                IconButton(
+                    onClick = {
+                        state.dropDownState.expanded = true
+                    },
+                    enabled = !state.isSending,
+                ) {
                     Icon(
                         painter = painterResource(state.dropDownState.visibility.iconResource()),
                         contentDescription = "visibility"
                     )
                     VisibilityDropDownMenu(state = state.dropDownState)
                 }
-                IconButton(onClick = { callback.onClickContentWarning() }) {
+                IconButton(
+                    onClick = { callback.onClickContentWarning() },
+                    enabled = !state.isSending,
+                ) {
                     Text("CW")
                 }
                 Spacer(Modifier.weight(1f))
                 Text(
-                    modifier = Modifier.padding(horizontal = 8.dp),
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .alpha(if (state.isSending) ContentAlpha.disabled else LocalContentAlpha.current),
                     text = state.remaining.toString(),
                     color = if (state.isValidLength) Color.Unspecified else MaterialTheme.colors.error,
-                    style = MaterialTheme.typography.button
+                    style = MaterialTheme.typography.button,
                 )
             }
             Button(
@@ -137,8 +161,17 @@ fun TootEditForm(
             }
         }
     }
+    val ime = LocalSoftwareKeyboardController.current
     LaunchedEffect(Unit) {
+        // Request focus to TextField at first time
         focusRequester.requestFocus()
+
+        // Hide IME when isSending == true
+        snapshotFlow {
+            state.isSending
+        }.filter { it }.collect {
+            ime?.hide()
+        }
     }
 }
 
