@@ -22,6 +22,7 @@ import com.crakac.ofutodon.R
 import com.crakac.ofutodon.mastodon.entity.Account
 import com.crakac.ofutodon.mastodon.entity.Attachment
 import com.crakac.ofutodon.mastodon.entity.Status
+import com.crakac.ofutodon.ui.LogCompositions
 import com.crakac.ofutodon.ui.theme.DarkGray
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 import com.crakac.ofutodon.ui.theme.Shapes
@@ -42,6 +43,7 @@ interface StatusCallback {
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun StatusContent(status: Status, callback: StatusCallback) {
+    LogCompositions(tag = "StatusContent")
     val account = status.account
     Surface {
         Row(

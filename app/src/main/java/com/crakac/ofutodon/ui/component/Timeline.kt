@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.crakac.ofutodon.mastodon.entity.Status
+import com.crakac.ofutodon.ui.LogCompositions
 import com.crakac.ofutodon.ui.theme.DarkGray
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 import com.crakac.ofutodon.util.OnAppearLastItem
@@ -42,6 +43,7 @@ fun Timeline(
     onLastItemAppeared: () -> Unit = {},
     onClickStatus: StatusCallback = StatusCallback.Default
 ) {
+    LogCompositions(tag = "Timeline")
     val isLoading by loadingState
     val refreshState = rememberSwipeRefreshState(isLoading)
     scrollState.OnAppearLastItem(onLastItemAppeared)
@@ -65,6 +67,7 @@ fun Timeline(
             state = refreshState,
             onRefresh = onRefresh
         ) {
+            LogCompositions(tag = "SwipeRefresh")
             LazyColumn(state = scrollState, modifier = modifier.fillMaxHeight()) {
                 itemsIndexed(
                     items = statuses,

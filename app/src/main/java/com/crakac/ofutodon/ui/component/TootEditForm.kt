@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.crakac.ofutodon.R
+import com.crakac.ofutodon.ui.LogCompositions
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 import com.crakac.ofutodon.util.iconResource
 import kotlinx.coroutines.flow.collect
@@ -47,6 +48,7 @@ fun TootEditForm(
     state: TootEditState = rememberTootEditState(DefaultVisibility),
     callback: EditFormCallback = EditFormCallback.Default
 ) {
+    LogCompositions(tag = "TootEditForm")
     val focusRequester = remember { FocusRequester() }
     Surface(modifier.wrapContentHeight()) {
         Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)) {
