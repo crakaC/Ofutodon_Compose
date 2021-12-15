@@ -13,7 +13,9 @@ import com.crakac.ofutodon.ui.component.DummyStatus
 import com.crakac.ofutodon.ui.component.TimelineType
 import com.crakac.ofutodon.ui.component.TootEditState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
@@ -105,15 +107,28 @@ class MainViewModel @Inject constructor(private val repo: MastodonRepository) : 
         }
     }
 
-    private fun update(id: Long, updated: Status) {
+    private suspend fun update(id: Long, updated: Status) {
+        val jobs = mutableListOf<Job>()
         _timelines.values.forEach { timeline ->
-            timeline.value?.indexOfFirst { it.id == id }?.let { index ->
-                if (index < 0) return@let
-                val copy = timeline.value!!.toMutableList()
-                copy[index] = updated
-                timeline.postValue(copy)
+            jobs += viewModelScope.launch {
+                var changed = false
+                val copy by lazy { timeline.value!!.toMutableList() }
+                timeline.value?.forEachIndexed { index, status ->
+                    if (status.id == id) {
+                        copy[index] = updated
+                        changed = true
+                    } else if (status.reblog?.id == id) {
+                        copy[index] = copy[index].copy(reblog = updated)
+                        changed = true
+                    }
+                    if (changed) return@forEachIndexed
+                }
+                if (changed) {
+                    timeline.postValue(copy)
+                }
             }
         }
+        jobs.joinAll()
     }
 
     fun toot(state: TootEditState) {

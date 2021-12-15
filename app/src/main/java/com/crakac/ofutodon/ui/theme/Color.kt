@@ -11,3 +11,6 @@ val DarkGray = Color(0xFF555d78)
 val Gray = Color(0xFF9baec8)
 val White100 = Color(0xFFd9e1e8)
 val White50 = Color(0xFFf0f3f7)
+
+val BoostBlue = Color(0xFF1e88e5)
+val FavouriteYellow = Color(0xFFFFC107)

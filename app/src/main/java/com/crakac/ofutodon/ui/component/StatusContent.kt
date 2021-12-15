@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,9 +24,7 @@ import com.crakac.ofutodon.mastodon.entity.Account
 import com.crakac.ofutodon.mastodon.entity.Attachment
 import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.ui.LogCompositions
-import com.crakac.ofutodon.ui.theme.DarkGray
-import com.crakac.ofutodon.ui.theme.OfutodonTheme
-import com.crakac.ofutodon.ui.theme.Shapes
+import com.crakac.ofutodon.ui.theme.*
 import com.crakac.ofutodon.util.iconResource
 
 interface StatusCallback {
@@ -35,73 +34,139 @@ interface StatusCallback {
     fun onClickBoost(status: Status) {}
     fun onClickMore(status: Status) {}
     fun onClickAttachment(attachment: Attachment) {}
+
     companion object {
         val Default = object : StatusCallback {}
     }
 }
 
+private val IconSize = 54.dp
+private val OriginalIconSize = 40.dp
+private val BoostedByIconSize = 24.dp
+
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun StatusContent(status: Status, callback: StatusCallback) {
     LogCompositions(tag = "StatusContent")
-    val account = status.account
+    val originalStatus = status.reblog ?: status
+    val originalAccount = originalStatus.account
     Surface {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { callback.onClickStatus(status) }
                 .padding(start = 8.dp, end = 8.dp, top = 12.dp)
         ) {
-            Image(
-                painter = rememberAsyncImagePainter(model = account.avatar),
-                contentDescription = "icon",
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(Shapes.medium)
-            )
-            Spacer(Modifier.width(8.dp))
-            Column {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+            if (status.isReblog) {
+                BoostedBy(status.account.displayName)
+            }
+            Row {
+                AccountIcon(status)
+                Spacer(Modifier.width(8.dp))
+                Column {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = originalAccount.displayName,
+                            style = MaterialTheme.typography.h6
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            text = "@${originalAccount.unicodeAcct}",
+                            style = MaterialTheme.typography.body2,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f),
+                            color = DarkGray
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Icon(
+                            painter = painterResource(id = originalStatus.visibility.iconResource()),
+                            contentDescription = "visibility",
+                            modifier = Modifier.size(16.dp),
+                            tint = DarkGray,
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            text = originalStatus.getRelativeTime(),
+                            style = MaterialTheme.typography.body2,
+                            textAlign = TextAlign.End,
+                            color = DarkGray
+                        )
+                    }
+                    Spacer(Modifier.height(4.dp))
                     Text(
-                        text = account.displayName,
-                        style = MaterialTheme.typography.h6
+                        originalStatus.spannedContent.toString(),
+                        style = MaterialTheme.typography.body1
                     )
-                    Spacer(Modifier.width(4.dp))
-                    Text(
-                        text = "@${account.acct}",
-                        style = MaterialTheme.typography.body2,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f),
-                        color = DarkGray
-                    )
-                    Spacer(Modifier.width(4.dp))
-                    Icon(
-                        painter = painterResource(id = status.visibility.iconResource()),
-                        contentDescription = "visibility",
-                        modifier = Modifier.size(16.dp),
-                        tint = DarkGray,
-                    )
-                    Spacer(Modifier.width(4.dp))
-                    Text(
-                        text = status.getRelativeTime(),
-                        style = MaterialTheme.typography.body2,
-                        textAlign = TextAlign.End,
-                        color = DarkGray
-                    )
+                    if (originalStatus.mediaAttachments.any()) {
+                        Attachments(
+                            originalStatus.mediaAttachments,
+                            onClickAttachment = callback::onClickAttachment
+                        )
+                    }
+                    BottomIcons(originalStatus, callback)
                 }
-                Spacer(Modifier.height(4.dp))
-                Text(status.spannedContent.toString(), style = MaterialTheme.typography.body1)
-                if (status.mediaAttachments.any()) {
-                    Attachments(
-                        status.mediaAttachments,
-                        onClickAttachment = callback::onClickAttachment
-                    )
-                }
-                BottomIcons(status, callback)
             }
         }
     }
+}
+
+@Composable
+fun AccountIcon(status: Status) {
+    val originalAccount = status.reblog?.account
+    Box(Modifier.size(IconSize)) {
+        if (originalAccount == null) {
+            Image(
+                painter = rememberAsyncImagePainter(model = status.account.avatar),
+                contentDescription = "icon",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(Shapes.medium)
+            )
+        } else {
+            Image(
+                painter = rememberAsyncImagePainter(model = originalAccount.avatar),
+                contentDescription = "original icon",
+                modifier = Modifier
+                    .size(OriginalIconSize)
+                    .align(Alignment.TopStart)
+                    .clip(Shapes.medium),
+            )
+            Image(
+                painter = rememberAsyncImagePainter(model = status.account.avatar),
+                contentDescription = "icon",
+                modifier = Modifier
+                    .size(BoostedByIconSize)
+                    .align(Alignment.BottomEnd)
+                    .clip(Shapes.medium),
+            )
+        }
+    }
+}
+
+@Composable
+fun BoostedBy(displayName: String) {
+    CompositionLocalProvider(LocalContentColor provides DarkGray) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.width(IconSize)) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_boost),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .align(Alignment.CenterEnd)
+                )
+            }
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = stringResource(R.string.boosted_by, displayName),
+                style = MaterialTheme.typography.body2,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
+    Spacer(Modifier.height(4.dp))
 }
 
 @Composable
@@ -187,12 +252,14 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
             ) {
                 IconButton(
                     modifier = Modifier.size(iconButtonSize),
-                    onClick = { callback.onClickBoost(status) }
+                    onClick = { callback.onClickBoost(status) },
+                    enabled = status.isBoostable,
                 ) {
                     Icon(
                         painterResource(id = R.drawable.ic_boost),
                         contentDescription = "boost",
-                        modifier = Modifier.size(iconSize)
+                        modifier = Modifier.size(iconSize),
+                        tint = if (status.isBoostedWithOriginal) BoostBlue else LocalContentColor.current
                     )
                 }
                 if (status.reblogsCount > 0) {
@@ -217,7 +284,8 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
                     Icon(
                         painterResource(id = R.drawable.ic_favourite),
                         contentDescription = "favourite",
-                        modifier = Modifier.size(iconSize)
+                        modifier = Modifier.size(iconSize),
+                        tint = if (status.isFavouritedWithOriginal) FavouriteYellow else LocalContentColor.current
                     )
                 }
                 if (status.favouritesCount > 0) {

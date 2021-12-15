@@ -78,24 +78,18 @@ data class Status(
         Direct,
     }
 
-    fun isBoostable(): Boolean {
-        return visibility == Visibility.Public || visibility == Visibility.UnListed
-    }
+    val isReblog: Boolean
+        get() = reblog != null
 
-    fun isUnlisted() = visibility == Visibility.UnListed
-    fun isPrivate() = visibility == Visibility.Private
-    fun isDirect() = visibility == Visibility.Direct
+    val isBoostable: Boolean
+        get() = visibility == Visibility.Public || visibility == Visibility.UnListed
 
-    val originalId: Long
-        get() {
-            return reblog?.id ?: id
-        }
-    val isFaved: Boolean
+    val isFavouritedWithOriginal: Boolean
         get() {
             return reblog?.isFavourited ?: isFavourited
         }
 
-    val isBoosted: Boolean
+    val isBoostedWithOriginal: Boolean
         get() {
             return reblog?.isReblogged ?: isReblogged
         }
