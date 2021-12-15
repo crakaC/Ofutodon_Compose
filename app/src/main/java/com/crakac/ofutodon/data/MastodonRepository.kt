@@ -17,7 +17,7 @@ import kotlin.coroutines.coroutineContext
 
 class MastodonRepository @Inject constructor(
     private val mastodon: Mastodon,
-    @ApplicationContext context: Context
+    @ApplicationContext context: Context,
 ) {
     private val contentResolver = context.contentResolver
     suspend fun getHomeTimeline(pageQuery: PageQuery = PageQuery()): List<Status> {

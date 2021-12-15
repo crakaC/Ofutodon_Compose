@@ -10,7 +10,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
@@ -24,19 +24,15 @@ import com.crakac.ofutodon.ui.theme.DarkGray
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 import com.crakac.ofutodon.util.OnAppearLastItem
 import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-
-enum class TimelineType {
-    Home,
-    Local,
-    Debug,
-}
 
 @Composable
 fun Timeline(
     modifier: Modifier = Modifier,
     statuses: List<Status>,
-    loadingState: MutableState<Boolean> = mutableStateOf(false),
+    loadingState: State<Boolean> = mutableStateOf(false),
+    refreshState: SwipeRefreshState = rememberSwipeRefreshState(isRefreshing = false),
     scrollState: LazyListState = rememberLazyListState(),
     onEmpty: () -> Unit = {},
     onRefresh: () -> Unit = {},
@@ -45,7 +41,6 @@ fun Timeline(
 ) {
     LogCompositions(tag = "Timeline")
     val isLoading by loadingState
-    val refreshState = rememberSwipeRefreshState(isLoading)
     scrollState.OnAppearLastItem(onLastItemAppeared)
     if (statuses.isEmpty()) {
         Box(

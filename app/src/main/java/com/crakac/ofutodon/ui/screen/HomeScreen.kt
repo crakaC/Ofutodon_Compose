@@ -4,11 +4,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.crakac.ofutodon.MainViewModel
@@ -16,9 +19,9 @@ import com.crakac.ofutodon.R
 import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.ui.component.StatusCallback
 import com.crakac.ofutodon.ui.component.Timeline
-import com.crakac.ofutodon.ui.component.TimelineType
 import com.crakac.ofutodon.util.showToast
 import com.google.accompanist.pager.*
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -45,7 +48,7 @@ fun HomeScreen(navController: NavHostController) {
 @Composable
 fun PagerTab(
     pagerState: PagerState,
-    pages: Array<TimelineType>,
+    pages: List<AnnotatedString>,
     onClickSelectedTab: (page: Int) -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
@@ -59,7 +62,7 @@ fun PagerTab(
         pages.forEachIndexed { index, screen ->
             val selected = pagerState.currentPage == index
             Tab(
-                text = { Text(text = screen.name) },
+                text = { Text(text = screen) },
                 selected = selected,
                 onClick = {
                     if (selected) {
@@ -80,12 +83,17 @@ fun PagerTab(
 fun HomeScreenContent(modifier: Modifier = Modifier) {
     val viewModel: MainViewModel = hiltViewModel()
 
-    val pages = TimelineType.values()// + (1..2).map { TimelineType.Debug }.toTypedArray()
+    val timelines = viewModel.timelines
+    val statuses = timelines.map { it.data.observeAsState(emptyList()) }
 
     LaunchedEffect(Unit) {
-        pages.forEach {
-            viewModel.initTimeline(it)
+        timelines.forEach {
+            it.refresh()
         }
+    }
+
+    timelines.forEach { timeline ->
+        timeline.swipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     }
 
     val context = LocalContext.current
@@ -111,35 +119,33 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
         }
     }
 
-    val scrollState = pages.map {
+    val scrollState = timelines.map {
         rememberLazyListState()
-    }
-    val timelineStatuses = pages.map { type ->
-        viewModel.timelines[type]?.observeAsState(emptyList()) ?: mutableStateOf(emptyList())
     }
 
     val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
     Column {
-        PagerTab(pagerState, pages, onClickSelectedTab = { page ->
+        PagerTab(pagerState, timelines.map { it.getName() }, onClickSelectedTab = { page ->
             scope.launch {
                 // Scroll to top
                 scrollState[page].animateScrollToItem(0)
             }
         })
         HorizontalPager(
-            count = pages.size,
+            count = timelines.size,
             state = pagerState,
         ) { page ->
-            val type = pages[page]
+            val timeline = timelines[page]
             Timeline(
                 modifier = modifier,
-                statuses = timelineStatuses[page].value,
-                loadingState = viewModel.loadingState[type] ?: remember { mutableStateOf(false) },
+                statuses = statuses[page].value,
+                loadingState = timeline.loadingState,
+                refreshState = timeline.swipeRefreshState,
                 scrollState = scrollState[page],
-                onEmpty = { viewModel.refresh(type) },
-                onRefresh = { viewModel.refresh(type) },
-                onLastItemAppeared = { viewModel.fetchNext(type) },
+                onEmpty = { timeline.refresh() },
+                onRefresh = { timeline.fetchNext() },
+                onLastItemAppeared = { timeline.fetchPrevious() },
                 onClickStatus = onClickStatus
             )
         }
