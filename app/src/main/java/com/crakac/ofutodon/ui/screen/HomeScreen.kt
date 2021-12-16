@@ -17,6 +17,7 @@ import androidx.navigation.NavHostController
 import com.crakac.ofutodon.MainViewModel
 import com.crakac.ofutodon.R
 import com.crakac.ofutodon.mastodon.entity.Status
+import com.crakac.ofutodon.ui.LogCompositions
 import com.crakac.ofutodon.ui.component.StatusCallback
 import com.crakac.ofutodon.ui.component.Timeline
 import com.crakac.ofutodon.util.showToast
@@ -48,22 +49,24 @@ fun HomeScreen(navController: NavHostController) {
 @Composable
 fun PagerTab(
     pagerState: PagerState,
-    pages: List<AnnotatedString>,
+    tabs: List<AnnotatedString>,
     onClickSelectedTab: (page: Int) -> Unit = {}
 ) {
+    LogCompositions(tag = "PagerTab")
+    val currentPage = pagerState.currentPage
     val scope = rememberCoroutineScope()
-    TabRow(selectedTabIndex = pagerState.currentPage,
+    TabRow(selectedTabIndex = currentPage,
         indicator = { tabPositions ->
             TabRowDefaults.Indicator(
                 Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
             )
         }
     ) {
-        pages.forEachIndexed { index, screen ->
-            val selected = pagerState.currentPage == index
+        tabs.forEachIndexed { index, tab ->
+            val selected = index == currentPage
             Tab(
-                text = { Text(text = screen) },
-                selected = selected,
+                text = { Text(text = tab) },
+                selected = index == currentPage,
                 onClick = {
                     if (selected) {
                         onClickSelectedTab(index)
