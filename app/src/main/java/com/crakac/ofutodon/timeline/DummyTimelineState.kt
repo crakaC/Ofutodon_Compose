@@ -38,14 +38,14 @@ class DummyTimelineState(
         sinceId: Long = 1_000_000L,
         limit: Int = 1
     ): List<Status> {
-        return ((sinceId - 1) downTo (sinceId - limit)).map { DummyStatus.copy(id = it) }
+        return ((sinceId + limit) downTo (sinceId + 1)).map { DummyStatus.copy(id = it) }
     }
 
     private fun getPreviousStatuses(
         maxId: Long = 1_000_000L,
         limit: Int = 1
     ): List<Status> {
-        return (maxId - 1 downTo (maxId - limit)).map { DummyStatus.copy(id = it) }
+        return ((maxId - 1) downTo (maxId - limit)).map { DummyStatus.copy(id = it) }
     }
 
     override fun getName() = AnnotatedString("Debug")
