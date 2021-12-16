@@ -1,7 +1,8 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
 package com.crakac.ofutodon.ui
-import com.crakac.ofutodon.BuildConfig
+
+// Code from https://github.com/chrisbanes/tivi/blob/main/common-ui-compose/src/main/java/app/tivi/common/compose/Debug.kt
 
 /*
  * Copyright 2020 Google LLC
@@ -22,8 +23,10 @@ import com.crakac.ofutodon.BuildConfig
 
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
+import com.crakac.ofutodon.BuildConfig
 
 class Ref(var value: Int)
 
@@ -44,5 +47,17 @@ inline fun LogCompositions(tag: String) {
         val ref = remember { Ref(0) }
         SideEffect { ref.value++ }
         Log.d(tag, "Compositions: ${ref.value}")
+    }
+}
+
+
+@Composable
+inline fun LogOnDispose(tag: String) {
+    if (EnableDebugCompositionLogs && BuildConfig.DEBUG) {
+        DisposableEffect(Unit) {
+            onDispose {
+                Log.d(tag, "onDispose()")
+            }
+        }
     }
 }
