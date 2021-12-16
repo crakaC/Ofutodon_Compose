@@ -11,20 +11,20 @@ class HomeTimelineState(
     scope: CoroutineScope = CoroutineScope(EmptyCoroutineContext)
 ) : StatusTimelineState(scope) {
     override fun refresh() {
-        load {
+        load(FetchType.Next) {
             mutableData.postValue(repo.getHomeTimeline())
         }
     }
 
     override fun fetchNext() {
-        load(showRefreshing = true) {
+        load(FetchType.Next, showRefreshing = true) {
             val statuses = repo.getHomeTimeline(PageQuery(sinceId = firstStatusId))
             prepend(statuses)
         }
     }
 
     override fun fetchPrevious() {
-        load {
+        load(FetchType.Previous) {
             val statuses = repo.getHomeTimeline(PageQuery(maxId = lastStatusId))
             append(statuses)
         }

@@ -12,14 +12,14 @@ class DummyTimelineState(
 ) : StatusTimelineState(scope) {
     private val initialId = 1_000_000L
     override fun refresh() {
-        load {
+        load(FetchType.Next) {
             delay(3000)
             mutableData.postValue(getNextStatuses(initialId, 5))
         }
     }
 
     override fun fetchNext() {
-        load(showRefreshing = true) {
+        load(FetchType.Next, showRefreshing = true) {
             delay(3000)
             val statuses = getNextStatuses(firstStatusId ?: initialId)
             prepend(statuses)
@@ -27,7 +27,7 @@ class DummyTimelineState(
     }
 
     override fun fetchPrevious() {
-        load {
+        load(FetchType.Previous) {
             delay(3000)
             val statuses = getPreviousStatuses(lastStatusId ?: initialId)
             append(statuses)

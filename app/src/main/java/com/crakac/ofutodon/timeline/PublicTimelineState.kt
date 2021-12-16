@@ -12,13 +12,13 @@ class PublicTimelineState(
     scope: CoroutineScope = CoroutineScope(EmptyCoroutineContext)
 ) : StatusTimelineState(scope) {
     override fun refresh() {
-        load {
+        load(FetchType.Next) {
             mutableData.postValue(repo.getPublicTimeline(localOnly = isLocalOnly))
         }
     }
 
     override fun fetchNext() {
-        load(showRefreshing = true) {
+        load(FetchType.Next, showRefreshing = true) {
             val statuses =
                 repo.getPublicTimeline(localOnly = isLocalOnly, PageQuery(sinceId = firstStatusId))
             prepend(statuses)
@@ -26,12 +26,12 @@ class PublicTimelineState(
     }
 
     override fun fetchPrevious() {
-        load {
+        load(FetchType.Previous) {
             val statuses =
                 repo.getPublicTimeline(localOnly = isLocalOnly, PageQuery(maxId = lastStatusId))
             append(statuses)
         }
     }
 
-    override fun getName() = AnnotatedString(if (isLocalOnly) "Local" else "Federated")
+    override fun getName() = AnnotatedString(if (isLocalOnly) "Local" else "Public")
 }

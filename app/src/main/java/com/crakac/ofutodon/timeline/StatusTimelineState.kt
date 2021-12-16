@@ -7,13 +7,11 @@ import com.crakac.ofutodon.mastodon.entity.Status
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import java.util.concurrent.atomic.AtomicInteger
 
 abstract class StatusTimelineState(parentScope: CoroutineScope) : TimelineState<Status> {
     private val scope = CoroutineScope(parentScope.coroutineContext + Job())
-    private val inFlightJobs = AtomicInteger(0)
+    private val jobs = mutableMapOf<FetchType, Job>()
     protected val mutableData = MutableLiveData<List<Status>>()
     override val data: LiveData<List<Status>>
         get() = mutableData
@@ -46,23 +44,29 @@ abstract class StatusTimelineState(parentScope: CoroutineScope) : TimelineState<
         }
     }
 
-    fun load(showRefreshing: Boolean = false, block: suspend () -> Unit): Job {
-        inFlightJobs.incrementAndGet()
+    /**
+     * Only one FetchTYpe can be launched at a time.
+     * If same FetchType job is already launched and it is active,
+     * fetching request will be ignored.
+     */
+    fun load(
+        fetchType: FetchType,
+        showRefreshing: Boolean = false,
+        block: suspend () -> Unit
+    ) {
+        if (jobs[fetchType]?.isActive == true) return
         if (showRefreshing) {
             swipeRefreshState.isRefreshing = true
         }
         loadingState.value = true
-        return scope.launch {
+        jobs[fetchType] = scope.launch {
             try {
                 block()
             } finally {
                 if (showRefreshing) {
                     swipeRefreshState.isRefreshing = false
                 }
-                val currentJobs = inFlightJobs.decrementAndGet()
-                if (currentJobs == 0) {
-                    loadingState.value = false
-                }
+                loadingState.value = jobs.any { it.key != fetchType && it.value.isActive }
             }
         }
     }
@@ -78,6 +82,6 @@ abstract class StatusTimelineState(parentScope: CoroutineScope) : TimelineState<
     }
 
     fun cancel() {
-        scope.cancel()
+        jobs.values.forEach { it.cancel() }
     }
 }
