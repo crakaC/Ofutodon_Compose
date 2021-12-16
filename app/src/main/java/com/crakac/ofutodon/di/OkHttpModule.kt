@@ -16,7 +16,7 @@ object OkHttpModule {
     @Singleton
     fun provideOkHttp() = OkHttpClient.Builder().apply {
         if (BuildConfig.DEBUG) {
-            addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC))
         }
     }.build()
 }
