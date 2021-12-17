@@ -23,8 +23,6 @@ import com.crakac.ofutodon.R
 import com.crakac.ofutodon.mastodon.entity.Account
 import com.crakac.ofutodon.mastodon.entity.Attachment
 import com.crakac.ofutodon.mastodon.entity.Status
-import com.crakac.ofutodon.ui.LogCompositions
-import com.crakac.ofutodon.ui.LogOnDispose
 import com.crakac.ofutodon.ui.theme.*
 import com.crakac.ofutodon.util.iconResource
 
@@ -48,8 +46,6 @@ private val BoostedByIconSize = 24.dp
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun StatusContent(status: Status, callback: StatusCallback) {
-    LogCompositions(tag = "StatusContent")
-    LogOnDispose(tag = "StatusContent")
     val originalStatus = status.reblog ?: status
     val originalAccount = originalStatus.account
     Surface {
@@ -106,7 +102,7 @@ fun StatusContent(status: Status, callback: StatusCallback) {
                             onClickAttachment = { index ->
                                 callback.onClickAttachment(
                                     index,
-                                    status.mediaAttachments
+                                    originalStatus.mediaAttachments
                                 )
                             }
                         )

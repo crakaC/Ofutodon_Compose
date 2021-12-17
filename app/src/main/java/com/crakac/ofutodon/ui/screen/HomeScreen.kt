@@ -1,6 +1,5 @@
 package com.crakac.ofutodon.ui.screen
 
-import android.os.Bundle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -14,16 +13,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.crakac.ofutodon.MainViewModel
 import com.crakac.ofutodon.R
 import com.crakac.ofutodon.mastodon.entity.Attachment
 import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.ui.LogCompositions
+import com.crakac.ofutodon.ui.attachment.AttachmentPreview
+import com.crakac.ofutodon.ui.attachment.AttachmentPreviewState
+import com.crakac.ofutodon.ui.attachment.rememberAttachmentPreviewState
 import com.crakac.ofutodon.ui.component.StatusCallback
 import com.crakac.ofutodon.ui.component.Timeline
-import com.crakac.ofutodon.util.navigate
 import com.crakac.ofutodon.util.showToast
 import com.google.accompanist.pager.*
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(navController: NavHostController) {
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
+    val previewState = rememberAttachmentPreviewState()
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
@@ -45,7 +46,10 @@ fun HomeScreen(navController: NavHostController) {
             }
         }
     ) { innerPadding ->
-        HomeScreenContent(Modifier.padding(innerPadding), navController = navController)
+        HomeScreenContent(Modifier.padding(innerPadding), previewState)
+    }
+    if (previewState.showPreview) {
+        AttachmentPreview(previewState)
     }
 }
 
@@ -87,7 +91,10 @@ fun PagerTab(
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun HomeScreenContent(modifier: Modifier = Modifier, navController: NavController) {
+fun HomeScreenContent(
+    modifier: Modifier = Modifier,
+    previewState: AttachmentPreviewState
+) {
     val viewModel: MainViewModel = hiltViewModel()
 
     val timelines = viewModel.timelines
@@ -126,10 +133,9 @@ fun HomeScreenContent(modifier: Modifier = Modifier, navController: NavControlle
         }
 
         override fun onClickAttachment(index: Int, attachments: List<Attachment>) {
-            val bundle = Bundle()
-            bundle.putInt("index", index)
-            bundle.putParcelableArray("attachments", attachments.toTypedArray())
-            navController.navigate(Screen.PreviewAttachments.name, bundle)
+            previewState.currentIndex = index
+            previewState.attachments = attachments
+            previewState.showPreview = true
         }
     }
 

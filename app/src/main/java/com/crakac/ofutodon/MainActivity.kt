@@ -7,8 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.crakac.ofutodon.mastodon.entity.Attachment
-import com.crakac.ofutodon.ui.attachment.AttachmentPreview
 import com.crakac.ofutodon.ui.screen.EditScreen
 import com.crakac.ofutodon.ui.screen.HomeScreen
 import com.crakac.ofutodon.ui.screen.Screen
@@ -41,13 +39,6 @@ fun OfutonApp() {
         }
         composable(Screen.Edit.name) {
             EditScreen(navController)
-        }
-        composable(Screen.PreviewAttachments.name) { backStackEntry ->
-            val index = backStackEntry.arguments?.getInt("index")!!
-            val attachments =
-                backStackEntry.arguments?.getParcelableArray("attachments")
-                    ?.toList() as List<Attachment>
-            AttachmentPreview(attachments = attachments, selectedIndex = index)
         }
     }
 }
