@@ -1,7 +1,11 @@
 package com.crakac.ofutodon.mastodon.entity
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Attachment(
     @SerializedName("id")
     val id: Long = 0L,
@@ -19,7 +23,7 @@ data class Attachment(
     val description: String = "",
     @SerializedName("blurhash")
     val blurhash: String = "",
-) {
+) : Parcelable {
     enum class Type(val value: String) {
         Unknown("unknown"),
         Image("image"),
@@ -27,6 +31,7 @@ data class Attachment(
         Gifv("gifv")
     }
 
+    @IgnoredOnParcel
     val type: Type by lazy {
         Type.values().first { e -> e.value == typeString }
     }

@@ -34,7 +34,7 @@ interface StatusCallback {
     fun onClickFavourite(status: Status) {}
     fun onClickBoost(status: Status) {}
     fun onClickMore(status: Status) {}
-    fun onClickAttachment(attachment: Attachment) {}
+    fun onClickAttachment(index: Int, attachments: List<Attachment>) {}
 
     companion object {
         val Default = object : StatusCallback {}
@@ -103,7 +103,12 @@ fun StatusContent(status: Status, callback: StatusCallback) {
                     if (originalStatus.mediaAttachments.any()) {
                         Attachments(
                             originalStatus.mediaAttachments,
-                            onClickAttachment = callback::onClickAttachment
+                            onClickAttachment = { index ->
+                                callback.onClickAttachment(
+                                    index,
+                                    status.mediaAttachments
+                                )
+                            }
                         )
                     }
                     BottomIcons(originalStatus, callback)
@@ -172,7 +177,10 @@ fun BoostedBy(displayName: String) {
 }
 
 @Composable
-fun Attachments(attachments: List<Attachment>, onClickAttachment: (Attachment) -> Unit = {}) {
+fun Attachments(
+    attachments: List<Attachment>,
+    onClickAttachment: (index: Int) -> Unit = {}
+) {
     val rows = if (attachments.size >= 3) 2 else 1
     val spacer = 4.dp
     Row(
@@ -182,8 +190,9 @@ fun Attachments(attachments: List<Attachment>, onClickAttachment: (Attachment) -
             .aspectRatio(16f / 9f)
             .clip(Shapes.medium),
     ) {
-        // [1, 2, 3].reversed().chunked(2).reversed() -> [[1], [2, 3]]
-        for ((col, attachmentRow) in attachments.reversed().chunked(rows).reversed().withIndex()) {
+        // [1, 2, 3] -> [[1], [2, 3]]
+        for ((col, attachmentRow) in attachments.reversed().chunked(rows) { it.reversed() }
+            .reversed().withIndex()) {
             if (col > 0) {
                 Spacer(Modifier.width(spacer))
             }
@@ -200,7 +209,7 @@ fun Attachments(attachments: List<Attachment>, onClickAttachment: (Attachment) -
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f)
-                            .clickable { onClickAttachment(attachment) },
+                            .clickable { onClickAttachment(attachments.indexOf(attachment)) },
                         contentScale = ContentScale.Crop
                     )
                 }

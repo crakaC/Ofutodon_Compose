@@ -1,5 +1,6 @@
 package com.crakac.ofutodon.ui.screen
 
+import android.os.Bundle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -13,13 +14,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.crakac.ofutodon.MainViewModel
 import com.crakac.ofutodon.R
+import com.crakac.ofutodon.mastodon.entity.Attachment
 import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.ui.LogCompositions
 import com.crakac.ofutodon.ui.component.StatusCallback
 import com.crakac.ofutodon.ui.component.Timeline
+import com.crakac.ofutodon.util.navigate
 import com.crakac.ofutodon.util.showToast
 import com.google.accompanist.pager.*
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -41,7 +45,7 @@ fun HomeScreen(navController: NavHostController) {
             }
         }
     ) { innerPadding ->
-        HomeScreenContent(Modifier.padding(innerPadding))
+        HomeScreenContent(Modifier.padding(innerPadding), navController = navController)
     }
 }
 
@@ -83,7 +87,7 @@ fun PagerTab(
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun HomeScreenContent(modifier: Modifier = Modifier) {
+fun HomeScreenContent(modifier: Modifier = Modifier, navController: NavController) {
     val viewModel: MainViewModel = hiltViewModel()
 
     val timelines = viewModel.timelines
@@ -119,6 +123,13 @@ fun HomeScreenContent(modifier: Modifier = Modifier) {
 
         override fun onClickMore(status: Status) {
             context.showToast("onClickMore")
+        }
+
+        override fun onClickAttachment(index: Int, attachments: List<Attachment>) {
+            val bundle = Bundle()
+            bundle.putInt("index", index)
+            bundle.putParcelableArray("attachments", attachments.toTypedArray())
+            navController.navigate(Screen.PreviewAttachments.name, bundle)
         }
     }
 
