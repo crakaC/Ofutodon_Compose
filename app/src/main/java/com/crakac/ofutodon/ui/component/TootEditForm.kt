@@ -1,11 +1,12 @@
 package com.crakac.ofutodon.ui.component
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -31,10 +32,11 @@ import kotlinx.coroutines.flow.filter
 
 interface EditFormCallback {
     fun onClickCamera() {}
-    fun onClickAttachment() {}
+    fun onClickAddAttachment() {}
     fun onClickPoll() {}
     fun onClickContentWarning() {}
     fun onClickToot() {}
+    fun onClickAttachment(index: Int, attachments: List<Uri>) {}
 
     companion object {
         val Default = object : EditFormCallback {}
@@ -76,13 +78,13 @@ fun TootEditForm(
                     modifier = Modifier.wrapContentHeight(),
                     state = rememberLazyListState(),
                 ) {
-                    items(state.attachments) { uri ->
+                    itemsIndexed(state.attachments) { index, uri ->
                         Image(
                             painter = rememberAsyncImagePainter(uri),
                             contentDescription = null,
                             modifier = Modifier
                                 .size(120.dp)
-                                .clickable { },
+                                .clickable { callback.onClickAttachment(index, state.attachments) },
                             contentScale = ContentScale.Crop,
                         )
                     }
@@ -100,7 +102,7 @@ fun TootEditForm(
                     )
                 }
                 IconButton(
-                    onClick = { callback.onClickAttachment() },
+                    onClick = { callback.onClickAddAttachment() },
                     enabled = !state.isSending,
                 ) {
                     Icon(

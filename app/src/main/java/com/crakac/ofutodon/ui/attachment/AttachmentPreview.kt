@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import coil.compose.AsyncImage
 import com.crakac.ofutodon.mastodon.entity.Attachment
 import com.crakac.ofutodon.ui.LogCompositions
@@ -19,23 +20,36 @@ import com.google.accompanist.pager.rememberPagerState
 fun AttachmentPreview(
     state: AttachmentPreviewState
 ) {
+    if (!state.showPreview) return
+
     LogCompositions(tag = "AttachmentPreview")
     BackHandler {
         state.showPreview = false
     }
     val pagerState = rememberPagerState(state.currentIndex)
-    Box(
-        Modifier
-            .fillMaxSize()
-            .background(PreviewBackGround)
-    ) {
-        HorizontalPager(count = state.attachments.size, state = pagerState) { page ->
-            val attachment = state.attachments[page]
-            AsyncImage(
-                model = attachment.url,
-                contentDescription = attachment.description,
-                modifier = Modifier.fillMaxSize()
-            )
+    HorizontalPager(count = state.attachments.size, state = pagerState) { page ->
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(PreviewBackGround)
+                .pointerInput(state) {}
+        ) {
+            when (val attachment = state.attachments[page]) {
+                is Attachment -> {
+                    AsyncImage(
+                        model = attachment.url,
+                        contentDescription = attachment.description,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+                else -> {
+                    AsyncImage(
+                        model = attachment,
+                        contentDescription = "attachment $page",
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+            }
         }
     }
 }
@@ -43,7 +57,7 @@ fun AttachmentPreview(
 class AttachmentPreviewState {
     var showPreview: Boolean by mutableStateOf(false)
     var currentIndex: Int by mutableStateOf(0)
-    var attachments: List<Attachment> = emptyList()
+    var attachments: List<Any> = emptyList()
 }
 
 @Composable

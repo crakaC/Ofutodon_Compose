@@ -1,5 +1,6 @@
 package com.crakac.ofutodon.ui.screen
 
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.crakac.ofutodon.MainViewModel
+import com.crakac.ofutodon.ui.attachment.AttachmentPreview
+import com.crakac.ofutodon.ui.attachment.rememberAttachmentPreviewState
 import com.crakac.ofutodon.ui.component.DefaultVisibility
 import com.crakac.ofutodon.ui.component.EditFormCallback
 import com.crakac.ofutodon.ui.component.TootEditForm
@@ -22,6 +25,7 @@ fun EditScreen(navController: NavHostController) {
     val viewModel: MainViewModel = hiltViewModel()
     val scaffoldState = rememberScaffoldState()
     val editState = rememberTootEditState(DefaultVisibility)
+    val previewState = rememberAttachmentPreviewState()
     val currentContext = LocalContext.current
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetMultipleContents()) {
@@ -35,8 +39,14 @@ fun EditScreen(navController: NavHostController) {
             viewModel.toot(editState)
         }
 
-        override fun onClickAttachment() {
+        override fun onClickAddAttachment() {
             launcher.launch("image/*")
+        }
+
+        override fun onClickAttachment(index: Int, attachments: List<Uri>) {
+            previewState.attachments = attachments
+            previewState.currentIndex = index
+            previewState.showPreview = true
         }
     }
     Scaffold(
@@ -47,5 +57,6 @@ fun EditScreen(navController: NavHostController) {
             state = editState,
             callback = callback
         )
+        AttachmentPreview(previewState)
     }
 }

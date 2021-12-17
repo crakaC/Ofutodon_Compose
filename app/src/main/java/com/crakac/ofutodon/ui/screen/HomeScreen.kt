@@ -48,9 +48,7 @@ fun HomeScreen(navController: NavHostController) {
     ) { innerPadding ->
         HomeScreenContent(Modifier.padding(innerPadding), previewState)
     }
-    if (previewState.showPreview) {
-        AttachmentPreview(previewState)
-    }
+    AttachmentPreview(previewState)
 }
 
 @OptIn(ExperimentalPagerApi::class)
