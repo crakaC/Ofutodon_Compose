@@ -20,21 +20,37 @@ import com.google.accompanist.pager.rememberPagerState
 fun AttachmentPreview(
     state: AttachmentPreviewState
 ) {
-    if (!state.showPreview) return
+    AttachmentPreview(
+        showPreview = state.showPreview,
+        initialIndex = state.currentIndex,
+        attachments = state.attachments,
+        onBackKeyPressed = { state.hidePreview() }
+    )
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun AttachmentPreview(
+    showPreview: Boolean,
+    initialIndex: Int,
+    attachments: List<Any>,
+    onBackKeyPressed: () -> Unit = {}
+) {
+    if (!showPreview) return
 
     LogCompositions(tag = "AttachmentPreview")
     BackHandler {
-        state.showPreview = false
+        onBackKeyPressed()
     }
-    val pagerState = rememberPagerState(state.currentIndex)
-    HorizontalPager(count = state.attachments.size, state = pagerState) { page ->
+    val pagerState = rememberPagerState(initialIndex)
+    HorizontalPager(count = attachments.size, state = pagerState) { page ->
         Box(
             Modifier
                 .fillMaxSize()
                 .background(PreviewBackGround)
-                .pointerInput(state) {}
+                .pointerInput(Unit) {}
         ) {
-            when (val attachment = state.attachments[page]) {
+            when (val attachment = attachments[page]) {
                 is Attachment -> {
                     AsyncImage(
                         model = attachment.url,
@@ -58,6 +74,17 @@ class AttachmentPreviewState {
     var showPreview: Boolean by mutableStateOf(false)
     var currentIndex: Int by mutableStateOf(0)
     var attachments: List<Any> = emptyList()
+    fun showPreview(index: Int, attachments: List<Any>) {
+        showPreview = true
+        currentIndex = index
+        this.attachments = attachments
+    }
+
+    fun hidePreview() {
+        showPreview = false
+        currentIndex = 0
+        attachments = emptyList()
+    }
 }
 
 @Composable

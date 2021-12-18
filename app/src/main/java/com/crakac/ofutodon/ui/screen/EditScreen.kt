@@ -44,9 +44,7 @@ fun EditScreen(navController: NavHostController) {
         }
 
         override fun onClickAttachment(index: Int, attachments: List<Uri>) {
-            previewState.attachments = attachments
-            previewState.currentIndex = index
-            previewState.showPreview = true
+            previewState.showPreview(index, attachments)
         }
     }
     Scaffold(

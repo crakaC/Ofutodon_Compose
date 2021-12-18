@@ -131,9 +131,7 @@ fun HomeScreenContent(
         }
 
         override fun onClickAttachment(index: Int, attachments: List<Attachment>) {
-            previewState.currentIndex = index
-            previewState.attachments = attachments
-            previewState.showPreview = true
+            previewState.showPreview(index, attachments)
         }
     }
 
