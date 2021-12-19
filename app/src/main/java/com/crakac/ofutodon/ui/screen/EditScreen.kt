@@ -14,10 +14,7 @@ import androidx.navigation.NavHostController
 import com.crakac.ofutodon.MainViewModel
 import com.crakac.ofutodon.ui.attachment.AttachmentPreview
 import com.crakac.ofutodon.ui.attachment.rememberAttachmentPreviewState
-import com.crakac.ofutodon.ui.component.DefaultVisibility
-import com.crakac.ofutodon.ui.component.EditFormCallback
-import com.crakac.ofutodon.ui.component.TootEditForm
-import com.crakac.ofutodon.ui.component.rememberTootEditState
+import com.crakac.ofutodon.ui.component.*
 import com.crakac.ofutodon.util.showToast
 
 @Composable
@@ -29,9 +26,9 @@ fun EditScreen(navController: NavHostController) {
     val currentContext = LocalContext.current
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetMultipleContents()) {
-            editState.attachments = it.take(4)
-            if (it.size > 4) {
-                currentContext.showToast("The number of attachments is up to 4")
+            val addedSuccessfully = editState.addAttachments(uris = it)
+            if (!addedSuccessfully) {
+                currentContext.showToast("The number of attachments is up to $MAX_ATTACHMENTS")
             }
         }
     val callback = object : EditFormCallback {
@@ -45,6 +42,14 @@ fun EditScreen(navController: NavHostController) {
 
         override fun onClickAttachment(index: Int, attachments: List<Uri>) {
             previewState.showPreview(index, attachments)
+        }
+
+        override fun onClickRemoveAttachment(index: Int) {
+            editState.removeAttachment(index)
+        }
+
+        override fun onClickEditAttachment(index: Int) {
+            currentContext.showToast("Edit")
         }
     }
     Scaffold(

@@ -16,3 +16,4 @@ val BoostBlue = Color(0xFF1e88e5)
 val FavouriteYellow = Color(0xFFFFC107)
 
 val PreviewBackGround = Color(0x88000000)
+val AttachmentActionBackGround = Color(0xCC1A1C24)

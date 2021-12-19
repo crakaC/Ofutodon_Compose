@@ -4,15 +4,19 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.crakac.ofutodon.mastodon.entity.Attachment
 import com.crakac.ofutodon.ui.LogCompositions
 import com.crakac.ofutodon.ui.theme.PreviewBackGround
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 
 @OptIn(ExperimentalPagerApi::class)
@@ -43,13 +47,13 @@ fun AttachmentPreview(
         onBackKeyPressed()
     }
     val pagerState = rememberPagerState(initialIndex)
-    HorizontalPager(count = attachments.size, state = pagerState) { page ->
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(PreviewBackGround)
-                .pointerInput(Unit) {}
-        ) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(PreviewBackGround)
+            .pointerInput(Unit) {}
+    ) {
+        HorizontalPager(count = attachments.size, state = pagerState) { page ->
             when (val attachment = attachments[page]) {
                 is Attachment -> {
                     AsyncImage(
@@ -67,6 +71,12 @@ fun AttachmentPreview(
                 }
             }
         }
+        HorizontalPagerIndicator(
+            pagerState = pagerState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(16.dp)
+        )
     }
 }
 
