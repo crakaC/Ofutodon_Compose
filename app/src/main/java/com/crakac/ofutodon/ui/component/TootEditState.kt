@@ -38,7 +38,7 @@ class TootEditState(val dropDownState: VisibilityDropDownState) {
 
     fun addAttachments(uris: List<Uri>): Boolean {
         val beforeSize = attachments.size
-        _attachments.addAll(uris)
+        _attachments.addAll(uris.take(MAX_ATTACHMENTS - beforeSize))
         return beforeSize + uris.size <= MAX_ATTACHMENTS
     }
 
