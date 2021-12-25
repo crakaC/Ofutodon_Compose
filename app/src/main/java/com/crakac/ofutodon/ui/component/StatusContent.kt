@@ -117,34 +117,34 @@ fun StatusContent(status: Status, callback: StatusCallback) {
 @Composable
 fun AccountIcon(status: Status) {
     val originalAccount = status.reblog?.account
-    Box(Modifier.size(IconSize)) {
         if (originalAccount == null) {
             Image(
                 painter = rememberAsyncImagePainter(model = status.account.avatar),
                 contentDescription = "icon",
                 modifier = Modifier
-                    .fillMaxSize()
+                    .size(IconSize)
                     .clip(Shapes.medium)
             )
         } else {
-            Image(
-                painter = rememberAsyncImagePainter(model = originalAccount.avatar),
-                contentDescription = "original icon",
-                modifier = Modifier
-                    .size(OriginalIconSize)
-                    .align(Alignment.TopStart)
-                    .clip(Shapes.medium),
-            )
-            Image(
-                painter = rememberAsyncImagePainter(model = status.account.avatar),
-                contentDescription = "icon",
-                modifier = Modifier
-                    .size(BoostedByIconSize)
-                    .align(Alignment.BottomEnd)
-                    .clip(Shapes.medium),
-            )
+            Box(Modifier.size(IconSize)) {
+                Image(
+                    painter = rememberAsyncImagePainter(model = originalAccount.avatar),
+                    contentDescription = "original icon",
+                    modifier = Modifier
+                        .size(OriginalIconSize)
+                        .align(Alignment.TopStart)
+                        .clip(Shapes.medium),
+                )
+                Image(
+                    painter = rememberAsyncImagePainter(model = status.account.avatar),
+                    contentDescription = "icon",
+                    modifier = Modifier
+                        .size(BoostedByIconSize)
+                        .align(Alignment.BottomEnd)
+                        .clip(Shapes.medium),
+                )
+            }
         }
-    }
 }
 
 @Composable
