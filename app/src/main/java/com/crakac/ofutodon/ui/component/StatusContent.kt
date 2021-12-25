@@ -241,7 +241,6 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
         ) {
             Row(
                 Modifier
-                    .wrapContentHeight()
                     .width(spanWidth),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -266,7 +265,6 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
             }
             Row(
                 Modifier
-                    .wrapContentHeight()
                     .width(spanWidth),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -293,7 +291,6 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
             }
             Row(
                 Modifier
-                    .wrapContentHeight()
                     .width(spanWidth),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
