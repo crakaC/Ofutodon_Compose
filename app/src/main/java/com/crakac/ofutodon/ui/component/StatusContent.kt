@@ -117,34 +117,34 @@ fun StatusContent(status: Status, callback: StatusCallback) {
 @Composable
 fun AccountIcon(status: Status) {
     val originalAccount = status.reblog?.account
-        if (originalAccount == null) {
+    if (originalAccount == null) {
+        Image(
+            painter = rememberAsyncImagePainter(model = status.account.avatar),
+            contentDescription = "icon",
+            modifier = Modifier
+                .size(IconSize)
+                .clip(Shapes.medium)
+        )
+    } else {
+        Box(Modifier.size(IconSize)) {
+            Image(
+                painter = rememberAsyncImagePainter(model = originalAccount.avatar),
+                contentDescription = "original icon",
+                modifier = Modifier
+                    .size(OriginalIconSize)
+                    .align(Alignment.TopStart)
+                    .clip(Shapes.medium),
+            )
             Image(
                 painter = rememberAsyncImagePainter(model = status.account.avatar),
                 contentDescription = "icon",
                 modifier = Modifier
-                    .size(IconSize)
-                    .clip(Shapes.medium)
+                    .size(BoostedByIconSize)
+                    .align(Alignment.BottomEnd)
+                    .clip(Shapes.medium),
             )
-        } else {
-            Box(Modifier.size(IconSize)) {
-                Image(
-                    painter = rememberAsyncImagePainter(model = originalAccount.avatar),
-                    contentDescription = "original icon",
-                    modifier = Modifier
-                        .size(OriginalIconSize)
-                        .align(Alignment.TopStart)
-                        .clip(Shapes.medium),
-                )
-                Image(
-                    painter = rememberAsyncImagePainter(model = status.account.avatar),
-                    contentDescription = "icon",
-                    modifier = Modifier
-                        .size(BoostedByIconSize)
-                        .align(Alignment.BottomEnd)
-                        .clip(Shapes.medium),
-                )
-            }
         }
+    }
 }
 
 @Composable
@@ -177,8 +177,23 @@ fun Attachments(
     attachments: List<Attachment>,
     onClickAttachment: (index: Int) -> Unit = {}
 ) {
-    val rows = if (attachments.size >= 3) 2 else 1
     val spacer = 4.dp
+
+    val cols = if (attachments.size <= 2) attachments.size else (attachments.size + 1) / 2
+    val attachmentsInColumns = List(cols) { mutableListOf<Attachment>() }
+
+    // [1, 2, 3] -> [[1], [2, 3]]
+    // [1, 2, 3, 4] -> [[1, 3], [2, 4]]
+    if (attachments.size % cols != 0) {
+        attachmentsInColumns[0].add(attachments[0])
+        for ((index, attachment) in attachments.drop(1).withIndex()) {
+            attachmentsInColumns[index % (cols - 1) + 1].add(attachment)
+        }
+    } else {
+        for ((index, attachment) in attachments.withIndex()) {
+            attachmentsInColumns[index % cols].add(attachment)
+        }
+    }
     Row(
         modifier = Modifier
             .padding(vertical = spacer)
@@ -186,16 +201,14 @@ fun Attachments(
             .aspectRatio(16f / 9f)
             .clip(Shapes.medium),
     ) {
-        // [1, 2, 3] -> [[1], [2, 3]]
-        for ((col, attachmentRow) in attachments.reversed().chunked(rows) { it.reversed() }
-            .reversed().withIndex()) {
-            if (col > 0) {
+        for ((colIndex, attachmentsInColumn) in attachmentsInColumns.withIndex()) {
+            if (colIndex > 0) {
                 Spacer(Modifier.width(spacer))
             }
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                for ((index, attachment) in attachmentRow.withIndex()) {
+                for ((index, attachment) in attachmentsInColumn.withIndex()) {
                     if (index > 0) {
                         Spacer(Modifier.height(spacer))
                     }
@@ -327,7 +340,8 @@ val DummyStatus = Status(
     ),
     content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     createdAt = "2021-12-06T09:26:11.384Z",
-    repliesCount = 2L, reblogsCount = 1234567L, favouritesCount = 123L
+    repliesCount = 2L, reblogsCount = 1234567L, favouritesCount = 123L,
+    mediaAttachments = (1..7).map { Attachment(previewUrl = "https://developer.android.com/images/brand/Android_Robot.png") },
 )
 
 @Preview(uiMode = UI_MODE_NIGHT_YES)
