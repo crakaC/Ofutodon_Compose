@@ -7,9 +7,10 @@ import com.crakac.ofutodon.mastodon.params.StatusBody
 
 const val MAX_TOOT_LENGTH = 500
 const val MAX_ATTACHMENTS = 4
-class TootEditState(val dropDownState: VisibilityDropDownState) {
+class TootEditState(initialVisibility: Status.Visibility = DefaultVisibility) {
     var text by mutableStateOf("")
     var isSending by mutableStateOf(false)
+    val dropDownState = VisibilityDropDownState(initialVisibility)
     private val _attachments = mutableStateListOf<Uri>()
     val attachments: List<Uri>
         get() = _attachments
@@ -49,8 +50,7 @@ class TootEditState(val dropDownState: VisibilityDropDownState) {
 
 @Composable
 fun rememberTootEditState(initialVisibility: Status.Visibility): TootEditState {
-    val dropDownState = rememberVisibilityDropDownState(initialVisibility)
     return remember {
-        TootEditState(dropDownState = dropDownState)
+        TootEditState(initialVisibility)
     }
 }

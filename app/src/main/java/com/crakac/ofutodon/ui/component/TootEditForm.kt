@@ -33,7 +33,6 @@ import com.crakac.ofutodon.ui.theme.AttachmentActionBackGround
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 import com.crakac.ofutodon.ui.theme.Shapes
 import com.crakac.ofutodon.util.iconResource
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 
 interface EditFormCallback {
