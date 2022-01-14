@@ -7,20 +7,21 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlin.coroutines.EmptyCoroutineContext
 
-class DummyTimelineState(
+class
+DummyTimelineState(
     scope: CoroutineScope = CoroutineScope(EmptyCoroutineContext)
 ) : StatusTimelineState(scope) {
     private val initialId = 1_000_000L
     override fun refresh() {
         load(FetchType.Next) {
-            delay(3000)
-            mutableData.postValue(getNextStatuses(initialId, 5))
+            delay(1000)
+            mutableData.postValue(getNextStatuses(initialId))
         }
     }
 
     override fun fetchNext() {
         load(FetchType.Next, showRefreshing = true) {
-            delay(3000)
+            delay(1000)
             val statuses = getNextStatuses(firstStatusId ?: initialId)
             prepend(statuses)
         }
@@ -28,7 +29,7 @@ class DummyTimelineState(
 
     override fun fetchPrevious() {
         load(FetchType.Previous) {
-            delay(3000)
+            delay(1000)
             val statuses = getPreviousStatuses(lastStatusId ?: initialId)
             append(statuses)
         }
@@ -36,14 +37,14 @@ class DummyTimelineState(
 
     private fun getNextStatuses(
         sinceId: Long = 1_000_000L,
-        limit: Int = 1
+        limit: Int = 20
     ): List<Status> {
         return ((sinceId + limit) downTo (sinceId + 1)).map { DummyStatus.copy(id = it) }
     }
 
     private fun getPreviousStatuses(
         maxId: Long = 1_000_000L,
-        limit: Int = 1
+        limit: Int = 20
     ): List<Status> {
         return ((maxId - 1) downTo (maxId - limit)).map { DummyStatus.copy(id = it) }
     }
