@@ -11,7 +11,6 @@ import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.NavDestination
 import com.crakac.ofutodon.R
 import com.crakac.ofutodon.mastodon.entity.Status
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 
 
@@ -61,13 +60,13 @@ fun NavController.navigate(
     route: String,
     args: Bundle
 ) {
-    val routLink = NavDeepLinkRequest
+    val routeLink = NavDeepLinkRequest
         .Builder.fromUri(NavDestination.createRoute(route).toUri()).build()
-    val deepLinkMatch = graph.matchDeepLink(routLink)
+    val deepLinkMatch = graph.matchDeepLink(routeLink)
     if (deepLinkMatch != null) {
         val destinationId = deepLinkMatch.destination.id
         navigate(destinationId, args)
     } else {
-        throw IllegalArgumentException("route $route is not found in navigation graph")
+        throw IllegalArgumentException("route $routeLink is not found in navigation graph")
     }
 }
