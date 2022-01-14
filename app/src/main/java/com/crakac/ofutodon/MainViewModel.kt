@@ -8,31 +8,29 @@ import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.timeline.DummyTimelineState
 import com.crakac.ofutodon.timeline.HomeTimelineState
 import com.crakac.ofutodon.timeline.PublicTimelineState
-import com.crakac.ofutodon.timeline.StatusTimelineState
-import com.crakac.ofutodon.ui.component.TootEditState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repo: MastodonRepository
 ) : ViewModel() {
-    private val _homeTimeline = HomeTimelineState(repo, viewModelScope)
-    private val _localTimeline = PublicTimelineState(repo, isLocalOnly = true, viewModelScope)
-    private val _publicTimeline = PublicTimelineState(repo, isLocalOnly = false, viewModelScope)
+    companion object {
+        private val TAG = MainViewModel::class.java.simpleName
+    }
+
+    private val homeTimeline = HomeTimelineState(repo, viewModelScope)
+    private val localTimeline = PublicTimelineState(repo, isLocalOnly = true, viewModelScope)
+    private val publicTimeline = PublicTimelineState(repo, isLocalOnly = false, viewModelScope)
     private val debugTimeline = DummyTimelineState(viewModelScope)
 
-    private val _timelines = listOf(
-        _homeTimeline,
-        _localTimeline,
-        _publicTimeline,
+    val timelines = listOf(
+        homeTimeline,
+        localTimeline,
+        publicTimeline,
         debugTimeline
     )
-
-    val timelines: List<StatusTimelineState>
-        get() = _timelines
 
     fun favourite(id: Long) {
         viewModelScope.launch {

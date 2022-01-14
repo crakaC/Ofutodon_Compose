@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,7 +25,6 @@ import com.crakac.ofutodon.ui.component.StatusCallback
 import com.crakac.ofutodon.ui.component.Timeline
 import com.crakac.ofutodon.util.showToast
 import com.google.accompanist.pager.*
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -94,18 +92,14 @@ fun HomeScreenContent(
     previewState: AttachmentPreviewState
 ) {
     val viewModel: MainViewModel = hiltViewModel()
-
     val timelines = viewModel.timelines
-    val statuses = timelines.map { it.data.observeAsState(emptyList()) }
 
     LaunchedEffect(Unit) {
         timelines.forEach {
-            it.refresh()
+            if (it.data.isEmpty()) {
+                it.refresh()
+            }
         }
-    }
-
-    timelines.forEach { timeline ->
-        timeline.swipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     }
 
     val context = LocalContext.current
@@ -155,7 +149,7 @@ fun HomeScreenContent(
             val timeline = timelines[page]
             Timeline(
                 modifier = modifier,
-                statuses = statuses[page].value,
+                statuses = timeline.data,
                 loadingState = timeline.loadingState,
                 refreshState = timeline.swipeRefreshState,
                 scrollState = scrollState[page],

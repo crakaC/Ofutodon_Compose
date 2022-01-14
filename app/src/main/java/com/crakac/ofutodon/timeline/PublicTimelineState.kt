@@ -13,7 +13,7 @@ class PublicTimelineState(
 ) : StatusTimelineState(scope) {
     override fun refresh() {
         load(FetchType.Next) {
-            mutableData.postValue(repo.getPublicTimeline(localOnly = isLocalOnly))
+            prepend(repo.getPublicTimeline(localOnly = isLocalOnly))
         }
     }
 

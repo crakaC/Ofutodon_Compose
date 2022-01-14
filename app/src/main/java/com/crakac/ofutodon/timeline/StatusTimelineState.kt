@@ -1,8 +1,7 @@
 package com.crakac.ofutodon.timeline
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.crakac.ofutodon.mastodon.entity.Status
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import kotlinx.coroutines.CoroutineScope
@@ -12,35 +11,28 @@ import kotlinx.coroutines.launch
 abstract class StatusTimelineState(parentScope: CoroutineScope) : TimelineState<Status> {
     private val scope = CoroutineScope(parentScope.coroutineContext + Job())
     private val jobs = mutableMapOf<FetchType, Job>()
-    protected val mutableData = MutableLiveData<List<Status>>()
-    override val data: LiveData<List<Status>>
+    private val mutableData = mutableStateListOf<Status>()
+    override val data: List<Status>
         get() = mutableData
 
-    override lateinit var swipeRefreshState: SwipeRefreshState
-
+    override val swipeRefreshState: SwipeRefreshState = SwipeRefreshState(false)
     final override val loadingState = mutableStateOf(false)
 
     val firstStatusId: Long?
-        get() = data.value?.first()?.id
+        get() = if (data.isEmpty()) null else data.first().id
 
     val lastStatusId: Long?
-        get() = data.value?.last()?.id
+        get() = if (data.isEmpty()) null else data.last().id
 
     override fun update(updated: Status) {
-        var changed = false
-        val copy by lazy { mutableData.value!!.toMutableList() }
-        mutableData.value?.forEachIndexed { index, status ->
+        mutableData.forEachIndexed { index, status ->
             if (status.id == updated.id) {
-                copy[index] = updated
-                changed = true
+                mutableData[index] = updated
+                return
             } else if (status.reblog?.id == updated.id) {
-                copy[index] = copy[index].copy(reblog = updated)
-                changed = true
+                mutableData[index] = status.copy(reblog = updated)
+                return
             }
-            if (changed) return@forEachIndexed
-        }
-        if (changed) {
-            mutableData.postValue(copy)
         }
     }
 
@@ -73,12 +65,12 @@ abstract class StatusTimelineState(parentScope: CoroutineScope) : TimelineState<
 
     protected fun prepend(items: List<Status>) {
         if (items.isEmpty()) return
-        mutableData.postValue(items + (mutableData.value ?: emptyList()))
+        mutableData.addAll(0, items)
     }
 
     protected fun append(items: List<Status>) {
         if (items.isEmpty()) return
-        mutableData.postValue((mutableData.value ?: emptyList()) + items)
+        mutableData.addAll(items)
     }
 
     fun cancel() {

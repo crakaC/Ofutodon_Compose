@@ -12,7 +12,7 @@ class HomeTimelineState(
 ) : StatusTimelineState(scope) {
     override fun refresh() {
         load(FetchType.Next) {
-            mutableData.postValue(repo.getHomeTimeline())
+            prepend(repo.getHomeTimeline())
         }
     }
 

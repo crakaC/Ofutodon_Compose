@@ -15,7 +15,7 @@ DummyTimelineState(
     override fun refresh() {
         load(FetchType.Next) {
             delay(1000)
-            mutableData.postValue(getNextStatuses(initialId))
+            prepend(getNextStatuses(initialId))
         }
     }
 
