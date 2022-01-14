@@ -52,22 +52,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun toot(state: TootEditState) {
-        state.isSending = true
-        viewModelScope.launch {
-            try {
-                val attachmentIds = if (state.attachments.any()) {
-                    repo.uploadMediaAttachments(state.attachments).map { it.id }
-                } else {
-                    null
-                }
-                repo.postStatus(state.toStatusBody().copy(mediaIds = attachmentIds))
-                state.reset()
-            } catch (e: IOException) {
-                Log.w("MainViewModel", "${e.message}")
-            } finally {
-                state.isSending = false
-            }
-        }
+    override fun onCleared() {
+        Log.d(TAG, "onCleared")
     }
 }

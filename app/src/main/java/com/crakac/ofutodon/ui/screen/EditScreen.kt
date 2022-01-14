@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.crakac.ofutodon.MainViewModel
+import com.crakac.ofutodon.TootEditViewModel
 import com.crakac.ofutodon.ui.attachment.AttachmentPreview
 import com.crakac.ofutodon.ui.attachment.rememberAttachmentPreviewState
 import com.crakac.ofutodon.ui.component.*
@@ -19,7 +19,7 @@ import com.crakac.ofutodon.util.showToast
 
 @Composable
 fun EditScreen(navController: NavHostController) {
-    val viewModel: MainViewModel = hiltViewModel()
+    val viewModel: TootEditViewModel = hiltViewModel()
     val scaffoldState = rememberScaffoldState()
     val editState = rememberTootEditState(DefaultVisibility)
     val previewState = rememberAttachmentPreviewState()
