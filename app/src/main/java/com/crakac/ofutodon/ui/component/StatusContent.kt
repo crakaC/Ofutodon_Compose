@@ -1,9 +1,13 @@
 package com.crakac.ofutodon.ui.component
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.text.Spanned
+import android.text.style.URLSpan
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -12,10 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.text.getSpans
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberAsyncImagePainter
 import com.crakac.ofutodon.R
@@ -47,7 +55,6 @@ private val BoostedByIconSize = 24.dp
 @Composable
 fun StatusContent(status: Status, callback: StatusCallback) {
     val originalStatus = status.reblog ?: status
-    val originalAccount = originalStatus.account
     Surface {
         Column(
             modifier = Modifier
@@ -62,40 +69,9 @@ fun StatusContent(status: Status, callback: StatusCallback) {
                 AccountIcon(status)
                 Spacer(Modifier.width(8.dp))
                 Column {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = originalAccount.displayName,
-                            style = MaterialTheme.typography.h6
-                        )
-                        Spacer(Modifier.width(4.dp))
-                        Text(
-                            text = "@${originalAccount.unicodeAcct}",
-                            style = MaterialTheme.typography.body2,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f),
-                            color = DarkGray
-                        )
-                        Spacer(Modifier.width(4.dp))
-                        Icon(
-                            painter = LocalPainterResource.current.obtain(id = originalStatus.visibility.iconResource()),
-                            contentDescription = "visibility",
-                            modifier = Modifier.size(16.dp),
-                            tint = DarkGray,
-                        )
-                        Spacer(Modifier.width(4.dp))
-                        Text(
-                            text = originalStatus.getRelativeTime(),
-                            style = MaterialTheme.typography.body2,
-                            textAlign = TextAlign.End,
-                            color = DarkGray
-                        )
-                    }
+                    Header(originalStatus)
                     Spacer(Modifier.height(4.dp))
-                    Text(
-                        originalStatus.spannedContent.toString(),
-                        style = MaterialTheme.typography.body1
-                    )
+                    Content(originalStatus.spannedContent)
                     if (originalStatus.mediaAttachments.any()) {
                         Attachments(
                             originalStatus.mediaAttachments,
@@ -112,6 +88,71 @@ fun StatusContent(status: Status, callback: StatusCallback) {
             }
         }
     }
+}
+
+@Composable
+private fun Header(status: Status) {
+    val account = status.account
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = account.displayName,
+            style = MaterialTheme.typography.h6
+        )
+        Spacer(Modifier.width(4.dp))
+        Text(
+            text = "@${account.unicodeAcct}",
+            style = MaterialTheme.typography.body2,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f),
+            color = DarkGray
+        )
+        Spacer(Modifier.width(4.dp))
+        Icon(
+            painter = LocalPainterResource.current.obtain(id = status.visibility.iconResource()),
+            contentDescription = "visibility",
+            modifier = Modifier.size(16.dp),
+            tint = DarkGray,
+        )
+        Spacer(Modifier.width(4.dp))
+        Text(
+            text = status.getRelativeTime(),
+            style = MaterialTheme.typography.body2,
+            textAlign = TextAlign.End,
+            color = DarkGray
+        )
+    }
+}
+
+@Composable
+private fun Content(content: Spanned) {
+    val spans = content.getSpans<URLSpan>()
+    val urlSpanStyle = SpanStyle(color = MaterialTheme.colors.secondary)
+    val annotatedString = buildAnnotatedString {
+        var position = 0
+        for (span in spans) {
+            val start = content.getSpanStart(span)
+            val end = content.getSpanEnd(span)
+            append(content.substring(position, start))
+            pushStringAnnotation("URL", annotation = span.url)
+            withStyle(urlSpanStyle) {
+                append(content.substring(start, end))
+            }
+            pop()
+            position = end
+        }
+        append(content.substring(position))
+    }
+    val textColor = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+    ClickableText(
+        annotatedString,
+        style = MaterialTheme.typography.body1.copy(color = textColor),
+        onClick = { offset ->
+            annotatedString.getStringAnnotations(offset, offset).firstOrNull()?.let { annotation ->
+                Log.d("Clicked URL", annotation.item)
+            }
+        }
+    )
 }
 
 @Composable
@@ -348,6 +389,7 @@ private fun StatusNightPreview() {
         repliesCount = 1L,
         reblogsCount = 123L,
         favouritesCount = 123456L,
+        reblog = DummyStatus
     )
     OfutodonTheme {
         StatusContent(status, StatusCallback.Default)

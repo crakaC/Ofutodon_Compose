@@ -1,5 +1,6 @@
 package com.crakac.ofutodon.mastodon.entity
 
+import android.text.Spanned
 import androidx.core.text.HtmlCompat
 import com.crakac.ofutodon.util.Util
 import com.google.gson.annotations.SerializedName
@@ -100,6 +101,6 @@ data class Status(
     fun getRelativeTime() = Util.getRelativeTimeSpanString(createdAtMillis).toString()
 
     val spannedContent by lazy {
-        HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_COMPACT).trim()
+        HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_COMPACT).trim() as Spanned
     }
 }
