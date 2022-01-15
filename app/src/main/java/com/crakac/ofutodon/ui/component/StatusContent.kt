@@ -11,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -24,6 +23,7 @@ import com.crakac.ofutodon.mastodon.entity.Account
 import com.crakac.ofutodon.mastodon.entity.Attachment
 import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.ui.theme.*
+import com.crakac.ofutodon.util.LocalPainterResource
 import com.crakac.ofutodon.util.iconResource
 
 interface StatusCallback {
@@ -78,7 +78,7 @@ fun StatusContent(status: Status, callback: StatusCallback) {
                         )
                         Spacer(Modifier.width(4.dp))
                         Icon(
-                            painter = painterResource(id = originalStatus.visibility.iconResource()),
+                            painter = LocalPainterResource.current.obtain(id = originalStatus.visibility.iconResource()),
                             contentDescription = "visibility",
                             modifier = Modifier.size(16.dp),
                             tint = DarkGray,
@@ -153,7 +153,7 @@ fun BoostedBy(displayName: String) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(Modifier.width(IconSize)) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_boost),
+                    painter = LocalPainterResource.current.obtain(id = R.drawable.ic_boost),
                     contentDescription = null,
                     modifier = Modifier
                         .size(24.dp)
@@ -169,7 +169,7 @@ fun BoostedBy(displayName: String) {
             )
         }
     }
-    Spacer(Modifier.height(4.dp))
+    Spacer(Modifier.height(8.dp))
 }
 
 @Composable
@@ -249,7 +249,7 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
                     onClick = { callback.onClickReply(status) }
                 ) {
                     Icon(
-                        painterResource(id = R.drawable.ic_reply),
+                        painter = LocalPainterResource.current.obtain(id = R.drawable.ic_reply),
                         contentDescription = "reply",
                         modifier = Modifier.size(iconSize)
                     )
@@ -274,7 +274,7 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
                     enabled = status.isBoostable,
                 ) {
                     Icon(
-                        painterResource(id = R.drawable.ic_boost),
+                        painter = LocalPainterResource.current.obtain(id = R.drawable.ic_boost),
                         contentDescription = "boost",
                         modifier = Modifier.size(iconSize),
                         tint = if (status.isBoostedWithOriginal) BoostBlue else LocalContentColor.current
@@ -299,7 +299,7 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
                     onClick = { callback.onClickFavourite(status) }
                 ) {
                     Icon(
-                        painterResource(id = R.drawable.ic_favourite),
+                        painter = LocalPainterResource.current.obtain(id = R.drawable.ic_favourite),
                         contentDescription = "favourite",
                         modifier = Modifier.size(iconSize),
                         tint = if (status.isFavouritedWithOriginal) FavouriteYellow else LocalContentColor.current
@@ -319,7 +319,7 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
                 onClick = { callback.onClickMore(status) }
             ) {
                 Icon(
-                    painterResource(id = R.drawable.ic_more),
+                    painter = LocalPainterResource.current.obtain(id = R.drawable.ic_more),
                     contentDescription = "more",
                     modifier = Modifier.size(iconSize)
                 )

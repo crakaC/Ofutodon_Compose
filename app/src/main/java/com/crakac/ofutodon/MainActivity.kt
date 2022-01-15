@@ -29,7 +29,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun OfutonApp() {
     val navController = rememberNavController()
-
     NavHost(
         navController = navController,
         startDestination = Screen.Home.name,
