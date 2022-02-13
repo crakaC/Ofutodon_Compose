@@ -40,13 +40,6 @@ android {
             def host = properties.getProperty("debug_host")
             buildConfigField("String", "DEBUG_TOKEN", "\"$token\"")
             buildConfigField("String", "DEBUG_HOST", "\"$host\"")
-
-            minifyEnabled false
-            proguardFiles(
-                    getDefaultProguardFile('proguard-android-optimize.txt'),
-                    'proguard-rules.pro',
-                    'retrofit2.pro'
-            )
         }
     }
 
@@ -92,7 +85,7 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 
     // Navigation
-    implementation 'androidx.navigation:navigation-compose:2.5.0-alpha01'
+    implementation 'androidx.navigation:navigation-compose:2.5.0-alpha02'
 
     // Accompanist
     implementation "com.google.accompanist:accompanist-insets:$accompanist_version"
