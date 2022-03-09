@@ -5,7 +5,7 @@ buildscript {
         hilt_version = '2.40.5'
         retrofit_version = '2.9.0'
         okhttp_version = '4.9.3'
-        coil_version = '2.0.0-alpha06'
+        coil_version = '2.0.0-rc01'
         lifecycle_version = '2.4.0'
         accompanist_version = '0.22.0-rc'
     }
