@@ -38,7 +38,8 @@ class MastodonRepository @Inject constructor(
         val attachments = mutableListOf<Attachment>()
         for (uri in uris) {
             coroutineContext.ensureActive()
-            val file = contentResolver.openInputStream(uri)?.use {
+            val file =
+                contentResolver.openInputStream(uri)?.use {
                 val mediaType = contentResolver.getType(uri)?.toMediaTypeOrNull()
                 val body = it.readBytes().toRequestBody(mediaType)
                 MultipartBody.Part.createFormData("file", "attachment", body)

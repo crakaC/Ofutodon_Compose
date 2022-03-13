@@ -66,6 +66,7 @@ fun Timeline(
             LazyColumn(state = scrollState, modifier = modifier.fillMaxHeight()) {
                 itemsIndexed(
                     items = statuses,
+                    contentType = {_, _ ->"status"},
                     key = { _, status -> status.id })
                 { index, status ->
                     StatusContent(status, onClickStatus)

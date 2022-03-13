@@ -8,7 +8,7 @@ class Util private constructor() {
     companion object {
         private val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
         fun parseCreatedAt(source: String): Long {
-            return sdf.parse(source).time + TimeZone.getDefault().rawOffset
+            return (sdf.parse(source)?.time ?: 0L) + TimeZone.getDefault().rawOffset
         }
 
         fun getRelativeTimeSpanString(time: Long): CharSequence {

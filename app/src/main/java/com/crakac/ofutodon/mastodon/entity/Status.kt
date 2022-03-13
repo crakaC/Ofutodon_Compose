@@ -95,7 +95,7 @@ data class Status(
             return reblog?.isReblogged ?: isReblogged
         }
 
-    fun hasSpoileredText() = spoilerText.isNotEmpty()
+    fun hasSpoilerText() = spoilerText.isNotEmpty()
 
     private val createdAtMillis: Long by lazy { Util.parseCreatedAt(createdAt) }
     fun getRelativeTime() = Util.getRelativeTimeSpanString(createdAtMillis).toString()

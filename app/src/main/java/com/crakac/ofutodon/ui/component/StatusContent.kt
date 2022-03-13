@@ -1,6 +1,8 @@
 package com.crakac.ofutodon.ui.component
 
+import android.content.Intent
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.net.Uri
 import android.text.Spanned
 import android.text.style.URLSpan
 import android.util.Log
@@ -15,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -33,6 +36,7 @@ import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.ui.theme.*
 import com.crakac.ofutodon.util.LocalPainterResource
 import com.crakac.ofutodon.util.iconResource
+import com.crakac.ofutodon.util.recomposeHighlighter
 
 interface StatusCallback {
     fun onClickStatus(status: Status) {}
@@ -57,7 +61,7 @@ fun StatusContent(status: Status, callback: StatusCallback) {
     val originalStatus = status.reblog ?: status
     Surface {
         Column(
-            modifier = Modifier
+            modifier = Modifier.recomposeHighlighter()
                 .fillMaxWidth()
                 .clickable { callback.onClickStatus(status) }
                 .padding(start = 8.dp, end = 8.dp, top = 12.dp)
@@ -134,7 +138,12 @@ private fun Content(content: Spanned) {
             val start = content.getSpanStart(span)
             val end = content.getSpanEnd(span)
             append(content.substring(position, start))
-            pushStringAnnotation("URL", annotation = span.url)
+            val tag = when (content[start]) {
+                '#' -> "HashTag"
+                '@' -> "Mention"
+                else -> "URL"
+            }
+            pushStringAnnotation(tag, annotation = span.url)
             withStyle(urlSpanStyle) {
                 append(content.substring(start, end))
             }
@@ -144,12 +153,17 @@ private fun Content(content: Spanned) {
         append(content.substring(position))
     }
     val textColor = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+    val context = LocalContext.current
     ClickableText(
         annotatedString,
         style = MaterialTheme.typography.body1.copy(color = textColor),
         onClick = { offset ->
             annotatedString.getStringAnnotations(offset, offset).firstOrNull()?.let { annotation ->
-                Log.d("Clicked URL", annotation.item)
+                Log.d("Clicked: ", annotation.item)
+                if(annotation.tag == "URL"){
+                    val url = Uri.parse(annotation.item)
+                    context.startActivity(Intent(Intent.ACTION_VIEW, url))
+                }
             }
         }
     )
@@ -237,9 +251,9 @@ fun Attachments(
     }
     Row(
         modifier = Modifier
+            .aspectRatio(16f / 9f)
             .padding(vertical = spacer)
             .fillMaxWidth()
-            .aspectRatio(16f / 9f)
             .clip(Shapes.medium),
     ) {
         for ((colIndex, attachmentsInColumn) in attachmentsInColumns.withIndex()) {

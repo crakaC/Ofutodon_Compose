@@ -1,3 +1,4 @@
+
 package com.crakac.ofutodon.ui.attachment
 
 import androidx.activity.compose.BackHandler
@@ -5,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.crakac.ofutodon.mastodon.entity.Attachment
 import com.crakac.ofutodon.ui.LogCompositions
+import com.crakac.ofutodon.ui.theme.DarkGray
+import com.crakac.ofutodon.ui.theme.DeepBlack
 import com.crakac.ofutodon.ui.theme.PreviewBackGround
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -54,28 +58,23 @@ fun AttachmentPreview(
             .pointerInput(Unit) {}
     ) {
         HorizontalPager(count = attachments.size, state = pagerState) { page ->
-            when (val attachment = attachments[page]) {
-                is Attachment -> {
-                    AsyncImage(
-                        model = attachment.url,
-                        contentDescription = attachment.description,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-                else -> {
-                    AsyncImage(
-                        model = attachment,
-                        contentDescription = "attachment $page",
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                }
+            val model = when (val attachment = attachments[page]) {
+                is Attachment -> attachment.url
+                else -> attachment
             }
+            AsyncImage(
+                model = model,
+                contentDescription = "attachment $page",
+                modifier = Modifier.fillMaxSize(),
+            )
         }
         HorizontalPagerIndicator(
             pagerState = pagerState,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(16.dp)
+                .padding(16.dp),
+            activeColor = MaterialTheme.colors.primary,
+            inactiveColor = DeepBlack.copy(alpha = 0.5f)
         )
     }
 }

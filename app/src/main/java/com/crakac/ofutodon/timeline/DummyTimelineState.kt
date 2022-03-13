@@ -5,11 +5,10 @@ import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.ui.component.DummyStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import kotlin.coroutines.EmptyCoroutineContext
 
 class
 DummyTimelineState(
-    scope: CoroutineScope = CoroutineScope(EmptyCoroutineContext)
+    scope: CoroutineScope
 ) : StatusTimelineState(scope) {
     private val initialId = 1_000_000L
     override fun refresh() {
@@ -37,7 +36,7 @@ DummyTimelineState(
 
     private fun getNextStatuses(
         sinceId: Long = 1_000_000L,
-        limit: Int = 20
+        limit: Int = 100
     ): List<Status> {
         return ((sinceId + limit) downTo (sinceId + 1)).map { DummyStatus.copy(id = it) }
     }
