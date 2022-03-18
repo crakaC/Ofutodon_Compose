@@ -21,8 +21,10 @@ jobs:
 
       - name: Touch ignored file
         run: |
+          pwd
           touch local.properties
-          echo '{}' >> app/google-services.json
+          cp .github/ci-google-service.json app/google-services.json
+
       - uses: gradle/gradle-build-action@v2
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
