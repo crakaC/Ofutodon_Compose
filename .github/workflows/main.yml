@@ -1,0 +1,48 @@
+name: Build debug apk
+
+on:
+  push:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Copy CI gradle.properties
+        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+
+      - name: Touch ignored file
+        run: |
+          pwd
+          touch local.properties
+          cp .github/ci-google-service.json app/google-services.json
+
+      - uses: gradle/gradle-build-action@v2
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Build project
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Upload build reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+
+      - run: ./gradlew lint
+
+      - name: Upload lint report
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: lint-reports
+          path: app/build/reports/*
