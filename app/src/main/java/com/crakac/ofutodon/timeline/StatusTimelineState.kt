@@ -19,10 +19,10 @@ abstract class StatusTimelineState(parentScope: CoroutineScope) : TimelineState<
     final override val loadingState = mutableStateOf(false)
 
     val firstStatusId: Long?
-        get() = if (data.isEmpty()) null else data.first().id
+        get() = data.firstOrNull()?.id
 
     val lastStatusId: Long?
-        get() = if (data.isEmpty()) null else data.last().id
+        get() = data.lastOrNull()?.id
 
     override fun update(updated: Status) {
         mutableData.forEachIndexed { index, status ->
