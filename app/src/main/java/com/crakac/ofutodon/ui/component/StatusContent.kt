@@ -6,7 +6,6 @@ import android.net.Uri
 import android.text.Spanned
 import android.text.style.URLSpan
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
@@ -27,14 +26,15 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.text.getSpans
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.crakac.ofutodon.R
 import com.crakac.ofutodon.mastodon.entity.Account
 import com.crakac.ofutodon.mastodon.entity.Attachment
 import com.crakac.ofutodon.mastodon.entity.Status
 import com.crakac.ofutodon.ui.theme.*
 import com.crakac.ofutodon.util.LocalPainterResource
+import com.crakac.ofutodon.util.createImageRequest
 import com.crakac.ofutodon.util.iconResource
 import com.crakac.ofutodon.util.recomposeHighlighter
 
@@ -55,7 +55,6 @@ private val IconSize = 54.dp
 private val OriginalIconSize = 40.dp
 private val BoostedByIconSize = 24.dp
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun StatusContent(status: Status, callback: StatusCallback) {
     val originalStatus = status.reblog ?: status
@@ -173,8 +172,8 @@ private fun Content(content: Spanned) {
 fun AccountIcon(status: Status) {
     val originalAccount = status.reblog?.account
     if (originalAccount == null) {
-        Image(
-            painter = rememberAsyncImagePainter(model = status.account.avatar),
+        AsyncImage(
+            model = createImageRequest(status.account.avatar),
             contentDescription = "icon",
             modifier = Modifier
                 .size(IconSize)
@@ -182,16 +181,16 @@ fun AccountIcon(status: Status) {
         )
     } else {
         Box(Modifier.size(IconSize)) {
-            Image(
-                painter = rememberAsyncImagePainter(model = originalAccount.avatar),
+            AsyncImage(
+                model = createImageRequest(originalAccount.avatar),
                 contentDescription = "original icon",
                 modifier = Modifier
                     .size(OriginalIconSize)
                     .align(Alignment.TopStart)
                     .clip(Shapes.medium),
             )
-            Image(
-                painter = rememberAsyncImagePainter(model = status.account.avatar),
+            AsyncImage(
+                model = createImageRequest(status.account.avatar),
                 contentDescription = "icon",
                 modifier = Modifier
                     .size(BoostedByIconSize)
@@ -267,8 +266,11 @@ fun Attachments(
                     if (index > 0) {
                         Spacer(Modifier.height(spacer))
                     }
-                    Image(
-                        painter = rememberAsyncImagePainter(attachment.previewUrl),
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(attachment.previewUrl)
+                            .crossfade(true)
+                            .build(),
                         contentDescription = attachment.description,
                         modifier = Modifier
                             .fillMaxWidth()

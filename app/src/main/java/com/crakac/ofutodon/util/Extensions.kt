@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.NavDestination
+import coil.request.ImageRequest
 import com.crakac.ofutodon.R
 import com.crakac.ofutodon.mastodon.entity.Status
 import kotlinx.coroutines.flow.filter
@@ -35,6 +37,13 @@ fun Status.Visibility.stringResource(): Int {
 fun Context.showToast(msg: String) {
     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 }
+
+@Composable
+fun createImageRequest(data: Any?): ImageRequest =
+    ImageRequest.Builder(LocalContext.current)
+        .data(data)
+        .crossfade(true)
+        .build()
 
 @Composable
 fun LazyListState.OnAppearLastItem(onAppearLastItem: () -> Unit) {
