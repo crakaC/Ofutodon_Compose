@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusOrder
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
@@ -50,7 +51,6 @@ interface EditFormCallback {
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TootEditForm(
     modifier: Modifier = Modifier,
@@ -66,7 +66,7 @@ fun TootEditForm(
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp)
                     .weight(1f)
-                    .focusOrder(focusRequester),
+                    .focusRequester(focusRequester),
                 placeholder = { Text("今なにしてる？") },
                 value = state.text,
                 isError = !state.isValidLength,
