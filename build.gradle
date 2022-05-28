@@ -1,31 +1,15 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext {
-        compose_version = '1.2.0-beta02'
-        hilt_version = '2.42'
-        retrofit_version = '2.9.0'
-        okhttp_version = '4.9.3'
-        coil_version = '2.1.0'
-        lifecycle_version = '2.5.0-rc01'
-        accompanist_version = '0.24.9-beta'
-    }
-    repositories {
-        google()
-        mavenCentral()
-    }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.0-alpha02'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10'
-        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
-        classpath 'com.google.gms:google-services:4.3.10'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath libs.hilt.gradle
+        classpath libs.google.services
     }
 }
 
 plugins {
-    id 'org.jetbrains.kotlinx.kover' version '0.5.0'
+    alias(libs.plugins.kover)
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin) apply false
 }
 
 task clean(type: Delete) {
