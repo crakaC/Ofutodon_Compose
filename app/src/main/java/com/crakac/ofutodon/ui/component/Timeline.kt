@@ -66,9 +66,9 @@ fun Timeline(
             LazyColumn(state = scrollState, modifier = modifier.fillMaxHeight()) {
                 itemsIndexed(
                     items = statuses,
-                    contentType = {_, _ ->"status"},
-                    key = { _, status -> status.id })
-                { index, status ->
+                    contentType = { _, _ -> "status" },
+                    key = { _, status -> status.id }
+                ) { index, status ->
                     StatusContent(status, onClickStatus)
                     if (index < statuses.lastIndex) {
                         Divider(color = DarkGray, thickness = Dp(0.5f))
@@ -78,7 +78,8 @@ fun Timeline(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp), contentAlignment = Alignment.Center
+                            .padding(8.dp),
+                        contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator(
                             Modifier.size(32.dp)

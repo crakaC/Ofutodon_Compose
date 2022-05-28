@@ -20,7 +20,6 @@ package com.crakac.ofutodon.ui
  * limitations under the License.
  */
 
-
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -49,7 +48,6 @@ inline fun LogCompositions(tag: String) {
         Log.d(tag, "Compositions: ${ref.value}")
     }
 }
-
 
 @Composable
 inline fun LogOnDispose(tag: String) {

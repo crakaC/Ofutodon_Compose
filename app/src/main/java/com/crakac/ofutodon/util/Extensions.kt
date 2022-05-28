@@ -15,7 +15,6 @@ import com.crakac.ofutodon.R
 import com.crakac.ofutodon.mastodon.entity.Status
 import kotlinx.coroutines.flow.filter
 
-
 fun Status.Visibility.iconResource(): Int {
     return when (this) {
         Status.Visibility.Public -> R.drawable.ic_public
@@ -50,7 +49,7 @@ fun LazyListState.OnAppearLastItem(onAppearLastItem: () -> Unit) {
     val isReachedToEnd by remember {
         derivedStateOf {
             layoutInfo.visibleItemsInfo.size < layoutInfo.totalItemsCount &&
-                    firstVisibleItemIndex + layoutInfo.visibleItemsInfo.size == layoutInfo.totalItemsCount
+                firstVisibleItemIndex + layoutInfo.visibleItemsInfo.size == layoutInfo.totalItemsCount
         }
     }
 

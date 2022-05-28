@@ -165,7 +165,6 @@ interface AccountsResources {
         pageQuery: Map<String, String>
     ): List<Status>
 
-
     @GET("/api/v1/mutes")
     suspend fun getMutedAccounts(
         @QueryMap

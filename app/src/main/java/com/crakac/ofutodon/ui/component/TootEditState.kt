@@ -16,8 +16,10 @@ class TootEditState(initialVisibility: Status.Visibility = DefaultVisibility) {
         get() = _attachments
 
     fun canSendStatus(): Boolean {
-        return !isSending && ((text.isNotBlank() && text.length <= MAX_TOOT_LENGTH)
-                || attachments.isNotEmpty())
+        return !isSending && (
+            (text.isNotBlank() && text.length <= MAX_TOOT_LENGTH) ||
+                attachments.isNotEmpty()
+            )
     }
 
     val remaining: Int

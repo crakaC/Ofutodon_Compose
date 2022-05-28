@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.crakac.ofutodon.mastodon.entity.Attachment
 import com.crakac.ofutodon.ui.LogCompositions
-import com.crakac.ofutodon.ui.theme.DarkGray
 import com.crakac.ofutodon.ui.theme.DeepBlack
 import com.crakac.ofutodon.ui.theme.PreviewBackGround
 import com.google.accompanist.pager.ExperimentalPagerApi

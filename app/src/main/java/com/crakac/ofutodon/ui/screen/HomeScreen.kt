@@ -59,7 +59,8 @@ fun PagerTab(
     LogCompositions(tag = "PagerTab")
     val currentPage = pagerState.currentPage
     val scope = rememberCoroutineScope()
-    TabRow(selectedTabIndex = currentPage,
+    TabRow(
+        selectedTabIndex = currentPage,
         indicator = { tabPositions ->
             TabRowDefaults.Indicator(
                 Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)

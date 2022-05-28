@@ -22,13 +22,16 @@ retrofit = "2.9.0"
 okhttp = "4.9.3"
 coil = "2.1.0"
 accompanist = "0.24.9-beta"
+
 kover = "0.5.0"
+spotless = "6.5.2"
 
 [plugins]
-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "android-gradle" }
 android-library = { id = "com.android.library", version.ref = "android-gradle" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
 coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlin-coroutines" }

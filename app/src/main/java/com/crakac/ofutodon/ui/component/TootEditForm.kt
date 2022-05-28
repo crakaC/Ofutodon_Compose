@@ -13,12 +13,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusOrder
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -216,7 +214,8 @@ fun Attachments(
                         .clickable(
                             enabled = enabled,
                             role = Role.Image,
-                            onClick = { onClick(index) }),
+                            onClick = { onClick(index) }
+                        ),
                     contentScale = ContentScale.Crop,
                 )
                 Box(
@@ -225,7 +224,8 @@ fun Attachments(
                         .clickable(
                             enabled = enabled,
                             role = Role.Button,
-                            onClick = { onClickRemove(index) }),
+                            onClick = { onClickRemove(index) }
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -239,7 +239,8 @@ fun Attachments(
                         .clickable(
                             enabled = enabled,
                             role = Role.Button,
-                            onClick = { onClickEdit(index) }),
+                            onClick = { onClickEdit(index) }
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(

@@ -159,7 +159,7 @@ private fun Content(content: Spanned) {
         onClick = { offset ->
             annotatedString.getStringAnnotations(offset, offset).firstOrNull()?.let { annotation ->
                 Log.d("Clicked: ", annotation.item)
-                if(annotation.tag == "URL"){
+                if (annotation.tag == "URL") {
                     val url = Uri.parse(annotation.item)
                     context.startActivity(Intent(Intent.ACTION_VIEW, url))
                 }

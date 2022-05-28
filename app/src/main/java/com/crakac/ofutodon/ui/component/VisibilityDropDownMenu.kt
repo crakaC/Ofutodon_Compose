@@ -31,13 +31,15 @@ class VisibilityDropDownState(initialVisibility: Status.Visibility) {
 fun VisibilityDropDownMenu(state: VisibilityDropDownState) {
     DropdownMenu(
         modifier = Modifier.wrapContentSize(),
-        expanded = state.expanded, onDismissRequest = { state.expanded = false }) {
+        expanded = state.expanded, onDismissRequest = { state.expanded = false }
+    ) {
         Status.Visibility.values().forEach { visibility ->
             DropdownMenuItem(
                 onClick = {
                     state.visibility = visibility
                     state.expanded = false
-                }) {
+                }
+            ) {
                 Icon(
                     modifier = Modifier.size(24.dp),
                     painter = painterResource(id = visibility.iconResource()),

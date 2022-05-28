@@ -28,7 +28,6 @@ interface AnnouncemenstResources {
         emoji: String
     )
 
-
     /**
      * @param emoji Unicode emoji, or shortcode of custom emoji
      */

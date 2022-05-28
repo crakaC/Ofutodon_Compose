@@ -40,10 +40,10 @@ class MastodonRepository @Inject constructor(
             coroutineContext.ensureActive()
             val file =
                 contentResolver.openInputStream(uri)?.use {
-                val mediaType = contentResolver.getType(uri)?.toMediaTypeOrNull()
-                val body = it.readBytes().toRequestBody(mediaType)
-                MultipartBody.Part.createFormData("file", "attachment", body)
-            } ?: continue
+                    val mediaType = contentResolver.getType(uri)?.toMediaTypeOrNull()
+                    val body = it.readBytes().toRequestBody(mediaType)
+                    MultipartBody.Part.createFormData("file", "attachment", body)
+                } ?: continue
             attachments += mastodon.createAttachment(file)
         }
         return attachments.toList()
