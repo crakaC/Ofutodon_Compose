@@ -8,7 +8,7 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import com.crakac.ofutodon.util.LocalPainterResource
-import com.crakac.ofutodon.util.obtainPainterCache
+import com.crakac.ofutodon.util.rememberPainterCache
 
 private val DarkColorPalette = darkColors(
     primary = Blue700,
@@ -28,10 +28,10 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun OfutodonTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val painterCache = obtainPainterCache()
+    val painterCache = rememberPainterCache()
     CompositionLocalProvider(
         LocalContentAlpha provides 1f,
-        LocalPainterResource provides painterCache
+        LocalPainterResource providesDefault painterCache
     ) {
         MaterialTheme(
             colors = if (darkTheme) DarkColorPalette else LightColorPalette,

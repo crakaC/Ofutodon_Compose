@@ -1,46 +1,14 @@
 package com.crakac.ofutodon.util
 
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import com.crakac.ofutodon.R
 
-class PainterResourceCache {
-    private val map = HashMap<Int, Painter>()
-
-    operator fun get(id: Int): Painter? = map[id]
-
-    operator fun set(id: Int, painter: Painter) {
-        map[id] = painter
-    }
-
-    fun isEmpty() = map.isEmpty()
-
-    fun clear() {
-        map.clear()
-    }
-
-    @Composable
-    fun obtain(id: Int): Painter {
-        get(id)?.let { return it }
-        val painter = painterResource(id = id)
-        set(id, painter)
-        return painter
-    }
-}
-
-@Composable
-fun obtainPainterCache(): PainterResourceCache {
-    val cache = PainterResourceCache()
-    if (cache.isEmpty()) {
-        PresetIcons.forEach { id ->
-            cache[id] = painterResource(id = id)
-        }
-    }
-    return cache
-}
-
+private const val TAG = "PainterCache"
 private val PresetIcons = listOf(
     R.drawable.ic_boost,
     R.drawable.ic_direct,
@@ -53,10 +21,32 @@ private val PresetIcons = listOf(
     R.drawable.ic_reply
 )
 
-val LocalPainterResource = staticCompositionLocalOf<PainterResourceCache> {
-    noLocalProvidedFor("PainterCache")
+class PainterResourceCache {
+    private val cache = HashMap<Int, Painter>()
+
+    @Composable
+    fun presets(): PainterResourceCache {
+        PresetIcons.forEach { id ->
+            cache[id] = painterResource(id = id)
+            Log.i(TAG, "$id is initialized")
+        }
+        return this
+    }
+
+    @Composable
+    fun obtain(id: Int): Painter {
+        cache[id]?.let { return it }
+        val painter = painterResource(id = id)
+        cache[id] = painter
+        return painter
+    }
 }
 
-private fun noLocalProvidedFor(name: String): Nothing {
-    error("CompositionLocal $name not present")
+@Composable
+fun rememberPainterCache(): PainterResourceCache {
+    return remember { PainterResourceCache() }.presets()
+}
+
+val LocalPainterResource = staticCompositionLocalOf<PainterResourceCache> {
+    error("CompositionLocal PainterResourceCache not present")
 }
