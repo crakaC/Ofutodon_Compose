@@ -1,6 +1,6 @@
 [versions]
 app-versionCode = "1"
-app-versionName = "1.0.0"
+app-versionName = "1.0"
 
 android-compileSdk = "32"
 android-targetSdk = "32"
@@ -23,15 +23,12 @@ okhttp = "4.9.3"
 coil = "2.1.0"
 accompanist = "0.24.9-beta"
 
-kover = "0.5.0"
-spotless = "6.5.2"
-
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "android-gradle" }
 android-library = { id = "com.android.library", version.ref = "android-gradle" }
-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
-spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+kover = { id = "org.jetbrains.kotlinx.kover", version = "0.5.0" }
+spotless = { id = "com.diffplug.spotless", version = "6.5.2" }
 
 [libraries]
 coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlin-coroutines" }
