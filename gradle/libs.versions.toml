@@ -27,6 +27,7 @@ accompanist = "0.24.9-beta"
 kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "android-gradle" }
 android-library = { id = "com.android.library", version.ref = "android-gradle" }
+
 kover = { id = "org.jetbrains.kotlinx.kover", version = "0.5.0" }
 spotless = { id = "com.diffplug.spotless", version = "6.5.2" }
 
@@ -84,3 +85,5 @@ compose-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.re
 androidx-lifecycle = ["androidx-lifecycle-runtime", "androidx-lifecycle-viewModel", "androidx-lifecycle-liveData"]
 androidx-compose = ["androidx-activity-compose", "compose-ui", "compose-tooling", "compose-preview", "compose-material", "compose-livedata", "navigation-compose"]
 accompanist = ["accompanist-insets", "accompanist-swiperefresh", "accompanist-pager", "accompanist-pagerIndicators", "accompanist-permissions"]
+okhttp = ["okhttp", "okhttp-interceptor"]
+retrofit = ["retrofit", "retrofit-converter-gson"]

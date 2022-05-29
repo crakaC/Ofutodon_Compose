@@ -1,9 +1,10 @@
 import java.io.FileInputStream
 import java.util.*
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin)
     id("kotlin-kapt")
     id("kotlin-parcelize")
     id("dagger.hilt.android.plugin")
@@ -74,10 +75,8 @@ dependencies {
 
     implementation(libs.bundles.accompanist)
 
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.gson)
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.interceptor)
+    implementation(libs.bundles.retrofit)
+    implementation(libs.bundles.okhttp)
     testImplementation(libs.retrofit.mock)
     testImplementation(libs.okhttp.mock)
 
