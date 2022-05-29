@@ -53,9 +53,9 @@ interface StatusCallback {
     }
 }
 
-private val IconSize = 54.dp
+private val IconSize = 56.dp
 private val OriginalIconSize = 40.dp
-private val BoostedByIconSize = 24.dp
+private val BoostedByIconSize = 32.dp
 
 @Composable
 fun StatusContent(status: Status, callback: StatusCallback) {
@@ -68,28 +68,31 @@ fun StatusContent(status: Status, callback: StatusCallback) {
                 .clickable { callback.onClickStatus(status) }
                 .padding(start = 8.dp, end = 8.dp, top = 12.dp)
         ) {
-            if (status.isReblog) {
-                BoostedBy(status.account.displayName)
-            }
-            Row {
-                AccountIcon(status)
-                Spacer(Modifier.width(8.dp))
-                Column {
-                    Header(originalStatus)
+            CompositionLocalProvider(LocalContentColor provides DarkGray) {
+                if (status.isReblog) {
+                    BoostedBy(status.account.displayName)
                     Spacer(Modifier.height(4.dp))
-                    Content(originalStatus.spannedContent)
-                    if (originalStatus.mediaAttachments.any()) {
-                        Attachments(
-                            originalStatus.mediaAttachments,
-                            onClickAttachment = { index ->
-                                callback.onClickAttachment(
-                                    index,
-                                    originalStatus.mediaAttachments
-                                )
-                            }
-                        )
+                }
+                Row {
+                    AccountIcon(status)
+                    Spacer(Modifier.width(8.dp))
+                    Column {
+                        Header(originalStatus)
+                        Spacer(Modifier.height(4.dp))
+                        Content(originalStatus.spannedContent)
+                        if (originalStatus.mediaAttachments.any()) {
+                            Attachments(
+                                originalStatus.mediaAttachments,
+                                onClickAttachment = { index ->
+                                    callback.onClickAttachment(
+                                        index,
+                                        originalStatus.mediaAttachments
+                                    )
+                                }
+                            )
+                        }
+                        BottomIcons(originalStatus, callback)
                     }
-                    BottomIcons(originalStatus, callback)
                 }
             }
         }
@@ -99,35 +102,33 @@ fun StatusContent(status: Status, callback: StatusCallback) {
 @Composable
 private fun Header(status: Status) {
     val account = status.account
-    CompositionLocalProvider(LocalContentColor provides DarkGray) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = account.displayName,
-                style = MaterialTheme.typography.h6,
-                color = MaterialTheme.colors.onSurface
-            )
-            Spacer(Modifier.width(4.dp))
-            Text(
-                text = "@${account.unicodeAcct}",
-                style = MaterialTheme.typography.body2,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f),
-            )
-            Spacer(Modifier.width(4.dp))
-            Image(
-                painter = LocalPainterResource.current.obtain(id = status.visibility.iconResource()),
-                contentDescription = "visibility",
-                modifier = Modifier.size(16.dp),
-                colorFilter = ColorFilter.tint(LocalContentColor.current)
-            )
-            Spacer(Modifier.width(4.dp))
-            Text(
-                text = status.getRelativeTime(),
-                style = MaterialTheme.typography.body2,
-                textAlign = TextAlign.End,
-            )
-        }
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = account.displayName,
+            style = MaterialTheme.typography.h6,
+            color = MaterialTheme.colors.onSurface
+        )
+        Spacer(Modifier.width(4.dp))
+        Text(
+            text = "@${account.unicodeAcct}",
+            style = MaterialTheme.typography.body2,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f),
+        )
+        Spacer(Modifier.width(4.dp))
+        Image(
+            painter = LocalPainterResource.current.obtain(id = status.visibility.iconResource()),
+            contentDescription = "visibility",
+            modifier = Modifier.size(16.dp),
+            colorFilter = ColorFilter.tint(LocalContentColor.current)
+        )
+        Spacer(Modifier.width(4.dp))
+        Text(
+            text = status.getRelativeTime(),
+            style = MaterialTheme.typography.body2,
+            textAlign = TextAlign.End,
+        )
     }
 }
 
@@ -207,28 +208,25 @@ fun AccountIcon(status: Status) {
 
 @Composable
 fun BoostedBy(displayName: String) {
-    CompositionLocalProvider(LocalContentColor provides DarkGray) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.width(IconSize)) {
-                Image(
-                    painter = LocalPainterResource.current.obtain(id = R.drawable.ic_boost),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(24.dp)
-                        .align(Alignment.CenterEnd),
-                    colorFilter = ColorFilter.tint(LocalContentColor.current)
-                )
-            }
-            Spacer(Modifier.width(8.dp))
-            Text(
-                text = stringResource(R.string.boosted_by, displayName),
-                style = MaterialTheme.typography.body2,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.width(IconSize)) {
+            Image(
+                painter = LocalPainterResource.current.obtain(id = R.drawable.ic_boost),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(24.dp)
+                    .align(Alignment.CenterEnd),
+                colorFilter = ColorFilter.tint(LocalContentColor.current)
             )
         }
+        Spacer(Modifier.width(8.dp))
+        Text(
+            text = stringResource(R.string.boosted_by, displayName),
+            style = MaterialTheme.typography.body2,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
-    Spacer(Modifier.height(8.dp))
 }
 
 @Composable
@@ -296,98 +294,96 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
     val spanWidth = 88.dp
     val textOffset = 4.dp
     val textWidth = spanWidth - iconButtonSize + textOffset * 2
-    CompositionLocalProvider(LocalContentColor provides DarkGray) {
-        val iconTint = ColorFilter.tint(LocalContentColor.current)
+    val iconTint = ColorFilter.tint(LocalContentColor.current)
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         Row(
+            Modifier
+                .width(spanWidth),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row(
-                Modifier
-                    .width(spanWidth),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                IconButton(
-                    modifier = Modifier.size(iconButtonSize),
-                    onClick = { callback.onClickReply(status) }
-                ) {
-                    Image(
-                        painter = LocalPainterResource.current.obtain(id = R.drawable.ic_reply),
-                        contentDescription = "reply",
-                        modifier = Modifier.size(iconSize),
-                        colorFilter = iconTint
-                    )
-                }
-                if (status.repliesCount > 0) {
-                    Text(
-                        modifier = Modifier
-                            .requiredWidth(textWidth),
-                        text = status.repliesCount.toString(),
-                        style = MaterialTheme.typography.body2
-                    )
-                }
-            }
-            Row(
-                Modifier
-                    .width(spanWidth),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                IconButton(
-                    modifier = Modifier.size(iconButtonSize),
-                    onClick = { callback.onClickBoost(status) },
-                    enabled = status.isBoostable,
-                ) {
-                    Image(
-                        painter = LocalPainterResource.current.obtain(id = R.drawable.ic_boost),
-                        contentDescription = "boost",
-                        modifier = Modifier.size(iconSize),
-                        colorFilter = if (status.isBoostedWithOriginal) BoostBlueTint else iconTint
-                    )
-                }
-                if (status.reblogsCount > 0) {
-                    Text(
-                        modifier = Modifier
-                            .requiredWidth(textWidth),
-                        text = status.reblogsCount.toString(),
-                        style = MaterialTheme.typography.body2
-                    )
-                }
-            }
-            Row(
-                Modifier
-                    .width(spanWidth),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                IconButton(
-                    modifier = Modifier.size(iconButtonSize),
-                    onClick = { callback.onClickFavourite(status) }
-                ) {
-                    Image(
-                        painter = LocalPainterResource.current.obtain(id = R.drawable.ic_favourite),
-                        contentDescription = "favourite",
-                        modifier = Modifier.size(iconSize),
-                        colorFilter = if (status.isFavouritedWithOriginal) FavouriteYellowTint else iconTint
-                    )
-                }
-                if (status.favouritesCount > 0) {
-                    Text(
-                        modifier = Modifier
-                            .requiredWidth(textWidth),
-                        text = status.favouritesCount.toString(),
-                        style = MaterialTheme.typography.body2
-                    )
-                }
-            }
             IconButton(
                 modifier = Modifier.size(iconButtonSize),
-                onClick = { callback.onClickMore(status) }
+                onClick = { callback.onClickReply(status) }
             ) {
                 Image(
-                    painter = LocalPainterResource.current.obtain(id = R.drawable.ic_more),
-                    contentDescription = "more",
+                    painter = LocalPainterResource.current.obtain(id = R.drawable.ic_reply),
+                    contentDescription = "reply",
                     modifier = Modifier.size(iconSize),
                     colorFilter = iconTint
                 )
             }
+            if (status.repliesCount > 0) {
+                Text(
+                    modifier = Modifier
+                        .requiredWidth(textWidth),
+                    text = status.repliesCount.toString(),
+                    style = MaterialTheme.typography.body2
+                )
+            }
+        }
+        Row(
+            Modifier
+                .width(spanWidth),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            IconButton(
+                modifier = Modifier.size(iconButtonSize),
+                onClick = { callback.onClickBoost(status) },
+                enabled = status.isBoostable,
+            ) {
+                Image(
+                    painter = LocalPainterResource.current.obtain(id = R.drawable.ic_boost),
+                    contentDescription = "boost",
+                    modifier = Modifier.size(iconSize),
+                    colorFilter = if (status.isBoostedWithOriginal) BoostBlueTint else iconTint
+                )
+            }
+            if (status.reblogsCount > 0) {
+                Text(
+                    modifier = Modifier
+                        .requiredWidth(textWidth),
+                    text = status.reblogsCount.toString(),
+                    style = MaterialTheme.typography.body2
+                )
+            }
+        }
+        Row(
+            Modifier
+                .width(spanWidth),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            IconButton(
+                modifier = Modifier.size(iconButtonSize),
+                onClick = { callback.onClickFavourite(status) }
+            ) {
+                Image(
+                    painter = LocalPainterResource.current.obtain(id = R.drawable.ic_favourite),
+                    contentDescription = "favourite",
+                    modifier = Modifier.size(iconSize),
+                    colorFilter = if (status.isFavouritedWithOriginal) FavouriteYellowTint else iconTint
+                )
+            }
+            if (status.favouritesCount > 0) {
+                Text(
+                    modifier = Modifier
+                        .requiredWidth(textWidth),
+                    text = status.favouritesCount.toString(),
+                    style = MaterialTheme.typography.body2
+                )
+            }
+        }
+        IconButton(
+            modifier = Modifier.size(iconButtonSize),
+            onClick = { callback.onClickMore(status) }
+        ) {
+            Image(
+                painter = LocalPainterResource.current.obtain(id = R.drawable.ic_more),
+                contentDescription = "more",
+                modifier = Modifier.size(iconSize),
+                colorFilter = iconTint
+            )
         }
     }
 }
