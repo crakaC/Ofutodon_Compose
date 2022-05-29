@@ -6,6 +6,7 @@ import android.net.Uri
 import android.text.Spanned
 import android.text.style.URLSpan
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
@@ -15,6 +16,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -60,7 +62,8 @@ fun StatusContent(status: Status, callback: StatusCallback) {
     val originalStatus = status.reblog ?: status
     Surface {
         Column(
-            modifier = Modifier.recomposeHighlighter()
+            modifier = Modifier
+                .recomposeHighlighter()
                 .fillMaxWidth()
                 .clickable { callback.onClickStatus(status) }
                 .padding(start = 8.dp, end = 8.dp, top = 12.dp)
@@ -96,34 +99,35 @@ fun StatusContent(status: Status, callback: StatusCallback) {
 @Composable
 private fun Header(status: Status) {
     val account = status.account
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(
-            text = account.displayName,
-            style = MaterialTheme.typography.h6
-        )
-        Spacer(Modifier.width(4.dp))
-        Text(
-            text = "@${account.unicodeAcct}",
-            style = MaterialTheme.typography.body2,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f),
-            color = DarkGray
-        )
-        Spacer(Modifier.width(4.dp))
-        Icon(
-            painter = LocalPainterResource.current.obtain(id = status.visibility.iconResource()),
-            contentDescription = "visibility",
-            modifier = Modifier.size(16.dp),
-            tint = DarkGray,
-        )
-        Spacer(Modifier.width(4.dp))
-        Text(
-            text = status.getRelativeTime(),
-            style = MaterialTheme.typography.body2,
-            textAlign = TextAlign.End,
-            color = DarkGray
-        )
+    CompositionLocalProvider(LocalContentColor provides DarkGray) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = account.displayName,
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.colors.onSurface
+            )
+            Spacer(Modifier.width(4.dp))
+            Text(
+                text = "@${account.unicodeAcct}",
+                style = MaterialTheme.typography.body2,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f),
+            )
+            Spacer(Modifier.width(4.dp))
+            Image(
+                painter = LocalPainterResource.current.obtain(id = status.visibility.iconResource()),
+                contentDescription = "visibility",
+                modifier = Modifier.size(16.dp),
+                colorFilter = ColorFilter.tint(LocalContentColor.current)
+            )
+            Spacer(Modifier.width(4.dp))
+            Text(
+                text = status.getRelativeTime(),
+                style = MaterialTheme.typography.body2,
+                textAlign = TextAlign.End,
+            )
+        }
     }
 }
 
@@ -151,11 +155,11 @@ private fun Content(content: Spanned) {
         }
         append(content.substring(position))
     }
-    val textColor = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+    val contentColor = MaterialTheme.colors.onSurface.copy(alpha = LocalContentAlpha.current)
     val context = LocalContext.current
     ClickableText(
         annotatedString,
-        style = MaterialTheme.typography.body1.copy(color = textColor),
+        style = MaterialTheme.typography.body1.copy(color = contentColor),
         onClick = { offset ->
             annotatedString.getStringAnnotations(offset, offset).firstOrNull()?.let { annotation ->
                 Log.d("Clicked: ", annotation.item)
@@ -206,12 +210,13 @@ fun BoostedBy(displayName: String) {
     CompositionLocalProvider(LocalContentColor provides DarkGray) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(Modifier.width(IconSize)) {
-                Icon(
+                Image(
                     painter = LocalPainterResource.current.obtain(id = R.drawable.ic_boost),
                     contentDescription = null,
                     modifier = Modifier
                         .size(24.dp)
-                        .align(Alignment.CenterEnd)
+                        .align(Alignment.CenterEnd),
+                    colorFilter = ColorFilter.tint(LocalContentColor.current)
                 )
             }
             Spacer(Modifier.width(8.dp))
@@ -291,8 +296,8 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
     val spanWidth = 88.dp
     val textOffset = 4.dp
     val textWidth = spanWidth - iconButtonSize + textOffset * 2
-
     CompositionLocalProvider(LocalContentColor provides DarkGray) {
+        val iconTint = ColorFilter.tint(LocalContentColor.current)
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -305,10 +310,11 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
                     modifier = Modifier.size(iconButtonSize),
                     onClick = { callback.onClickReply(status) }
                 ) {
-                    Icon(
+                    Image(
                         painter = LocalPainterResource.current.obtain(id = R.drawable.ic_reply),
                         contentDescription = "reply",
-                        modifier = Modifier.size(iconSize)
+                        modifier = Modifier.size(iconSize),
+                        colorFilter = iconTint
                     )
                 }
                 if (status.repliesCount > 0) {
@@ -330,11 +336,11 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
                     onClick = { callback.onClickBoost(status) },
                     enabled = status.isBoostable,
                 ) {
-                    Icon(
+                    Image(
                         painter = LocalPainterResource.current.obtain(id = R.drawable.ic_boost),
                         contentDescription = "boost",
                         modifier = Modifier.size(iconSize),
-                        tint = if (status.isBoostedWithOriginal) BoostBlue else LocalContentColor.current
+                        colorFilter = if (status.isBoostedWithOriginal) BoostBlueTint else iconTint
                     )
                 }
                 if (status.reblogsCount > 0) {
@@ -355,11 +361,11 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
                     modifier = Modifier.size(iconButtonSize),
                     onClick = { callback.onClickFavourite(status) }
                 ) {
-                    Icon(
+                    Image(
                         painter = LocalPainterResource.current.obtain(id = R.drawable.ic_favourite),
                         contentDescription = "favourite",
                         modifier = Modifier.size(iconSize),
-                        tint = if (status.isFavouritedWithOriginal) FavouriteYellow else LocalContentColor.current
+                        colorFilter = if (status.isFavouritedWithOriginal) FavouriteYellowTint else iconTint
                     )
                 }
                 if (status.favouritesCount > 0) {
@@ -375,10 +381,11 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
                 modifier = Modifier.size(iconButtonSize),
                 onClick = { callback.onClickMore(status) }
             ) {
-                Icon(
+                Image(
                     painter = LocalPainterResource.current.obtain(id = R.drawable.ic_more),
                     contentDescription = "more",
-                    modifier = Modifier.size(iconSize)
+                    modifier = Modifier.size(iconSize),
+                    colorFilter = iconTint
                 )
             }
         }

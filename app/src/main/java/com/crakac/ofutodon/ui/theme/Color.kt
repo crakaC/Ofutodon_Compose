@@ -1,6 +1,7 @@
 package com.crakac.ofutodon.ui.theme
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 
 val DeepBlack = Color(0xFF1a1c23)
 val Blue500 = Color(0xFF2b90d9)
@@ -14,6 +15,9 @@ val White50 = Color(0xFFf0f3f7)
 
 val BoostBlue = Color(0xFF1e88e5)
 val FavouriteYellow = Color(0xFFFFC107)
+
+val BoostBlueTint = ColorFilter.tint(BoostBlue)
+val FavouriteYellowTint = ColorFilter.tint(FavouriteYellow)
 
 val PreviewBackGround = Color(0x88000000)
 val AttachmentActionBackGround = Color(0xCC1A1C24)
