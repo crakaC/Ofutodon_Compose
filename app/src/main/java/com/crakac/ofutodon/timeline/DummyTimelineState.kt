@@ -1,7 +1,7 @@
 package com.crakac.ofutodon.timeline
 
 import androidx.compose.ui.text.AnnotatedString
-import com.crakac.ofutodon.mastodon.entity.Status
+import com.crakac.ofutodon.data.entity.Status
 import com.crakac.ofutodon.ui.component.DummyStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay

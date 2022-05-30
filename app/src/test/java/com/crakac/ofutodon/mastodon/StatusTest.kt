@@ -1,6 +1,6 @@
 package com.crakac.ofutodon.mastodon
 
-import com.crakac.ofutodon.mastodon.entity.Status
+import com.crakac.ofutodon.data.entity.Status
 import com.google.gson.GsonBuilder
 import org.junit.Assert
 import org.junit.Before

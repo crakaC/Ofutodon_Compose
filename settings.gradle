@@ -14,3 +14,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Ofutodon"
 include ':app'
+include ':data:api'
+include ':data:repository'
+include ':model'

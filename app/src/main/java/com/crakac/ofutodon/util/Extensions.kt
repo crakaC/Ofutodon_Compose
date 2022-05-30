@@ -12,7 +12,7 @@ import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.NavDestination
 import coil.request.ImageRequest
 import com.crakac.ofutodon.R
-import com.crakac.ofutodon.mastodon.entity.Status
+import com.crakac.ofutodon.data.entity.Status
 import kotlinx.coroutines.flow.filter
 
 fun Status.Visibility.iconResource(): Int {

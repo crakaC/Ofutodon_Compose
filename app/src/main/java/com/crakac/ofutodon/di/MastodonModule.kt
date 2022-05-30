@@ -1,7 +1,7 @@
 package com.crakac.ofutodon.di
 
 import com.crakac.ofutodon.BuildConfig
-import com.crakac.ofutodon.mastodon.Mastodon
+import com.crakac.ofutodon.data.Mastodon
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

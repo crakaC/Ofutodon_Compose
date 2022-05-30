@@ -15,8 +15,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.crakac.ofutodon.MainViewModel
 import com.crakac.ofutodon.R
-import com.crakac.ofutodon.mastodon.entity.Attachment
-import com.crakac.ofutodon.mastodon.entity.Status
+import com.crakac.ofutodon.data.entity.Attachment
+import com.crakac.ofutodon.data.entity.Status
 import com.crakac.ofutodon.ui.LogCompositions
 import com.crakac.ofutodon.ui.attachment.AttachmentPreview
 import com.crakac.ofutodon.ui.attachment.AttachmentPreviewState

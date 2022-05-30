@@ -2,12 +2,12 @@ package com.crakac.ofutodon.timeline
 
 import androidx.compose.ui.text.AnnotatedString
 import com.crakac.ofutodon.data.MastodonRepository
-import com.crakac.ofutodon.mastodon.params.PageQuery
+import com.crakac.ofutodon.data.params.PageQuery
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.EmptyCoroutineContext
 
 class HomeTimelineState(
-    private val repo: MastodonRepository,
+    private val repo: com.crakac.ofutodon.data.MastodonRepository,
     scope: CoroutineScope = CoroutineScope(EmptyCoroutineContext)
 ) : StatusTimelineState(scope) {
     override fun refresh() {
@@ -18,14 +18,14 @@ class HomeTimelineState(
 
     override fun fetchNext() {
         load(FetchType.Next, showRefreshing = true) {
-            val statuses = repo.getHomeTimeline(PageQuery(sinceId = firstStatusId))
+            val statuses = repo.getHomeTimeline(com.crakac.ofutodon.data.params.PageQuery(sinceId = firstStatusId))
             prepend(statuses)
         }
     }
 
     override fun fetchPrevious() {
         load(FetchType.Previous) {
-            val statuses = repo.getHomeTimeline(PageQuery(maxId = lastStatusId))
+            val statuses = repo.getHomeTimeline(com.crakac.ofutodon.data.params.PageQuery(maxId = lastStatusId))
             append(statuses)
         }
     }

@@ -11,16 +11,15 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+apply(from = rootProject.file("gradle/android.gradle"))
+
 android {
-    compileSdk = 32
+    namespace = "com.crakac.ofutodon"
 
     defaultConfig {
         applicationId = "com.crakac.ofutodon"
-        minSdk = 26
-        targetSdk = 32
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -49,21 +48,29 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11.toString()
+    }
+
     buildFeatures {
         compose = true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.androidx.compose.get()
     }
+
     packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    namespace = "com.crakac.ofutodon"
 }
 
 dependencies {
+    implementation(project(":data:api"))
+    implementation(project(":data:repository"))
 
     implementation(libs.androidx.core)
     implementation(libs.androidx.appcompat)

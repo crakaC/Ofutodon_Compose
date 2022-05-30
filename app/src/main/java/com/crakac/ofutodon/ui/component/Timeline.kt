@@ -18,11 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.crakac.ofutodon.mastodon.entity.Status
+import com.crakac.ofutodon.data.entity.Status
 import com.crakac.ofutodon.ui.LogCompositions
 import com.crakac.ofutodon.ui.theme.DarkGray
 import com.crakac.ofutodon.ui.theme.OfutodonTheme
 import com.crakac.ofutodon.util.OnAppearLastItem
+import com.crakac.ofutodon.util.recomposeHighlighter
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -63,7 +64,12 @@ fun Timeline(
             onRefresh = onRefresh
         ) {
             LogCompositions(tag = "SwipeRefresh")
-            LazyColumn(state = scrollState, modifier = modifier.fillMaxHeight()) {
+            LazyColumn(
+                state = scrollState,
+                modifier = modifier
+                    .recomposeHighlighter()
+                    .fillMaxHeight()
+            ) {
                 itemsIndexed(
                     items = statuses,
                     contentType = { _, _ -> "status" },

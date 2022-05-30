@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.crakac.ofutodon.data.MastodonRepository
-import com.crakac.ofutodon.mastodon.entity.Status
+import com.crakac.ofutodon.data.entity.Status
 import com.crakac.ofutodon.timeline.DummyTimelineState
 import com.crakac.ofutodon.timeline.HomeTimelineState
 import com.crakac.ofutodon.timeline.PublicTimelineState
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repo: MastodonRepository
+    private val repo: com.crakac.ofutodon.data.MastodonRepository
 ) : ViewModel() {
     companion object {
         private val TAG = MainViewModel::class.java.simpleName

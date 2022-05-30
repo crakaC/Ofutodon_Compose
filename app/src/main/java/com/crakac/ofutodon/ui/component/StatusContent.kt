@@ -31,14 +31,13 @@ import androidx.core.text.getSpans
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.crakac.ofutodon.R
-import com.crakac.ofutodon.mastodon.entity.Account
-import com.crakac.ofutodon.mastodon.entity.Attachment
-import com.crakac.ofutodon.mastodon.entity.Status
+import com.crakac.ofutodon.data.entity.Account
+import com.crakac.ofutodon.data.entity.Attachment
+import com.crakac.ofutodon.data.entity.Status
 import com.crakac.ofutodon.ui.theme.*
 import com.crakac.ofutodon.util.LocalPainterResource
 import com.crakac.ofutodon.util.createImageRequest
 import com.crakac.ofutodon.util.iconResource
-import com.crakac.ofutodon.util.recomposeHighlighter
 
 interface StatusCallback {
     fun onClickStatus(status: Status) {}
@@ -63,7 +62,6 @@ fun StatusContent(status: Status, callback: StatusCallback) {
     Surface {
         Column(
             modifier = Modifier
-                .recomposeHighlighter()
                 .fillMaxWidth()
                 .clickable { callback.onClickStatus(status) }
                 .padding(start = 8.dp, end = 8.dp, top = 12.dp)
@@ -395,7 +393,12 @@ val DummyStatus = Status(
         acct = "local.host",
         avatar = "https://developer.android.com/images/brand/Android_Robot.png"
     ),
-    content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
+        "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." +
+        "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." +
+        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." +
+        "Excepteur sint occaecat cupidatat non proident," +
+        "sunt in culpa qui officia deserunt mollit anim id est laborum.",
     createdAt = "2021-12-06T09:26:11.384Z",
     repliesCount = 2L, reblogsCount = 1234567L, favouritesCount = 123L,
     mediaAttachments = (1..7).map { Attachment(previewUrl = "https://developer.android.com/images/brand/Android_Robot.png") },

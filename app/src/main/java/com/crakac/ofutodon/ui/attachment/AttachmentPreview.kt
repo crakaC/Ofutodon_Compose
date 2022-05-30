@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.crakac.ofutodon.mastodon.entity.Attachment
+import com.crakac.ofutodon.data.entity.Attachment
 import com.crakac.ofutodon.ui.LogCompositions
 import com.crakac.ofutodon.ui.theme.DeepBlack
 import com.crakac.ofutodon.ui.theme.PreviewBackGround
