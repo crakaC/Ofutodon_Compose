@@ -101,10 +101,13 @@ fun StatusContent(status: Status, callback: StatusCallback) {
 private fun Header(status: Status) {
     val account = status.account
     Row(verticalAlignment = Alignment.CenterVertically) {
+        val displayName = account.displayName.ifBlank { account.acct.split('@').first() }
         Text(
-            text = account.displayName,
+            text = displayName,
             style = MaterialTheme.typography.h6,
-            color = MaterialTheme.colors.onSurface
+            color = MaterialTheme.colors.onSurface,
+            modifier = Modifier.wrapContentWidth(Alignment.Start),
+            maxLines = 1,
         )
         Spacer(Modifier.width(4.dp))
         Text(
@@ -390,7 +393,7 @@ val DummyStatus = Status(
     account = Account(
         username = "user",
         displayName = "Lorem",
-        acct = "local.host",
+        acct = "Lorem@Lorem ipsum dolor sit amet@local.host",
         avatar = "https://developer.android.com/images/brand/Android_Robot.png"
     ),
     content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
