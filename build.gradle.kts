@@ -3,7 +3,7 @@ buildscript {
     dependencies {
         classpath(libs.hilt.gradle)
         classpath(libs.google.services)
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21")
+        classpath(libs.kotlin.gradlePlugin)
     }
 }
 
@@ -13,7 +13,7 @@ plugins {
     alias(libs.plugins.spotless)
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.kotlin) apply false
+    alias(libs.plugins.kotlin.android) apply false
 }
 
 allprojects {

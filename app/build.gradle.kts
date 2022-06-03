@@ -4,7 +4,7 @@ import java.util.*
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin)
+    alias(libs.plugins.kotlin.android)
     id("kotlin-kapt")
     id("kotlin-parcelize")
     id("dagger.hilt.android.plugin")
@@ -85,6 +85,8 @@ dependencies {
     kapt(libs.hilt.compiler)
 
     implementation(libs.firebase.analytics)
+
+    implementation(libs.timber)
 
     testImplementation(libs.junit)
     testImplementation(libs.coroutines.test)
