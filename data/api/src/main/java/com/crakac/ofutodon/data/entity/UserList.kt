@@ -10,11 +10,12 @@ data class UserList(
     @SerializedName("replies_policy")
     val repliesPolicy: String = "",
 ) {
-    class RepliesPolicy {
-        companion object {
-            val Followed = "Followed"
-            val List = "list"
-            val None = "none"
-        }
+    enum class RepliesPolicy {
+        @SerializedName("followed")
+        Followed,
+        @SerializedName("list")
+        List,
+        @SerializedName("none")
+        None,
     }
 }

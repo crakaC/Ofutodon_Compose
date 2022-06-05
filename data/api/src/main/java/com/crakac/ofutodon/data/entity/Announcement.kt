@@ -18,7 +18,7 @@ data class Announcement(
     @SerializedName("read")
     val read: Boolean = false,
     @SerializedName("reactions")
-    val reactions: List<com.crakac.ofutodon.data.entity.AnnouncementReaction> = emptyList(),
+    val reactions: List<AnnouncementReaction> = emptyList(),
     @SerializedName("scheduled_at")
     val scheduledAt: String = "",
     @SerializedName("starts_at")

@@ -1,6 +1,8 @@
 package com.crakac.ofutodon.data.api
 
-import com.crakac.ofutodon.data.entity.*
+import com.crakac.ofutodon.data.entity.Account
+import com.crakac.ofutodon.data.entity.Emoji
+import com.crakac.ofutodon.data.entity.Tag
 import retrofit2.http.GET
 import retrofit2.http.Query
 

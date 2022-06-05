@@ -24,9 +24,9 @@ data class Instance(
     @SerializedName("invites_enabled")
     val invitesEnabled: Boolean = false,
     @SerializedName("urls")
-    val streamingApi: com.crakac.ofutodon.data.entity.Instance.StreamingApi = com.crakac.ofutodon.data.entity.Instance.StreamingApi(),
+    val streamingApi: StreamingApi = StreamingApi(),
     @SerializedName("stats")
-    val stats: com.crakac.ofutodon.data.entity.Instance.Stats = com.crakac.ofutodon.data.entity.Instance.Stats(),
+    val stats: Stats = Stats(),
     @SerializedName("user_count")
     val userCount: Long = 0L,
     @SerializedName("status_count")
@@ -36,7 +36,7 @@ data class Instance(
     @SerializedName("thumbnail")
     val thumbnail: String? = null,
     @SerializedName("contact_account")
-    val contactAccount: com.crakac.ofutodon.data.entity.Account? = null,
+    val contactAccount: Account? = null,
 ) {
     data class StreamingApi(
         @SerializedName("streaming_api")

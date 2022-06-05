@@ -12,5 +12,5 @@ data class Notification(
     @SerializedName("account")
     val account: String = "",
     @SerializedName("status")
-    val status: com.crakac.ofutodon.data.entity.Status = com.crakac.ofutodon.data.entity.Status(),
+    val status: Status = Status(),
 )

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class StatusContext(
     @SerializedName("ancestors")
-    val ancestors: List<com.crakac.ofutodon.data.entity.Status> = emptyList(),
+    val ancestors: List<Status> = emptyList(),
     @SerializedName("descendants")
-    val descendants: List<com.crakac.ofutodon.data.entity.Status> = emptyList(),
+    val descendants: List<Status> = emptyList(),
 )

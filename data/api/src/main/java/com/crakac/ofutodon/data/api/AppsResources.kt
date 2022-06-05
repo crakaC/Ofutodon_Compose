@@ -1,8 +1,6 @@
 package com.crakac.ofutodon.data.api
 
-import com.crakac.ofutodon.data.entity.AppCredentials
 import com.crakac.ofutodon.data.entity.Application
-import com.crakac.ofutodon.data.entity.Token
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET

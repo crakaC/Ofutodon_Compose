@@ -1,6 +1,5 @@
 package com.crakac.ofutodon.data.api
 
-import com.crakac.ofutodon.data.entity.Notification
 import retrofit2.http.*
 
 interface NotificationsResources {

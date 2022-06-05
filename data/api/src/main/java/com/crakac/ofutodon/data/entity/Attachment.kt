@@ -26,10 +26,13 @@ data class Attachment(
     enum class Type {
         @SerializedName("unknown")
         Unknown,
+
         @SerializedName("image")
         Image,
+
         @SerializedName("video")
         Video,
+
         @SerializedName("gifv")
         Gifv
     }

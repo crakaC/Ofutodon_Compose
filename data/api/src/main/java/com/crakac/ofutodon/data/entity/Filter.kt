@@ -15,11 +15,15 @@ data class Filter(
     val irreversible: Boolean = false,
     @SerializedName("whole_word")
     val wholeWord: Boolean = false,
-)
-
-object FilterContext {
-    val Home = "home"
-    val Notifications = "notifications"
-    val Public = "public"
-    val thread = "thread"
+) {
+    enum class FilterContext {
+        @SerializedName("home")
+        Home,
+        @SerializedName("notifications")
+        Notifications,
+        @SerializedName("public")
+        Public,
+        @SerializedName("thread")
+        Thread,
+    }
 }

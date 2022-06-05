@@ -1,8 +1,9 @@
 package com.crakac.ofutodon.data.api
 
-import com.crakac.ofutodon.data.entity.*
+import com.crakac.ofutodon.data.entity.Account
+import com.crakac.ofutodon.data.entity.Conversation
+import com.crakac.ofutodon.data.entity.Status
 import retrofit2.http.*
-import retrofit2.http.Field
 
 interface TimelinesResources {
 

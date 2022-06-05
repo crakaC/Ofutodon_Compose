@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class Marker(
     @SerializedName("home")
-    val home: com.crakac.ofutodon.data.entity.MarkerInfo = com.crakac.ofutodon.data.entity.MarkerInfo(),
+    val home: MarkerInfo = MarkerInfo(),
     @SerializedName("notifications")
-    val notifications: com.crakac.ofutodon.data.entity.MarkerInfo = com.crakac.ofutodon.data.entity.MarkerInfo(),
+    val notifications: MarkerInfo = MarkerInfo(),
 )
 
 data class MarkerInfo(

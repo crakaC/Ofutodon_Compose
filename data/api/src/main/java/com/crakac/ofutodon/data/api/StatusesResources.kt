@@ -1,10 +1,12 @@
 package com.crakac.ofutodon.data.api
 
-import com.crakac.ofutodon.data.entity.*
+import com.crakac.ofutodon.data.entity.Account
+import com.crakac.ofutodon.data.entity.Attachment
+import com.crakac.ofutodon.data.entity.Poll
+import com.crakac.ofutodon.data.entity.Status
 import com.crakac.ofutodon.data.params.StatusBody
 import okhttp3.MultipartBody
 import retrofit2.http.*
-import retrofit2.http.Field
 
 interface StatusesResources {
     @POST("/api/v1/statuses")

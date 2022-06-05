@@ -1,6 +1,5 @@
 package com.crakac.ofutodon.data.api
 
-import com.crakac.ofutodon.data.entity.Results
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
