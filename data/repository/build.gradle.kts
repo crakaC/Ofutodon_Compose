@@ -1,7 +1,7 @@
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.android.library)
-    kotlin("android")
+    alias(libs.plugins.kotlin.android)
     id("kotlin-kapt")
 }
 
@@ -20,4 +20,8 @@ dependencies {
     testImplementation(libs.okhttp.mock)
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
+
+    testImplementation(libs.truth)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.junit.ext)
 }

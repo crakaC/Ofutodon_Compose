@@ -1,10 +1,8 @@
 package com.crakac.ofutodon.mastodon
 
+import com.crakac.ofutodon.data.entity.Status
 import com.crakac.ofutodon.di.MastodonModule
 import com.crakac.ofutodon.di.OkHttpModule
-import com.crakac.ofutodon.data.entity.Status
-import com.crakac.ofutodon.data.params.PageQuery
-import com.crakac.ofutodon.data.params.StatusBody
 import kotlinx.coroutines.runBlocking
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
