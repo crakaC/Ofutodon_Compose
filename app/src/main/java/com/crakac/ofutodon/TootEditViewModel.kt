@@ -11,7 +11,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
-class TootEditViewModel @Inject constructor(private val repo: com.crakac.ofutodon.data.MastodonRepository) : ViewModel() {
+class TootEditViewModel @Inject constructor(private val repo: MastodonRepository) : ViewModel() {
     companion object {
         private val TAG = TootEditViewModel::class.java.simpleName
     }

@@ -34,7 +34,7 @@ class TootEditState(initialVisibility: Status.Visibility = DefaultVisibility) {
     }
 
     fun toStatusBody() =
-        com.crakac.ofutodon.data.params.StatusBody(
+        StatusBody(
             content = text,
             visibility = dropDownState.visibility
         )

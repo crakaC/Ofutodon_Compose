@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.EmptyCoroutineContext
 
 class HomeTimelineState(
-    private val repo: com.crakac.ofutodon.data.MastodonRepository,
+    private val repo: MastodonRepository,
     scope: CoroutineScope = CoroutineScope(EmptyCoroutineContext)
 ) : StatusTimelineState(scope) {
     override fun refresh() {
@@ -18,14 +18,14 @@ class HomeTimelineState(
 
     override fun fetchNext() {
         load(FetchType.Next, showRefreshing = true) {
-            val statuses = repo.getHomeTimeline(com.crakac.ofutodon.data.params.PageQuery(sinceId = firstStatusId))
+            val statuses = repo.getHomeTimeline(PageQuery(sinceId = firstStatusId))
             prepend(statuses)
         }
     }
 
     override fun fetchPrevious() {
         load(FetchType.Previous) {
-            val statuses = repo.getHomeTimeline(com.crakac.ofutodon.data.params.PageQuery(maxId = lastStatusId))
+            val statuses = repo.getHomeTimeline(PageQuery(maxId = lastStatusId))
             append(statuses)
         }
     }

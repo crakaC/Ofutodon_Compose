@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repo: com.crakac.ofutodon.data.MastodonRepository
+    private val repo: MastodonRepository
 ) : ViewModel() {
     companion object {
         private val TAG = MainViewModel::class.java.simpleName

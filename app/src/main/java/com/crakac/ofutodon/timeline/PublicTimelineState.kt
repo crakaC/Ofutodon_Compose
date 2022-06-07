@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.EmptyCoroutineContext
 
 class PublicTimelineState(
-    private val repo: com.crakac.ofutodon.data.MastodonRepository,
+    private val repo: MastodonRepository,
     private val isLocalOnly: Boolean = true,
     scope: CoroutineScope = CoroutineScope(EmptyCoroutineContext)
 ) : StatusTimelineState(scope) {
@@ -22,7 +22,7 @@ class PublicTimelineState(
             val statuses =
                 repo.getPublicTimeline(
                     localOnly = isLocalOnly,
-                    com.crakac.ofutodon.data.params.PageQuery(sinceId = firstStatusId)
+                    PageQuery(sinceId = firstStatusId)
                 )
             prepend(statuses)
         }
@@ -33,7 +33,7 @@ class PublicTimelineState(
             val statuses =
                 repo.getPublicTimeline(
                     localOnly = isLocalOnly,
-                    com.crakac.ofutodon.data.params.PageQuery(maxId = lastStatusId)
+                    PageQuery(maxId = lastStatusId)
                 )
             append(statuses)
         }

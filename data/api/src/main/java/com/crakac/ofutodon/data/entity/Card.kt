@@ -30,7 +30,7 @@ data class Card(
     @SerializedName("blurhash")
     val blurhash: String = "",
 ) {
-    enum class Type{
+    enum class Type {
         @SerializedName("link") Link,
         @SerializedName("photo") Photo,
         @SerializedName("video") Video,
