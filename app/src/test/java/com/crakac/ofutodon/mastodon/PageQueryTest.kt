@@ -7,7 +7,7 @@ import org.junit.Test
 class PageQueryTest {
     @Test
     fun test() {
-        val query = com.crakac.ofutodon.data.params.PageQuery(maxId = 1L)
+        val query = PageQuery(maxId = 1L)
         val map = query.toMap()
         Assert.assertEquals(map["max_id"], "1")
         Assert.assertNull(map["since_id"])
