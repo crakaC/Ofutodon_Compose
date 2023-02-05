@@ -40,11 +40,13 @@ android {
                 "retrofit2.pro",
             )
             applicationIdSuffix = ".debug"
-            val properties = Properties().apply {
-                load(FileInputStream(rootProject.file("local.properties")))
-            }
-            val token = properties.getProperty("debug_token")
-            val host = properties.getProperty("debug_host")
+
+            val propertyFile = rootProject.file("local.properties")
+            if (!propertyFile.exists()) return@debug
+            val properties = Properties()
+            properties.load(FileInputStream(propertyFile))
+            val token = properties["debug_token"]
+            val host = properties["debug_host"]
             buildConfigField("String", "DEBUG_TOKEN", "\"$token\"")
             buildConfigField("String", "DEBUG_HOST", "\"$host\"")
         }

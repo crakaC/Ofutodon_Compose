@@ -1,4 +1,4 @@
-name: Build debug apk
+name: Test
 
 on:
   push:
@@ -8,7 +8,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  Test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -17,32 +17,24 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Copy CI gradle.properties
-        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
-
-      - name: Touch ignored file
         run: |
-          pwd
-          touch local.properties
-          cp .github/ci-google-service.json app/google-services.json
+          mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 11
 
       - uses: gradle/gradle-build-action@v2
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
-      - name: Build project
-        run: ./gradlew assembleDebug --stacktrace
+      - name: Spotless Check
+        run: ./gradlew spotlessCheck
 
-      - name: Upload build reports
-        uses: actions/upload-artifact@v2
-        with:
-          name: debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
-
-      - run: ./gradlew lint
-
-      - name: Upload lint report
-        if: failure()
-        uses: actions/upload-artifact@v2
-        with:
-          name: lint-reports
-          path: app/build/reports/*
+      - name: Unit Test
+        run: |
+          echo ${{ secrets.LOCAL_PROPERTIES }} | base64 -d > local.properties
+          echo ${{ secrets.GOOGLE_SERVICES_JSON }} | base64 -d > app/google-services.json
+          ./gradlew testDebugUnitTest
