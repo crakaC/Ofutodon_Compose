@@ -16,5 +16,5 @@ class StatusParam(
     @SerializedName("visibility")
     var visibility: String? = null,
     @SerializedName("language")
-    var language: String? = null
+    var language: String? = null,
 )

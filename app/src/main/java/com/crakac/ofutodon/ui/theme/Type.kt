@@ -16,5 +16,5 @@ val Typography = Typography(
     ),
     body2 = TextStyle(
         fontSize = 14.sp,
-    )
+    ),
 )

@@ -16,7 +16,7 @@ interface TimelinesResources {
         @Query("only_media")
         onlyMedia: Boolean? = null,
         @QueryMap
-        pageQuery: Map<String, String> = emptyMap()
+        pageQuery: Map<String, String> = emptyMap(),
     ): List<Status>
 
     @GET("/api/v1/timelines/tag/{hashtag}")
@@ -28,7 +28,7 @@ interface TimelinesResources {
         @Query("only_media")
         onlyMedia: Boolean? = null,
         @QueryMap
-        pageQuery: Map<String, String> = emptyMap()
+        pageQuery: Map<String, String> = emptyMap(),
     ): List<Status>
 
     @GET("/api/v1/timelines/home")
@@ -36,7 +36,7 @@ interface TimelinesResources {
         @Query("local")
         localOnly: Boolean? = null,
         @QueryMap
-        pageQuery: Map<String, String> = emptyMap()
+        pageQuery: Map<String, String> = emptyMap(),
     ): List<Status>
 
     @GET("/api/v1/timelines/list/{list_id}")
@@ -44,25 +44,25 @@ interface TimelinesResources {
         @Path("list_id")
         listId: Long,
         @QueryMap
-        pageQuery: Map<String, String> = emptyMap()
+        pageQuery: Map<String, String> = emptyMap(),
     ): List<Status>
 
     @GET("/api/v1/conversations")
     suspend fun getConversations(
         @QueryMap
-        pageQuery: Map<String, String> = emptyMap()
+        pageQuery: Map<String, String> = emptyMap(),
     ): Conversation
 
     @DELETE("/api/v1/conversations/{id}")
     suspend fun deleteConversation(
         @Path("id")
-        conversationId: Long
+        conversationId: Long,
     )
 
     @POST("/api/v1/conversations/{id}/read")
     suspend fun markConversationAsRead(
         @Path("id")
-        conversationId: Long
+        conversationId: Long,
     ): Conversation
 
     @GET("/api/v1/lists")
@@ -71,7 +71,7 @@ interface TimelinesResources {
     @GET("/api/v1/lists/{id}")
     suspend fun getUserList(
         @Path("id")
-        listId: Long
+        listId: Long,
     ): com.crakac.ofutodon.data.entity.UserList
 
     @FormUrlEncoded
@@ -80,7 +80,7 @@ interface TimelinesResources {
         @Field("title")
         listTitle: String,
         @Field("replies_policy")
-        repliesPolicy: String? = null
+        repliesPolicy: String? = null,
     ): com.crakac.ofutodon.data.entity.UserList
 
     @FormUrlEncoded
@@ -91,13 +91,13 @@ interface TimelinesResources {
         @Field("title")
         listTitle: String? = null,
         @Field("replies_policy")
-        repliesPolicy: String? = null
+        repliesPolicy: String? = null,
     ): com.crakac.ofutodon.data.entity.UserList
 
     @DELETE("/api/v1/lists/{id}")
     suspend fun deleteUserList(
         @Path("id")
-        listId: Long
+        listId: Long,
     )
 
     @GET("/api/v1/lists/{id}/accounts")
@@ -105,7 +105,7 @@ interface TimelinesResources {
         @Path("id")
         listId: Long,
         @QueryMap
-        pageQuery: Map<String, String> = emptyMap()
+        pageQuery: Map<String, String> = emptyMap(),
     ): List<Account>
 
     @FormUrlEncoded
@@ -114,7 +114,7 @@ interface TimelinesResources {
         @Path("id")
         listId: Long,
         @Field("account_ids")
-        accountIds: List<Long>
+        accountIds: List<Long>,
     )
 
     @FormUrlEncoded
@@ -123,13 +123,13 @@ interface TimelinesResources {
         @Path("id")
         listId: Long,
         @Field("account_ids")
-        accountIds: List<Long>
+        accountIds: List<Long>,
     )
 
     @GET("/api/v1/markers")
     suspend fun getSavedTimelinePosition(
         @Query("timeline")
-        timeline: List<String>
+        timeline: List<String>,
     ): com.crakac.ofutodon.data.entity.Marker
 
     @FormUrlEncoded
@@ -138,6 +138,6 @@ interface TimelinesResources {
         @Field("home[last_read_id]")
         homeLastReadId: Long? = null,
         @Field("notification[last_read_id]")
-        notificationsLastReadId: Long? = null
+        notificationsLastReadId: Long? = null,
     ): com.crakac.ofutodon.data.entity.Marker
 }

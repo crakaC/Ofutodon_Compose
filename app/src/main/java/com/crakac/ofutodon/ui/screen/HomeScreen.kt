@@ -39,10 +39,10 @@ fun HomeScreen(navController: NavHostController) {
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_edit),
-                    contentDescription = "toot"
+                    contentDescription = "toot",
                 )
             }
-        }
+        },
     ) { innerPadding ->
         HomeScreenContent(Modifier.padding(innerPadding), previewState)
     }
@@ -54,7 +54,7 @@ fun HomeScreen(navController: NavHostController) {
 fun PagerTab(
     pagerState: PagerState,
     tabs: List<AnnotatedString>,
-    onClickSelectedTab: (page: Int) -> Unit = {}
+    onClickSelectedTab: (page: Int) -> Unit = {},
 ) {
     LogCompositions(tag = "PagerTab")
     val currentPage = pagerState.currentPage
@@ -63,9 +63,9 @@ fun PagerTab(
         selectedTabIndex = currentPage,
         indicator = { tabPositions ->
             TabRowDefaults.Indicator(
-                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions),
             )
-        }
+        },
     ) {
         tabs.forEachIndexed { index, tab ->
             val selected = index == currentPage
@@ -80,7 +80,7 @@ fun PagerTab(
                             pagerState.animateScrollToPage(index)
                         }
                     }
-                }
+                },
             )
         }
     }
@@ -90,7 +90,7 @@ fun PagerTab(
 @Composable
 fun HomeScreenContent(
     modifier: Modifier = Modifier,
-    previewState: AttachmentPreviewState
+    previewState: AttachmentPreviewState,
 ) {
     val viewModel: MainViewModel = hiltViewModel()
     val timelines = viewModel.timelines
@@ -157,7 +157,7 @@ fun HomeScreenContent(
                 onEmpty = { timeline.refresh() },
                 onRefresh = { timeline.fetchNext() },
                 onLastItemAppeared = { timeline.fetchPrevious() },
-                onClickStatus = onClickStatus
+                onClickStatus = onClickStatus,
             )
         }
     }

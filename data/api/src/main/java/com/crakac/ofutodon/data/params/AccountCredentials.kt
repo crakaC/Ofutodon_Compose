@@ -25,5 +25,5 @@ data class AccountCredentials(
     @SerializedName("source[sensitive]")
     var defaultSensitive: Boolean? = null,
     @SerializedName("source[language]")
-    var defaultLanguage: String? = null
+    var defaultLanguage: String? = null,
 )

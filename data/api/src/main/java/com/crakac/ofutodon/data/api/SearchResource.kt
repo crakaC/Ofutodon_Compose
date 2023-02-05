@@ -20,6 +20,6 @@ interface SearchResource {
         @Query("following")
         onlyFollowing: Boolean? = null,
         @QueryMap
-        pageQuery: Map<String, String> = emptyMap()
+        pageQuery: Map<String, String> = emptyMap(),
     ): com.crakac.ofutodon.data.entity.Results
 }

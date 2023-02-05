@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repo: MastodonRepository
+    private val repo: MastodonRepository,
 ) : ViewModel() {
     companion object {
         private val TAG = MainViewModel::class.java.simpleName
@@ -29,7 +29,7 @@ class MainViewModel @Inject constructor(
         homeTimeline,
         localTimeline,
         publicTimeline,
-        debugTimeline
+        debugTimeline,
     )
 
     fun favourite(id: Long) {

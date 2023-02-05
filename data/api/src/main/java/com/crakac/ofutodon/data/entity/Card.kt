@@ -31,9 +31,16 @@ data class Card(
     val blurhash: String = "",
 ) {
     enum class Type {
-        @SerializedName("link") Link,
-        @SerializedName("photo") Photo,
-        @SerializedName("video") Video,
-        @SerializedName("rich") Rich,
+        @SerializedName("link")
+        Link,
+
+        @SerializedName("photo")
+        Photo,
+
+        @SerializedName("video")
+        Video,
+
+        @SerializedName("rich")
+        Rich,
     }
 }

@@ -5,7 +5,7 @@ data class PageQuery(
     val minId: Long? = null,
     val sinceId: Long? = null,
     val limit: Int? = null,
-    val offset: Int? = null
+    val offset: Int? = null,
 ) {
     fun toMap() = mapOf(
         "max_id" to maxId,

@@ -66,7 +66,7 @@ fun LazyListState.OnAppearLastItem(onAppearLastItem: () -> Unit) {
 
 fun NavController.navigate(
     route: String,
-    args: Bundle
+    args: Bundle,
 ) {
     val routeLink = NavDeepLinkRequest
         .Builder.fromUri(NavDestination.createRoute(route).toUri()).build()

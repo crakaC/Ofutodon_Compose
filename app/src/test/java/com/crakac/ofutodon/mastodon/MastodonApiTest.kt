@@ -12,7 +12,7 @@ import java.io.File
 
 class MastodonApiTest {
     private val mastodon = MastodonModule.provideMastodon(
-        OkHttpModule.provideOkHttp()
+        OkHttpModule.provideOkHttp(),
     )
 
     @Test
@@ -31,8 +31,8 @@ class MastodonApiTest {
     fun getTimelineWithQuery() = runBlocking {
         val timeline = mastodon.getPublicTimeline(
             pageQuery = com.crakac.ofutodon.data.params.PageQuery(
-                limit = 10
-            ).toMap()
+                limit = 10,
+            ).toMap(),
         )
         Assert.assertEquals("Query limit", 10, timeline.size)
 
@@ -41,7 +41,7 @@ class MastodonApiTest {
         val previous = mastodon.getPublicTimeline(pageQuery = query.toMap())
         Assert.assertTrue(
             "First item id of previous timeline should be less than current last status id",
-            previous.first().id < timeline.last().id
+            previous.first().id < timeline.last().id,
         )
 
         query = com.crakac.ofutodon.data.params.PageQuery(sinceId = previous.first().id, limit = 10)
@@ -50,7 +50,7 @@ class MastodonApiTest {
         Assert.assertNotNull(next)
         Assert.assertTrue(
             "Last item id of next timeline should be greater than previous first status id",
-            next.last().id > previous.first().id
+            next.last().id > previous.first().id,
         )
     }
 
@@ -70,8 +70,8 @@ class MastodonApiTest {
             com.crakac.ofutodon.data.params.StatusBody(
                 content = "🤔",
                 mediaIds = listOf(attachment.id),
-                visibility = Status.Visibility.Direct
-            )
+                visibility = Status.Visibility.Direct,
+            ),
         )
         Assert.assertNotNull(status)
 

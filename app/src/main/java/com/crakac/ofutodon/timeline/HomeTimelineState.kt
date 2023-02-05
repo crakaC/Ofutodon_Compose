@@ -8,7 +8,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 class HomeTimelineState(
     private val repo: MastodonRepository,
-    scope: CoroutineScope = CoroutineScope(EmptyCoroutineContext)
+    scope: CoroutineScope = CoroutineScope(EmptyCoroutineContext),
 ) : StatusTimelineState(scope) {
     override fun refresh() {
         load(FetchType.Next) {

@@ -3,8 +3,8 @@ import java.util.*
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    kotlin("android")
+    id("com.android.application")
     id("kotlin-kapt")
     id("kotlin-parcelize")
     id("dagger.hilt.android.plugin")
@@ -29,10 +29,16 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
-                "retrofit2.pro"
+                "retrofit2.pro",
             )
         }
         debug {
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+                "retrofit2.pro",
+            )
             applicationIdSuffix = ".debug"
             val properties = Properties().apply {
                 load(FileInputStream(rootProject.file("local.properties")))
@@ -49,7 +55,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.get()
+        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
     }
 
     packagingOptions {
@@ -92,7 +98,7 @@ dependencies {
     testImplementation(libs.coroutines.test)
     androidTestImplementation(libs.junit.ext)
     androidTestImplementation(libs.espresso)
-    androidTestImplementation(libs.compose.junit)
-    debugImplementation(libs.compose.tooling)
-    debugImplementation(libs.compose.manifest)
+    androidTestImplementation(libs.androidx.compose.junit)
+    debugImplementation(libs.androidx.compose.tooling)
+    debugImplementation(libs.androidx.compose.manifest)
 }

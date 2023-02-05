@@ -38,7 +38,7 @@ fun Timeline(
     onEmpty: () -> Unit = {},
     onRefresh: () -> Unit = {},
     onLastItemAppeared: () -> Unit = {},
-    onClickStatus: StatusCallback = StatusCallback.Default
+    onClickStatus: StatusCallback = StatusCallback.Default,
 ) {
     LogCompositions(tag = "Timeline")
     val isLoading by loadingState
@@ -46,11 +46,11 @@ fun Timeline(
     if (statuses.isEmpty()) {
         Box(
             Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
-                    Modifier.size(48.dp)
+                    Modifier.size(48.dp),
                 )
             } else {
                 Button(onClick = onEmpty) {
@@ -61,19 +61,19 @@ fun Timeline(
     } else {
         SwipeRefresh(
             state = refreshState,
-            onRefresh = onRefresh
+            onRefresh = onRefresh,
         ) {
             LogCompositions(tag = "SwipeRefresh")
             LazyColumn(
                 state = scrollState,
                 modifier = modifier
                     .recomposeHighlighter()
-                    .fillMaxHeight()
+                    .fillMaxHeight(),
             ) {
                 itemsIndexed(
                     items = statuses,
                     contentType = { _, _ -> "status" },
-                    key = { _, status -> status.id }
+                    key = { _, status -> status.id },
                 ) { index, status ->
                     StatusContent(status, onClickStatus)
                     if (index < statuses.lastIndex) {
@@ -85,10 +85,10 @@ fun Timeline(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator(
-                            Modifier.size(32.dp)
+                            Modifier.size(32.dp),
                         )
                     }
                 }

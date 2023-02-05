@@ -2,8 +2,8 @@ package com.crakac.ofutodon.data
 
 import android.content.Context
 import android.net.Uri
-import com.crakac.ofutodon.data.params.PageQuery
 import com.crakac.ofutodon.data.entity.*
+import com.crakac.ofutodon.data.params.PageQuery
 import com.crakac.ofutodon.data.params.StatusBody
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ensureActive
@@ -24,7 +24,7 @@ class MastodonRepository @Inject constructor(
 
     suspend fun getPublicTimeline(
         localOnly: Boolean = false,
-        pageQuery: PageQuery = PageQuery()
+        pageQuery: PageQuery = PageQuery(),
     ): List<Status> {
         return mastodon.getPublicTimeline(localOnly = localOnly, pageQuery = pageQuery.toMap())
     }

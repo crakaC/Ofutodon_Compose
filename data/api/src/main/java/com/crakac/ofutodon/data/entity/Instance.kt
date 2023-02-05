@@ -40,7 +40,7 @@ data class Instance(
 ) {
     data class StreamingApi(
         @SerializedName("streaming_api")
-        val endpoint: String = ""
+        val endpoint: String = "",
     )
 
     data class Stats(
@@ -51,6 +51,6 @@ data class Instance(
         val statusCount: Long = 0L,
 
         @SerializedName("domain_count")
-        val domainCount: Long = 0L
+        val domainCount: Long = 0L,
     )
 }

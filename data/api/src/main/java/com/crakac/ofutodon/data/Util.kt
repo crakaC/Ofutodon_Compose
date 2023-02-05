@@ -13,7 +13,7 @@ class Util private constructor() {
             return DateUtils.getRelativeTimeSpanString(
                 time,
                 System.currentTimeMillis(),
-                DateUtils.SECOND_IN_MILLIS
+                DateUtils.SECOND_IN_MILLIS,
             )
         }
     }

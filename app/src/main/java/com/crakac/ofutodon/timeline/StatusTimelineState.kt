@@ -44,7 +44,7 @@ abstract class StatusTimelineState(parentScope: CoroutineScope) : TimelineState<
     fun load(
         fetchType: FetchType,
         showRefreshing: Boolean = false,
-        block: suspend () -> Unit
+        block: suspend () -> Unit,
     ) {
         if (jobs[fetchType]?.isActive == true) return
         if (showRefreshing) {

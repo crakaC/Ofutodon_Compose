@@ -9,7 +9,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 class PublicTimelineState(
     private val repo: MastodonRepository,
     private val isLocalOnly: Boolean = true,
-    scope: CoroutineScope = CoroutineScope(EmptyCoroutineContext)
+    scope: CoroutineScope = CoroutineScope(EmptyCoroutineContext),
 ) : StatusTimelineState(scope) {
     override fun refresh() {
         load(FetchType.Next) {
@@ -22,7 +22,7 @@ class PublicTimelineState(
             val statuses =
                 repo.getPublicTimeline(
                     localOnly = isLocalOnly,
-                    PageQuery(sinceId = firstStatusId)
+                    PageQuery(sinceId = firstStatusId),
                 )
             prepend(statuses)
         }
@@ -33,7 +33,7 @@ class PublicTimelineState(
             val statuses =
                 repo.getPublicTimeline(
                     localOnly = isLocalOnly,
-                    PageQuery(maxId = lastStatusId)
+                    PageQuery(maxId = lastStatusId),
                 )
             append(statuses)
         }

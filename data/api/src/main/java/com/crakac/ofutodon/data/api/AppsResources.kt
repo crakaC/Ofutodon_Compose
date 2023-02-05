@@ -17,7 +17,7 @@ interface AppsResources {
         @Field("scopes")
         scopes: String,
         @Field("website")
-        webSite: String
+        webSite: String,
     ): com.crakac.ofutodon.data.entity.AppCredentials
 
     @GET("/api/v1/apps/verify_credentials")
@@ -37,7 +37,7 @@ interface AppsResources {
         @Field("scope")
         scope: String,
         @Field("code")
-        code: String
+        code: String,
     ): com.crakac.ofutodon.data.entity.Token
 
     @FormUrlEncoded
@@ -48,6 +48,6 @@ interface AppsResources {
         @Field("client_secret")
         clientSecret: String,
         @Field("token")
-        accessToken: String
+        accessToken: String,
     )
 }

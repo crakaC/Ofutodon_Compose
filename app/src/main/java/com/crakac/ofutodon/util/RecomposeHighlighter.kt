@@ -30,8 +30,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.dp
-import kotlin.math.min
 import kotlinx.coroutines.delay
+import kotlin.math.min
 
 /**
  * A [Modifier] that draws a border around elements that are recomposing. The border increases in
@@ -88,7 +88,7 @@ private val recomposeModifier =
                             lerp(
                                 Color.Yellow.copy(alpha = 0.8f),
                                 Color.Red.copy(alpha = 0.5f),
-                                min(1f, (numCompositionsSinceTimeout - 1).toFloat() / 100f)
+                                min(1f, (numCompositionsSinceTimeout - 1).toFloat() / 100f),
                             ) to numCompositionsSinceTimeout.toInt().dp.toPx()
                         }
                     }
@@ -106,7 +106,7 @@ private val recomposeModifier =
                     brush = SolidColor(color),
                     topLeft = rectTopLeft,
                     size = size,
-                    style = style
+                    style = style,
                 )
             }
         }

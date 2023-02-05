@@ -22,5 +22,5 @@ data class StatusBody(
     @SerializedName("scheduled_at")
     var scheduledAt: String? = null,
     @SerializedName("language")
-    var language: String? = null
+    var language: String? = null,
 )

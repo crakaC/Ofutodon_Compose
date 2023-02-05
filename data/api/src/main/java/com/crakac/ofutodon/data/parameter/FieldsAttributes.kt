@@ -1,7 +1,7 @@
 package com.crakac.ofutodon.data.parameter
 
 class FieldsAttributes(
-    val fields: List<FieldParam>
+    val fields: List<FieldParam>,
 ) {
     fun toFieldMap(): Map<String, String> {
         return HashMap<String, String>().apply {

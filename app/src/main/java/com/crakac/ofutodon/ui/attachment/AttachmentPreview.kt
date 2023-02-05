@@ -24,13 +24,13 @@ import com.google.accompanist.pager.rememberPagerState
 
 @Composable
 fun AttachmentPreview(
-    state: AttachmentPreviewState
+    state: AttachmentPreviewState,
 ) {
     AttachmentPreview(
         showPreview = state.showPreview,
         initialIndex = state.currentIndex,
         attachments = state.attachments,
-        onBackKeyPressed = { state.hidePreview() }
+        onBackKeyPressed = { state.hidePreview() },
     )
 }
 
@@ -40,7 +40,7 @@ fun AttachmentPreview(
     showPreview: Boolean,
     initialIndex: Int,
     attachments: List<Any>,
-    onBackKeyPressed: () -> Unit = {}
+    onBackKeyPressed: () -> Unit = {},
 ) {
     if (!showPreview) return
 
@@ -53,7 +53,7 @@ fun AttachmentPreview(
         Modifier
             .fillMaxSize()
             .background(PreviewBackGround)
-            .pointerInput(Unit) {}
+            .pointerInput(Unit) {},
     ) {
         HorizontalPager(count = attachments.size, state = pagerState) { page ->
             val model = when (val attachment = attachments[page]) {
@@ -72,7 +72,7 @@ fun AttachmentPreview(
                 .align(Alignment.BottomCenter)
                 .padding(16.dp),
             activeColor = MaterialTheme.colors.primary,
-            inactiveColor = DeepBlack.copy(alpha = 0.5f)
+            inactiveColor = DeepBlack.copy(alpha = 0.5f),
         )
     }
 }

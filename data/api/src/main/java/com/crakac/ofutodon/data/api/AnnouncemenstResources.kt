@@ -7,13 +7,13 @@ interface AnnouncemenstResources {
     @GET("/api/v1/announcements")
     suspend fun getAnnouncements(
         @Query("with_dismissed")
-        includeDismissed: Boolean? = null
+        includeDismissed: Boolean? = null,
     ): List<com.crakac.ofutodon.data.entity.Announcement>
 
     @POST("/api/v1/announcements/{id}/dismiss")
     suspend fun dismissAnnouncement(
         @Path("id")
-        announcementId: Long
+        announcementId: Long,
     )
 
     /**
@@ -24,7 +24,7 @@ interface AnnouncemenstResources {
         @Path("id")
         announcementId: Long,
         @Path("name")
-        emoji: String
+        emoji: String,
     )
 
     /**
@@ -35,6 +35,6 @@ interface AnnouncemenstResources {
         @Path("id")
         announcementId: Long,
         @Path("name")
-        emoji: String
+        emoji: String,
     )
 }

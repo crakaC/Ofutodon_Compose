@@ -1,9 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     dependencies {
-        classpath(libs.hilt.gradle)
         classpath(libs.google.services)
-        classpath(libs.kotlin.gradlePlugin)
     }
 }
 
@@ -11,9 +9,13 @@ buildscript {
 plugins {
     alias(libs.plugins.kover)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.hilt) apply false
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.kotlin.android) apply false
+    kotlin("android") version "1.8.0" apply false
+    kotlin("plugin.serialization") version "1.8.0" apply false
+    id("com.github.ben-manes.versions") version "0.41.0"
+    id("nl.littlerobots.version-catalog-update") version "0.7.0"
 }
 
 allprojects {
@@ -22,27 +24,16 @@ allprojects {
         kotlin {
             target("**/*.kt")
             targetExclude("$buildDir/**/*.kt")
-            ktlint().userData(
-                mapOf(
-                    "disabled_rules" to "no-wildcard-imports,import-ordering,final-newline",
-                )
-            )
+            ktlint()
         }
         kotlinGradle {
-            target("**/*.gradle.kts")
-            ktlint().userData(
-                mapOf(
-                    "disabled_rules" to "no-wildcard-imports,import-ordering,final-newline",
-                )
-            )
+            target("**/*.kts")
+            targetExclude("$buildDir/**/*.kts")
+            ktlint()
+        }
+        format("xml") {
+            target("**/*.xml")
+            targetExclude("**/build/**/*.xml")
         }
     }
-    tasks.matching { it.name == "preBuild" }.all {
-        dependsOn("spotlessKotlinApply")
-    }
-    tasks.matching { it.name == "prepareKotlinBuildScriptModel" }.all {
-        dependsOn("spotlessKotlinGradleApply")
-    }
 }
-
-apply(plugin = "kover")

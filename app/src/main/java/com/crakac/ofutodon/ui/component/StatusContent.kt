@@ -5,7 +5,6 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.net.Uri
 import android.text.Spanned
 import android.text.style.URLSpan
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -38,6 +37,7 @@ import com.crakac.ofutodon.ui.theme.*
 import com.crakac.ofutodon.util.LocalPainterResource
 import com.crakac.ofutodon.util.createImageRequest
 import com.crakac.ofutodon.util.iconResource
+import timber.log.Timber
 
 interface StatusCallback {
     fun onClickStatus(status: Status) {}
@@ -64,7 +64,7 @@ fun StatusContent(status: Status, callback: StatusCallback) {
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { callback.onClickStatus(status) }
-                .padding(start = 8.dp, end = 8.dp, top = 12.dp)
+                .padding(start = 8.dp, end = 8.dp, top = 12.dp),
         ) {
             CompositionLocalProvider(LocalContentColor provides DarkGray) {
                 if (status.isReblog) {
@@ -84,9 +84,9 @@ fun StatusContent(status: Status, callback: StatusCallback) {
                                 onClickAttachment = { index ->
                                     callback.onClickAttachment(
                                         index,
-                                        originalStatus.mediaAttachments
+                                        originalStatus.mediaAttachments,
                                     )
-                                }
+                                },
                             )
                         }
                         BottomIcons(originalStatus, callback)
@@ -122,7 +122,7 @@ private fun Header(status: Status) {
             painter = LocalPainterResource.current.obtain(id = status.visibility.iconResource()),
             contentDescription = "visibility",
             modifier = Modifier.size(16.dp),
-            colorFilter = ColorFilter.tint(LocalContentColor.current)
+            colorFilter = ColorFilter.tint(LocalContentColor.current),
         )
         Spacer(Modifier.width(4.dp))
         Text(
@@ -164,13 +164,13 @@ private fun Content(content: Spanned) {
         style = MaterialTheme.typography.body1.copy(color = contentColor),
         onClick = { offset ->
             annotatedString.getStringAnnotations(offset, offset).firstOrNull()?.let { annotation ->
-                Log.d("Clicked: ", annotation.item)
+                Timber.tag("Clicked: ").d(annotation.item)
                 if (annotation.tag == "URL") {
                     val url = Uri.parse(annotation.item)
                     context.startActivity(Intent(Intent.ACTION_VIEW, url))
                 }
             }
-        }
+        },
     )
 }
 
@@ -183,7 +183,7 @@ fun AccountIcon(status: Status) {
             contentDescription = "icon",
             modifier = Modifier
                 .size(IconSize)
-                .clip(Shapes.medium)
+                .clip(Shapes.medium),
         )
     } else {
         Box(Modifier.size(IconSize)) {
@@ -217,7 +217,7 @@ fun BoostedBy(displayName: String) {
                 modifier = Modifier
                     .size(24.dp)
                     .align(Alignment.CenterEnd),
-                colorFilter = ColorFilter.tint(LocalContentColor.current)
+                colorFilter = ColorFilter.tint(LocalContentColor.current),
             )
         }
         Spacer(Modifier.width(8.dp))
@@ -233,7 +233,7 @@ fun BoostedBy(displayName: String) {
 @Composable
 fun Attachments(
     attachments: List<Attachment>,
-    onClickAttachment: (index: Int) -> Unit = {}
+    onClickAttachment: (index: Int) -> Unit = {},
 ) {
     val spacer = 4.dp
 
@@ -264,7 +264,7 @@ fun Attachments(
                 Spacer(Modifier.width(spacer))
             }
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             ) {
                 for ((index, attachment) in attachmentsInColumn.withIndex()) {
                     if (index > 0) {
@@ -280,7 +280,7 @@ fun Attachments(
                             .fillMaxWidth()
                             .weight(1f)
                             .clickable { onClickAttachment(attachments.indexOf(attachment)) },
-                        contentScale = ContentScale.Crop
+                        contentScale = ContentScale.Crop,
                     )
                 }
             }
@@ -306,13 +306,13 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
         ) {
             IconButton(
                 modifier = Modifier.size(iconButtonSize),
-                onClick = { callback.onClickReply(status) }
+                onClick = { callback.onClickReply(status) },
             ) {
                 Image(
                     painter = LocalPainterResource.current.obtain(id = R.drawable.ic_reply),
                     contentDescription = "reply",
                     modifier = Modifier.size(iconSize),
-                    colorFilter = iconTint
+                    colorFilter = iconTint,
                 )
             }
             if (status.repliesCount > 0) {
@@ -320,7 +320,7 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
                     modifier = Modifier
                         .requiredWidth(textWidth),
                     text = status.repliesCount.toString(),
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.body2,
                 )
             }
         }
@@ -338,7 +338,7 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
                     painter = LocalPainterResource.current.obtain(id = R.drawable.ic_boost),
                     contentDescription = "boost",
                     modifier = Modifier.size(iconSize),
-                    colorFilter = if (status.isBoostedWithOriginal) BoostBlueTint else iconTint
+                    colorFilter = if (status.isBoostedWithOriginal) BoostBlueTint else iconTint,
                 )
             }
             if (status.reblogsCount > 0) {
@@ -346,7 +346,7 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
                     modifier = Modifier
                         .requiredWidth(textWidth),
                     text = status.reblogsCount.toString(),
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.body2,
                 )
             }
         }
@@ -357,13 +357,13 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
         ) {
             IconButton(
                 modifier = Modifier.size(iconButtonSize),
-                onClick = { callback.onClickFavourite(status) }
+                onClick = { callback.onClickFavourite(status) },
             ) {
                 Image(
                     painter = LocalPainterResource.current.obtain(id = R.drawable.ic_favourite),
                     contentDescription = "favourite",
                     modifier = Modifier.size(iconSize),
-                    colorFilter = if (status.isFavouritedWithOriginal) FavouriteYellowTint else iconTint
+                    colorFilter = if (status.isFavouritedWithOriginal) FavouriteYellowTint else iconTint,
                 )
             }
             if (status.favouritesCount > 0) {
@@ -371,19 +371,19 @@ fun BottomIcons(status: Status, callback: StatusCallback) {
                     modifier = Modifier
                         .requiredWidth(textWidth),
                     text = status.favouritesCount.toString(),
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.body2,
                 )
             }
         }
         IconButton(
             modifier = Modifier.size(iconButtonSize),
-            onClick = { callback.onClickMore(status) }
+            onClick = { callback.onClickMore(status) },
         ) {
             Image(
                 painter = LocalPainterResource.current.obtain(id = R.drawable.ic_more),
                 contentDescription = "more",
                 modifier = Modifier.size(iconSize),
-                colorFilter = iconTint
+                colorFilter = iconTint,
             )
         }
     }
@@ -394,7 +394,7 @@ val DummyStatus = Status(
         username = "user",
         displayName = "Lorem",
         acct = "Lorem@Lorem ipsum dolor sit amet@local.host",
-        avatar = "https://developer.android.com/images/brand/Android_Robot.png"
+        avatar = "https://developer.android.com/images/brand/Android_Robot.png",
     ),
     content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
         "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." +
@@ -403,7 +403,9 @@ val DummyStatus = Status(
         "Excepteur sint occaecat cupidatat non proident," +
         "sunt in culpa qui officia deserunt mollit anim id est laborum.",
     createdAt = "2021-12-06T09:26:11.384Z",
-    repliesCount = 2L, reblogsCount = 1234567L, favouritesCount = 123L,
+    repliesCount = 2L,
+    reblogsCount = 1234567L,
+    favouritesCount = 123L,
     mediaAttachments = (1..7).map { Attachment(previewUrl = "https://developer.android.com/images/brand/Android_Robot.png") },
 )
 
@@ -414,7 +416,7 @@ private fun StatusNightPreview() {
         repliesCount = 1L,
         reblogsCount = 123L,
         favouritesCount = 123456L,
-        reblog = DummyStatus
+        reblog = DummyStatus,
     )
     OfutodonTheme {
         StatusContent(status, StatusCallback.Default)

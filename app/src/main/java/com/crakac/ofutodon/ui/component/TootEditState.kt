@@ -36,7 +36,7 @@ class TootEditState(initialVisibility: Status.Visibility = DefaultVisibility) {
     fun toStatusBody() =
         StatusBody(
             content = text,
-            visibility = dropDownState.visibility
+            visibility = dropDownState.visibility,
         )
 
     fun addAttachments(uris: List<Uri>): Boolean {

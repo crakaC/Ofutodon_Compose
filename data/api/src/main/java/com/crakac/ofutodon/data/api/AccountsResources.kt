@@ -11,7 +11,7 @@ interface AccountsResources {
     @GET("/api/v1/accounts/{id}")
     suspend fun getAccount(
         @Path("id")
-        accountId: Long
+        accountId: Long,
     ): Account
 
     @GET("/api/v1/accounts/verify_credentials")
@@ -21,7 +21,7 @@ interface AccountsResources {
     @PATCH("/api/v1/accounts/update_credentials")
     suspend fun updateAccountCredentials(
         @Body
-        credentials: AccountCredentials
+        credentials: AccountCredentials,
     )
 
     @GET("/api/v1/accounts/{id}/followers")
@@ -29,7 +29,7 @@ interface AccountsResources {
         @Path("id")
         accountId: Long,
         @QueryMap
-        pageQuery: Map<String, String> = emptyMap()
+        pageQuery: Map<String, String> = emptyMap(),
     ): List<Account>
 
     @GET("/api/v1/accounts/{id}/following")
@@ -37,7 +37,7 @@ interface AccountsResources {
         @Path("id")
         accountId: Long,
         @QueryMap
-        pageQuery: Map<String, String> = emptyMap()
+        pageQuery: Map<String, String> = emptyMap(),
     ): List<Account>
 
     @GET("/api/v1/accounts/{id}/statuses")
@@ -52,25 +52,25 @@ interface AccountsResources {
         excludeReblogs: Boolean? = null,
 //        @Query("tagged") // Added in v2.8.0
         @QueryMap
-        pageQuery: Map<String, String> = emptyMap()
+        pageQuery: Map<String, String> = emptyMap(),
     ): List<Status>
 
     @GET("/api/v1/accounts/{id}/featured_tags")
     suspend fun getTagsFeaturedBySpecificAccount(
         @Path("id")
-        accountId: Long
+        accountId: Long,
     ): List<Tag>
 
     @GET("/api/v1/accounts/{id}/lists")
     suspend fun getUserListByAccount(
         @Path("id")
-        accountId: Long
+        accountId: Long,
     ): List<com.crakac.ofutodon.data.entity.UserList>
 
     @GET("/api/v1/accounts/{id}/identity_proofs")
     suspend fun getIdentifyProof(
         @Path("id")
-        accountId: Long
+        accountId: Long,
     ): List<com.crakac.ofutodon.data.entity.IdentifyProof>
 
     @FormUrlEncoded
@@ -81,49 +81,49 @@ interface AccountsResources {
         @Field("reblogs")
         receiveReblogs: Boolean? = null,
         @Field("notify")
-        receiveNotifications: Boolean? = null
+        receiveNotifications: Boolean? = null,
     ): com.crakac.ofutodon.data.entity.Relationship
 
     @POST("/api/v1/accounts/{id}/unfollow")
     suspend fun unfollow(
         @Path("id")
-        accountId: Long
+        accountId: Long,
     ): com.crakac.ofutodon.data.entity.Relationship
 
     @POST("/api/v1/accounts/{id}/block")
     suspend fun block(
         @Path("id")
-        accountId: Long
+        accountId: Long,
     ): com.crakac.ofutodon.data.entity.Relationship
 
     @POST("/api/v1/accounts/{id}/unblock")
     suspend fun unblock(
         @Path("id")
-        accountId: Long
+        accountId: Long,
     ): com.crakac.ofutodon.data.entity.Relationship
 
     @POST("/api/v1/accounts/{id}/mute")
     suspend fun mute(
         @Path("id")
-        accountId: Long
+        accountId: Long,
     ): com.crakac.ofutodon.data.entity.Relationship
 
     @POST("/api/v1/accounts/{id}/unmute")
     suspend fun unmute(
         @Path("id")
-        accountId: Long
+        accountId: Long,
     ): com.crakac.ofutodon.data.entity.Relationship
 
     @POST("/api/v1/accounts/{id}/pin")
     suspend fun addAccountToFeaturedProfile(
         @Path("id")
-        accountId: Long
+        accountId: Long,
     ): com.crakac.ofutodon.data.entity.Relationship
 
     @POST("/api/v1/accounts/{id}/unpin")
     suspend fun removeAccountFromFeaturedProfile(
         @Path("id")
-        accountId: Long
+        accountId: Long,
     ): com.crakac.ofutodon.data.entity.Relationship
 
     @FormUrlEncoded
@@ -132,13 +132,13 @@ interface AccountsResources {
         @Path("id")
         accountId: Long,
         @Field("comment")
-        comment: String
+        comment: String,
     ): com.crakac.ofutodon.data.entity.Relationship
 
     @GET("/api/v1/accounts/relationships")
     suspend fun getRelationships(
         @Query("id")
-        accountId: Long
+        accountId: Long,
     ): List<com.crakac.ofutodon.data.entity.Relationship>
 
     @GET("/api/v1/accounts/search")
@@ -150,51 +150,51 @@ interface AccountsResources {
         @Query("resolve")
         resolveWebFingerLookup: Boolean? = null,
         @Query("following")
-        onlyFollowing: Boolean? = null
+        onlyFollowing: Boolean? = null,
     ): List<Account>
 
     @GET("/api/v1/bookmarks")
     suspend fun getBookmarks(
         @QueryMap
-        pageQuery: Map<String, String>
+        pageQuery: Map<String, String>,
     ): List<Status>
 
     @GET("/api/v1/favourites")
     suspend fun getFavourites(
         @QueryMap
-        pageQuery: Map<String, String>
+        pageQuery: Map<String, String>,
     ): List<Status>
 
     @GET("/api/v1/mutes")
     suspend fun getMutedAccounts(
         @QueryMap
-        pageQuery: Map<String, String>
+        pageQuery: Map<String, String>,
     ): List<Account>
 
     @GET("/api/v1/blocks")
     suspend fun getBlockedAccounts(
         @QueryMap
-        pageQuery: Map<String, String>
+        pageQuery: Map<String, String>,
     ): List<Account>
 
     @GET("/api/v1/domain_blocks")
     suspend fun getBlockedDomains(
         @QueryMap
-        pageQuery: Map<String, String>
+        pageQuery: Map<String, String>,
     ): List<String>
 
     @FormUrlEncoded
     @POST("/api/v1/domain_blocks")
     suspend fun blockDomain(
         @Field("domain")
-        domain: String
+        domain: String,
     )
 
     @FormUrlEncoded
     @DELETE("/api/v1/domain_blocks")
     suspend fun unblockDomain(
         @Field("domain")
-        domain: String
+        domain: String,
     )
 
     @GET("/api/v1/filters")
@@ -203,7 +203,7 @@ interface AccountsResources {
     @GET("/api/v1/filters/{id}")
     suspend fun getFilter(
         @Path("id")
-        filterId: Long
+        filterId: Long,
     ): com.crakac.ofutodon.data.entity.Filter
 
     @FormUrlEncoded
@@ -218,7 +218,7 @@ interface AccountsResources {
         @Field("whole_word")
         wholeWord: Boolean? = null,
         @Field("expires_in")
-        expiresInSeconds: Int? = null
+        expiresInSeconds: Int? = null,
     ): com.crakac.ofutodon.data.entity.Filter
 
     @FormUrlEncoded
@@ -235,13 +235,13 @@ interface AccountsResources {
         @Field("whole_word")
         wholeWord: Boolean? = null,
         @Field("expires_in")
-        expiresInSeconds: Int? = null
+        expiresInSeconds: Int? = null,
     ): com.crakac.ofutodon.data.entity.Filter
 
     @DELETE("/api/v1/filters/{id}")
     suspend fun deleteFilter(
         @Path("id")
-        filterId: Long
+        filterId: Long,
     )
 
     @FormUrlEncoded
@@ -254,33 +254,33 @@ interface AccountsResources {
         @Field("comment")
         comment: String? = null,
         @Field("forward")
-        forwardToRemote: Boolean? = null
+        forwardToRemote: Boolean? = null,
     ): com.crakac.ofutodon.data.entity.Report
 
     @GET("/api/v1/follow_requests")
     suspend fun getFollowRequests(
         @QueryMap
-        pageQuery: Map<String, String> = emptyMap()
+        pageQuery: Map<String, String> = emptyMap(),
     ): List<Account>
 
     @FormUrlEncoded
     @POST("/api/v1/follow_requests/{id}/authorize")
     suspend fun acceptFollowRequest(
         @Path("id")
-        accountId: Long
+        accountId: Long,
     ): com.crakac.ofutodon.data.entity.Relationship
 
     @FormUrlEncoded
     @POST("/api/v1/follow_requests/{id}/reject")
     suspend fun rejectFollowRequest(
         @Path("id")
-        accountId: Long
+        accountId: Long,
     ): com.crakac.ofutodon.data.entity.Relationship
 
     @GET("/api/v1/endorsements")
     suspend fun getFeaturedProfiles(
         @QueryMap
-        pageQuery: Map<String, String> = emptyMap()
+        pageQuery: Map<String, String> = emptyMap(),
     ): List<Account>
 
     @GET("/api/v1/featured_tags")
@@ -290,13 +290,13 @@ interface AccountsResources {
     @POST("/api/v1/featured_tags")
     suspend fun createFeaturedTag(
         @Field("name")
-        tagName: String
+        tagName: String,
     ): com.crakac.ofutodon.data.entity.FeaturedTag
 
     @DELETE("/api/v1/featured_tags/{id}")
     suspend fun deleteFeaturedTag(
         @Path("id")
-        tagId: Long
+        tagId: Long,
     )
 
     @GET("/api/v1/featured_tags/suggestions")
@@ -308,19 +308,19 @@ interface AccountsResources {
     @GET("/api/v1/suggestions")
     suspend fun getSuggestedAccount(
         @QueryMap
-        pageQuery: Map<String, String> = emptyMap()
+        pageQuery: Map<String, String> = emptyMap(),
     ): List<Account>
 
     @DELETE("/api/v1/suggestions/{account_id}")
     suspend fun removeSuggestion(
         @Path("account_id")
-        accountId: Long
+        accountId: Long,
     )
 
     @FormUrlEncoded
     @POST("/api/v1/follows")
     suspend fun followRemoteUser(
         @Field("uri")
-        uri: String
+        uri: String,
     ): Account
 }

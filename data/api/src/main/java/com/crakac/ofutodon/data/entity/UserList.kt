@@ -13,8 +13,10 @@ data class UserList(
     enum class RepliesPolicy {
         @SerializedName("followed")
         Followed,
+
         @SerializedName("list")
         List,
+
         @SerializedName("none")
         None,
     }

@@ -12,5 +12,5 @@ class FilterParam(
     @SerializedName("irreversible")
     var isIrreversible: Boolean? = null,
     @SerializedName("whole_word")
-    var isWholeWord: Boolean? = null
+    var isWholeWord: Boolean? = null,
 )

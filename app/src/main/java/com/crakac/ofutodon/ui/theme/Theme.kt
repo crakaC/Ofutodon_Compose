@@ -23,7 +23,7 @@ private val DarkColorPalette = darkColors(
 private val LightColorPalette = lightColors(
     primary = Blue500,
     surface = White100,
-    onSurface = DeepBlack
+    onSurface = DeepBlack,
 )
 
 @Composable
@@ -31,13 +31,13 @@ fun OfutodonTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composab
     val painterCache = rememberPainterCache()
     CompositionLocalProvider(
         LocalContentAlpha provides 1f,
-        LocalPainterResource providesDefault painterCache
+        LocalPainterResource providesDefault painterCache,
     ) {
         MaterialTheme(
             colors = if (darkTheme) DarkColorPalette else LightColorPalette,
             typography = Typography,
             shapes = Shapes,
-            content = content
+            content = content,
         )
     }
 }

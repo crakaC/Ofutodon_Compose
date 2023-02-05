@@ -34,6 +34,6 @@ data class Attachment(
         Video,
 
         @SerializedName("gifv")
-        Gifv
+        Gifv,
     }
 }

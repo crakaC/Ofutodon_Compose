@@ -18,7 +18,7 @@ private val PresetIcons = listOf(
     R.drawable.ic_public,
     R.drawable.ic_more,
     R.drawable.ic_more_vert,
-    R.drawable.ic_reply
+    R.drawable.ic_reply,
 )
 
 class PainterResourceCache {

@@ -8,7 +8,7 @@ import kotlinx.coroutines.delay
 
 class
 DummyTimelineState(
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) : StatusTimelineState(scope) {
     private val initialId = 1_000_000L
     override fun refresh() {
@@ -36,14 +36,14 @@ DummyTimelineState(
 
     private fun getNextStatuses(
         sinceId: Long = 1_000_000L,
-        limit: Int = 100
+        limit: Int = 100,
     ): List<Status> {
         return ((sinceId + limit) downTo (sinceId + 1)).map { DummyStatus.copy(id = it) }
     }
 
     private fun getPreviousStatuses(
         maxId: Long = 1_000_000L,
-        limit: Int = 20
+        limit: Int = 20,
     ): List<Status> {
         return ((maxId - 1) downTo (maxId - limit)).map { DummyStatus.copy(id = it) }
     }

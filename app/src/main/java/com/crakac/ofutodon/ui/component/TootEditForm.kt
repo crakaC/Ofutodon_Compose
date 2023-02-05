@@ -53,7 +53,7 @@ interface EditFormCallback {
 fun TootEditForm(
     modifier: Modifier = Modifier,
     state: TootEditState = rememberTootEditState(DefaultVisibility),
-    callback: EditFormCallback = EditFormCallback.Default
+    callback: EditFormCallback = EditFormCallback.Default,
 ) {
     LogCompositions(tag = "TootEditForm")
     val focusRequester = remember { FocusRequester() }
@@ -73,8 +73,8 @@ fun TootEditForm(
                 },
                 enabled = !state.isSending,
                 colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent
-                )
+                    backgroundColor = Color.Transparent,
+                ),
             )
             val hasAttachment by remember {
                 derivedStateOf { state.attachments.any() }
@@ -91,7 +91,7 @@ fun TootEditForm(
             Spacer(Modifier.height(8.dp))
             Row(
                 modifier = Modifier.padding(horizontal = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(
                     onClick = { callback.onClickCamera() },
@@ -108,7 +108,7 @@ fun TootEditForm(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_photo),
-                        contentDescription = "attach file"
+                        contentDescription = "attach file",
                     )
                 }
                 IconButton(
@@ -117,7 +117,7 @@ fun TootEditForm(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_poll),
-                        contentDescription = "poll"
+                        contentDescription = "poll",
                     )
                 }
                 IconButton(
@@ -128,7 +128,7 @@ fun TootEditForm(
                 ) {
                     Icon(
                         painter = painterResource(state.dropDownState.visibility.iconResource()),
-                        contentDescription = "visibility"
+                        contentDescription = "visibility",
                     )
                     VisibilityDropDownMenu(state = state.dropDownState)
                 }
@@ -155,7 +155,7 @@ fun TootEditForm(
                 enabled = state.canSendStatus(),
                 onClick = {
                     callback.onClickToot()
-                }
+                },
             ) {
                 Icon(painter = painterResource(id = R.drawable.ic_send), "Toot!")
                 Spacer(Modifier.width(4.dp))
@@ -203,7 +203,7 @@ fun Attachments(
             Box(
                 Modifier
                     .size(160.dp)
-                    .alpha(if (enabled) 1f else ContentAlpha.disabled)
+                    .alpha(if (enabled) 1f else ContentAlpha.disabled),
             ) {
                 Image(
                     painter = rememberAsyncImagePainter(uri),
@@ -214,7 +214,7 @@ fun Attachments(
                         .clickable(
                             enabled = enabled,
                             role = Role.Image,
-                            onClick = { onClick(index) }
+                            onClick = { onClick(index) },
                         ),
                     contentScale = ContentScale.Crop,
                 )
@@ -224,13 +224,13 @@ fun Attachments(
                         .clickable(
                             enabled = enabled,
                             role = Role.Button,
-                            onClick = { onClickRemove(index) }
+                            onClick = { onClickRemove(index) },
                         ),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_clear),
-                        contentDescription = "remove attachment $index"
+                        contentDescription = "remove attachment $index",
                     )
                 }
                 Box(
@@ -239,13 +239,13 @@ fun Attachments(
                         .clickable(
                             enabled = enabled,
                             role = Role.Button,
-                            onClick = { onClickEdit(index) }
+                            onClick = { onClickEdit(index) },
                         ),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_more_vert),
-                        contentDescription = "edit attachment $index"
+                        contentDescription = "edit attachment $index",
                     )
                 }
             }
@@ -254,7 +254,7 @@ fun Attachments(
 }
 
 @Preview(
-    uiMode = UI_MODE_NIGHT_YES
+    uiMode = UI_MODE_NIGHT_YES,
 )
 @Composable
 private fun PreviewNightTootEditForm() {
@@ -264,7 +264,7 @@ private fun PreviewNightTootEditForm() {
 }
 
 @Preview(
-    heightDp = 240
+    heightDp = 240,
 )
 @Composable
 private fun PreviewTootEditForm() {

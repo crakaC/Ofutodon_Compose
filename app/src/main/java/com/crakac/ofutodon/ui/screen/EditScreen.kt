@@ -58,7 +58,7 @@ fun EditScreen(navController: NavHostController) {
         TootEditForm(
             modifier = Modifier.padding(innerPadding),
             state = editState,
-            callback = callback
+            callback = callback,
         )
         AttachmentPreview(previewState)
     }

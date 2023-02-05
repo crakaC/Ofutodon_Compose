@@ -15,13 +15,13 @@ interface NotificationsResources {
         @Query("account_id")
         accountId: Long,
         @QueryMap
-        pageQuery: Map<String, String> = emptyMap()
+        pageQuery: Map<String, String> = emptyMap(),
     ): List<com.crakac.ofutodon.data.entity.Notification>
 
     @GET("/api/v1/notifications/{id}")
     suspend fun getNotification(
         @Path("id")
-        notificationId: Long
+        notificationId: Long,
     ): com.crakac.ofutodon.data.entity.Notification
 
     @POST("/api/v1/notifications/clear")
@@ -30,6 +30,6 @@ interface NotificationsResources {
     @POST("/api/v1/notifications/{id}/dismiss")
     suspend fun dismissNotification(
         @Path("id")
-        notificationId: Long
+        notificationId: Long,
     )
 }

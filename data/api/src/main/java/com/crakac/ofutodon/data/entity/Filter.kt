@@ -19,10 +19,13 @@ data class Filter(
     enum class FilterContext {
         @SerializedName("home")
         Home,
+
         @SerializedName("notifications")
         Notifications,
+
         @SerializedName("public")
         Public,
+
         @SerializedName("thread")
         Thread,
     }

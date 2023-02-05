@@ -19,7 +19,7 @@ interface InstanceResource {
     @GET("/api/v1/trends")
     suspend fun getTrendingTags(
         @Query("limit")
-        limit: Int = 10
+        limit: Int = 10,
     ): List<Tag>
 
     /**
@@ -37,7 +37,7 @@ interface InstanceResource {
         @Query("order")
         order: String = "active",
         @Query("local")
-        localOnly: Boolean? = null
+        localOnly: Boolean? = null,
     ): List<Account>
 
     @GET("/api/v1/custom_emojis")
