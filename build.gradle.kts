@@ -14,7 +14,7 @@ plugins {
     alias(libs.plugins.android.library) apply false
     kotlin("android") version "1.8.0" apply false
     kotlin("plugin.serialization") version "1.8.0" apply false
-    id("com.github.ben-manes.versions") version "0.41.0"
+    id("com.github.ben-manes.versions") version "0.45.0"
     id("nl.littlerobots.version-catalog-update") version "0.7.0"
 }
 
