@@ -16,7 +16,7 @@ firebase-analytics = "21.2.0"
 # Firebase
 google-services = "4.3.15"
 # Hilt
-hilt = "2.44.2"
+hilt = "2.45"
 hilt-navigation-compose = "1.1.0-alpha01"
 junit = "4.13.2"
 junit-ext = "1.1.5"
