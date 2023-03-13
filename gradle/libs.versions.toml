@@ -1,5 +1,5 @@
 [versions]
-accompanist = "0.29.1-alpha"
+accompanist = "0.29.2-rc"
 # AGP
 android-gradle = "7.4.1"
 androidx-activity-compose = "1.7.0-alpha04"
