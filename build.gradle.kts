@@ -12,7 +12,7 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
-    kotlin("android") version "1.8.0" apply false
+    kotlin("android") version "1.8.21" apply false
     kotlin("plugin.serialization") version "1.8.0" apply false
     id("com.github.ben-manes.versions") version "0.41.0"
     id("nl.littlerobots.version-catalog-update") version "0.7.0"
