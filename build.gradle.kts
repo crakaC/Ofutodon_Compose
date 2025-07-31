@@ -1,21 +1,16 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
-    dependencies {
-        classpath(libs.google.services)
-    }
-}
-
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.kover)
     alias(libs.plugins.spotless)
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
-    kotlin("android") version "1.8.0" apply false
-    kotlin("plugin.serialization") version "1.8.0" apply false
-    id("com.github.ben-manes.versions") version "0.41.0"
-    id("nl.littlerobots.version-catalog-update") version "0.7.0"
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.kotlin.parcelize) apply false
+    alias(libs.plugins.ksp) apply false
+    id("com.github.ben-manes.versions") version "0.52.0"
+    id("nl.littlerobots.version-catalog-update") version "1.0.0"
 }
 
 allprojects {
@@ -23,12 +18,12 @@ allprojects {
     spotless {
         kotlin {
             target("**/*.kt")
-            targetExclude("$buildDir/**/*.kt")
+            targetExclude("${layout.buildDirectory}/**/*.kt")
             ktlint()
         }
         kotlinGradle {
             target("**/*.kts")
-            targetExclude("$buildDir/**/*.kts")
+            targetExclude("${layout.buildDirectory}/**/*.kts")
             ktlint()
         }
         format("xml") {

@@ -1,14 +1,14 @@
 import java.io.FileInputStream
-import java.util.*
+import java.util.Properties
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    kotlin("android")
-    id("com.android.application")
-    id("kotlin-kapt")
-    id("kotlin-parcelize")
-    id("dagger.hilt.android.plugin")
-    id("com.google.gms.google-services")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.compose)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 apply(from = rootProject.file("gradle/android.gradle"))
@@ -33,7 +33,6 @@ android {
             )
         }
         debug {
-            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
@@ -56,11 +55,7 @@ android {
         compose = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
-    }
-
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -77,8 +72,6 @@ dependencies {
     implementation(libs.bundles.androidx.lifecycle)
     implementation(libs.bundles.androidx.compose)
 
-    implementation(libs.material)
-
     implementation(libs.bundles.accompanist)
 
     implementation(libs.bundles.retrofit)
@@ -90,9 +83,7 @@ dependencies {
 
     implementation(libs.hilt)
     implementation(libs.hilt.navigation.compose)
-    kapt(libs.hilt.compiler)
-
-    implementation(libs.firebase.analytics)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.timber)
 
